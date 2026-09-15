@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($travelDate === '' || $travelDate < date('Y-m-d')) {
         $error = 'Please choose a valid travel date (today or later).';
     } else {
-        // Fresh search clears any earlier bus/seat/passenger selection.
+
         $_SESSION['booking'] = [
             'origin' => trim($_POST['origin'] ?? ''),
             'destination' => trim($_POST['destination'] ?? ''),

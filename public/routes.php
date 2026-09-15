@@ -15,7 +15,6 @@ if (!in_array($sort, ['departure', 'fare', 'duration'], true)) {
 }
 
 $buses = sort_schedules(search_schedules($origin, $destination), $sort);
-// Mirrors the original prototype: if the origin/destination filter matches nothing, show all buses instead.
 if (count($buses) === 0) {
     $buses = sort_schedules(get_schedules(), $sort);
 }
