@@ -162,6 +162,15 @@ select.input { cursor: pointer; }
   font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: 0.06em;
   cursor: pointer; transition: background .15s; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
 }
+.main-promo .btn-primary {
+
+    margin-top:20px;
+    width:160px;
+    padding:14px 25px;
+    font-size:16px;
+    border-radius:6px;
+
+}
 .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-primary:disabled { background: var(--dim); color: var(--dim); cursor: not-allowed; }
 .btn-primary.full { width: 100%; }
@@ -465,7 +474,6 @@ select.input { cursor: pointer; }
     border-bottom:3px solid var(--accent);
 }
 
-
 .header-container{
     width:80%;
     margin:auto;
@@ -476,7 +484,6 @@ select.input { cursor: pointer; }
     align-items:center;
 }
 
-
 .brand{
     font-family:var(--font-display);
     font-size:28px;
@@ -484,20 +491,17 @@ select.input { cursor: pointer; }
     color:#111;
 }
 
-
 .brand-icon{
     background:#f5a623;
     padding:12px;
     margin-right:10px;
 }
 
-
 .main-header nav{
     display:flex;
     align-items:center;
     gap:15px;
 }
-
 
 .main-header a{
 
@@ -512,7 +516,6 @@ select.input { cursor: pointer; }
     font-size:13px;
 }
 
-
 .menu-btn{
 
     background:white;
@@ -522,7 +525,6 @@ select.input { cursor: pointer; }
     padding:12px;
 
 }
-
 .hero {
     background-image:
      linear-gradient(
@@ -551,7 +553,6 @@ select.input { cursor: pointer; }
 .destinations {
     padding:100px 40px;
 }
-
 
 .destinations .section-head {
     text-align:center;
@@ -667,39 +668,94 @@ select.input { cursor: pointer; }
     font-weight:700;
     font-size:13px;
 
-    margin-bottom:25px;
+    margin-bottom:20px;
 
 }
 .main-promo h3 {
 
     font-family:var(--font-display);
-
-    font-size:45px;
-    line-height:1;
-
+    font-size:52px;
+    line-height:0.95;
     margin:0 0 20px;
-
+    text-transform:uppercase;
 }
-
 
 .main-promo p {
 
     color:#ddd;
 
-    max-width:400px;
+    max-width:420px;
+  
+     line-height:1.6;
+
+    margin-bottom:30px;
 
 }
 
 /* SMALL CARDS */
 
-.small-promos {
+/* SMALL CARDS */
 
+.small-promos {
     display:flex;
     flex-direction:column;
     gap:15px;
+}
+
+.promo-card {
+
+    background:white;
+
+    border:1px solid #ddd;
+
+    padding:20px;
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:flex-start;
+
+    border-radius:8px;
+
+    min-height:90px;
 
 }
 
+.promo-card span {
+
+    font-size:25px;
+
+}
+.promo-card h4 {
+
+    margin:0 0 8px;
+
+    font-size:18px;
+
+    font-weight:800;
+
+}
+
+.promo-card p {
+
+    margin:0;
+
+    color:#666;
+
+    font-size:13px;
+
+}
+
+.promo-card small {
+
+    color:#f5a623;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+}
 
 .promo-card {
 
@@ -753,15 +809,12 @@ select.input { cursor: pointer; }
 
 }
 
-
 .bus-lines .section-head {
 
     text-align:center;
     margin-bottom:40px;
 
 }
-
-
 
 .bus-lines .section-head p {
 
@@ -772,8 +825,6 @@ select.input { cursor: pointer; }
     margin:auto;
 
 }
-
-
 
 .bus-grid {
     max-width: 1100px;
