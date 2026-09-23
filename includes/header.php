@@ -45,10 +45,8 @@ if (!defined('BUSWAY_APP')) {
 
 </nav>
 
-
 </div>
 
 </header>
-
 
 <main class="page-container">

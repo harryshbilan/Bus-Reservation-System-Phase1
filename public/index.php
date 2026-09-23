@@ -114,7 +114,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
         </p>
     </div>
 
-
     <div class="destination-grid">
 
         <div class="destination-card">
@@ -127,7 +126,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </div>
         </div>
 
-
         <div class="destination-card">
             <img src="../assets/images/siargao.jpg">
 
@@ -137,7 +135,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 <p>Surf, sun, and island adventures</p>
             </div>
         </div>
-
 
         <div class="destination-card">
             <img src="../assets/images/coron palawan.jpg">
@@ -199,9 +196,7 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
         </h2>
     </div>
 
-
     <div class="promo-container">
-
 
         <!-- Main Promo -->
 
@@ -221,14 +216,11 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 Use code We_Love_NEU at checkout.
             </p>
 
-
             <button class="btn-primary">
                 BOOK NOW →
             </button>
 
         </div>
-
-
 
         <!-- Small Cards -->
 
@@ -257,8 +249,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 </div>
 
             </div>
-
-
 
             <div class="promo-card">
 
@@ -383,8 +373,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </a>
 
         </div>
-
-
 
         <div class="bus-card green">
 
