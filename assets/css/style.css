@@ -7,13 +7,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Outfit:wght@400;500;600&display=swap');
 
 :root {
-  --bg: #0f1117;
-  --panel: #1a1d27;
+  --bg: #F7F3EE;
+  --panel: #FFFFFF;
   --panel-hover: #22263a;
   --border: #2e3349;
-  --muted: #8b91a8;
-  --text: #e8eaf2;
-  --accent: #f5a623;
+  --muted: #6B6258;
+  --text: #1C1208;
+  --accent: #E8940A;
   --accent-hover: #c07d10;
   --dim: #3a3f58;
   --blue: #60a5fa;
@@ -103,10 +103,10 @@ header.site-header .bar {
 .eyebrow.accent { color: var(--accent); font-size: 13px; letter-spacing: 0.12em; margin-bottom: 12px; }
 h1.hero {
   font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1;
-  letter-spacing: -0.01em; color: var(--text); margin: 0 0 8px;
+  letter-spacing: -0.01em; color: white; margin: 0 0 8px;
 }
 h1.hero span.accent { color: var(--accent); }
-.hero-sub { color: var(--muted); font-size: 16px; margin: 0; }
+.hero-sub { color: white; font-size: 18px; margin: 0 auto 30px; max-width: 700px; }
 h2.section-title {
   font-family: var(--font-display); font-size: 42px; font-weight: 800; color: var(--text);
   line-height: 1; margin: 0;
@@ -432,3 +432,107 @@ select.input { cursor: pointer; }
 .mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; } .mt-4 { margin-bottom: 16px; }
 .max-w-2xl { max-width: 672px; }
 .text-right { text-align: right; }
+
+/* ===== NEW FIGMA HEADER OVERRIDE ===== */
+
+.navbar {
+    background: white;
+    border-bottom: 3px solid #E8940A;
+    padding: 18px 0;
+}
+
+.nav-container {
+    width: 85%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-header{
+    background:white;
+    border-bottom:3px solid var(--accent);
+}
+
+
+.header-container{
+    width:80%;
+    margin:auto;
+    height:80px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+
+.brand{
+    font-family:var(--font-display);
+    font-size:28px;
+    font-weight:800;
+    color:#111;
+}
+
+
+.brand-icon{
+    background:#f5a623;
+    padding:12px;
+    margin-right:10px;
+}
+
+
+.main-header nav{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+
+.main-header a{
+
+    padding:12px 20px;
+
+    border:1px solid #ddd;
+
+    color:#111;
+
+    text-decoration:none;
+
+    font-size:13px;
+}
+
+
+.menu-btn{
+
+    background:white;
+
+    border:1px solid #ddd;
+
+    padding:12px;
+
+}
+
+.hero {
+    background-image:
+     linear-gradient(
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.45)
+    ),
+   url("../images/hero.jpg");
+
+    background-size: cover;
+    background-position:center;
+
+    min-height: 600px;
+    padding-top:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+.hero-overlay {
+    width:100%;
+    max-width:1000px;
+    padding:40px;
+}
+    text-align:center;
+}

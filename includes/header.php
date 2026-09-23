@@ -9,60 +9,44 @@ if (!defined('BUSWAY_APP')) {
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= h($pageTitle ?? 'BUSWAY'); ?></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>
+<?= h($pageTitle ?? 'BUSWAY') ?>
+</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
 <body>
 
 
-<header class="navbar">
+<header class="main-header">
 
-    <div class="nav-container">
+<div class="header-container">
 
-        <a href="index.php" class="logo">
-
-            <div class="logo-box">
-                🚌
-            </div>
-
-            <span>
-                BUSWAY
-            </span>
-
-        </a>
+<div class="brand">
+    <span class="brand-icon">🚌</span>
+    <span>BUSWAY</span>
+</div>
 
 
-        <nav class="nav-links">
+<nav>
 
-            <a href="cancel.php">
-                CANCEL RESERVATION
-            </a>
+<a href="#">CANCEL RESERVATION</a>
+<a href="#">SUPPORT</a>
 
+<button class="menu-btn">
+☰
+</button>
 
-            <a href="contact.php">
-                SUPPORT
-            </a>
-
-
-            <button class="menu-btn">
-                ☰
-            </button>
-
-        </nav>
+</nav>
 
 
-    </div>
+</div>
 
 </header>
 

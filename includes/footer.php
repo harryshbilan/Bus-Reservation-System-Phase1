@@ -1,56 +1,87 @@
-<?php if (!defined('BUSWAY_APP')) { http_response_code(403); exit('Forbidden'); } ?>
 </main>
 
-<div id="support-modal" class="modal-overlay" onclick="if(event.target===this) this.classList.remove('open')">
-  <div class="modal-box support" onclick="event.stopPropagation()">
-    <div class="modal-head support">
-      <span>SUPPORT &amp; INFORMATION</span>
-      <button type="button" onclick="document.getElementById('support-modal').classList.remove('open')">&#10005;</button>
-    </div>
-    <div class="modal-body">
-      <div class="support-item">
-        <div class="sicon">&#128222;</div>
-        <div>
-          <div class="stitle">HOTLINE</div>
-          <div class="sline">09163248858</div>
-          <div class="sline">Available 24/7 for booking &amp; emergencies</div>
-        </div>
-      </div>
-      <div class="support-item">
-        <div class="sicon">&#128231;</div>
-        <div>
-          <div class="stitle">EMAIL SUPPORT</div>
-          <div class="sline">harrysh.bilan@neu.edu.ph</div>
-          <div class="sline">Response within 24 hours on business days</div>
-        </div>
-      </div>
-      <div class="support-item">
-        <div class="sicon">&#128205;</div>
-        <div>
-          <div class="stitle">MAIN OFFICE</div>
-          <div class="sline">9 Central Ave, New Era (Constitution Hills)</div>
-          <div class="sline">Quezon City, 1107 Metro Manila</div>
-        </div>
-      </div>
-      <div class="support-item">
-        <div class="sicon">&#128336;</div>
-        <div>
-          <div class="stitle">OFFICE HOURS</div>
-          <div class="sline">Monday – Saturday: 6:00 AM – 10:00 PM</div>
-          <div class="sline">Sunday &amp; Holidays: 7:00 AM – 8:00 PM</div>
-        </div>
-      </div>
-      <div class="support-item">
-        <div class="sicon">&#8505;&#65039;</div>
-        <div>
-          <div class="stitle">BOOKING POLICY</div>
-          <div class="sline">Tickets are non-refundable but may be rescheduled up to 2 hours before departure.</div>
-          <div class="sline">Valid government-issued ID required upon boarding.</div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+<section class="cta">
+
+    <h2>
+        READY TO HIT THE ROAD?
+    </h2>
+
+    <p>
+        Book your next bus trip in minutes. Fast, easy, and secure.
+    </p>
+
+
+    <a href="index.php" class="cta-btn">
+        BOOK NOW →
+    </a>
+
+
+</section>
+
+<footer class="footer">
+
+<div class="footer-grid">
+
+
+<div>
+<h3>SERVICES</h3>
+
+<a>Bus Booking</a>
+<a>Bus Charter</a>
+<a>Group Reservations</a>
+<a>Route Schedules</a>
+
 </div>
+
+<div>
+<h3>ABOUT</h3>
+
+<a>Our Story</a>
+<a>Terminal Directory</a>
+<a>Route Map</a>
+<a>Careers</a>
+
+</div>
+
+
+<div>
+<h3>GUIDELINES</h3>
+
+<a>Discounts / Policies</a>
+<a>Terms and Conditions</a>
+<a>Refund Policy</a>
+
+</div>
+
+
+
+<div>
+<h3>SUPPORT</h3>
+
+<a>Contact Us</a>
+<a>FAQs</a>
+<a>Lost & Found</a>
+
+</div>
+
+
+
+</div>
+
+
+
+<div class="footer-bottom">
+
+<p>
+© 2025 BUSWAY Philippines Inc.
+</p>
+
+</div>
+
+
+</footer>
+
 
 </body>
 </html>
