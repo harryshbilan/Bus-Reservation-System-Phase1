@@ -1155,3 +1155,81 @@ select.input { cursor: pointer; }
 }
 
 }
+
+/* NEW BUS CARD */
+
+.bus-card{
+    background:white;
+    border:1px solid #ddd;
+    padding:30px;
+    margin-bottom:20px;
+    border-radius:12px;
+}
+
+.bus-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.operator{
+    color:#e67e00;
+    font-weight:700;
+    font-size:14px;
+}
+
+.bus-number{
+    font-size:32px;
+    font-weight:900;
+}
+
+.route-time{
+    display:flex;
+    align-items:center;
+    gap:35px;
+}
+
+.route-time h2{
+    font-size:34px;
+    margin:0;
+}
+
+.duration{
+    color:#777;
+}
+
+.fare{
+    font-size:36px;
+    font-weight:900;
+    color:#f5a000;
+}
+
+.select-btn{
+
+    display:block;
+    background:#f5a000;
+    color:white;
+    padding:15px 30px;
+    margin-top:15px;
+    text-decoration:none;
+    font-weight:800;
+    border-radius:4px;
+
+}
+
+.bus-footer{
+
+    margin-top:25px;
+    display:flex;
+    justify-content:space-between;
+
+}
+
+.amenities span{
+
+    border:1px solid #ddd;
+    padding:5px 10px;
+    margin-right:5px;
+    font-size:12px;
+
+}

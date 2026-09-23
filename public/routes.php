@@ -55,38 +55,89 @@ require __DIR__ . '/../includes/header.php';
 <?php endif; ?>
 
 <div class="bus-list">
-  <?php foreach ($buses as $bus): $notEnough = $bus['available_seats'] < $passengers; ?>
-    <?php if ($notEnough): ?>
-      <div class="bus-row full">
-    <?php else: ?>
-      <a class="bus-row" href="bus.php?schedule_id=<?= (int) $bus['schedule_id'] ?>">
-    <?php endif; ?>
-      <div class="bus-row-inner">
-        <div class="bus-cluster">
-          <div>
-            <div class="bus-num-label">BUS NO.</div>
-            <div class="bus-num"><?= h($bus['bus_number']) ?></div>
-            <span class="<?= badge_class($bus['bus_type']) ?>"><?= strtoupper($bus['bus_type']) ?></span>
-          </div>
-          <div>
-            <div class="bus-time"><?= h($bus['departure_time']) ?></div>
-            <div class="bus-place"><?= h($bus['origin']) ?></div>
-          </div>
-          <div class="bus-duration">
-            <div class="line">&mdash;&mdash;&mdash;&mdash; <?= format_duration((int) $bus['duration_minutes']) ?> &mdash;&mdash;&mdash;&mdash;</div>
-            <div class="arrow">&rarr;</div>
-          </div>
-          <div>
-            <div class="bus-time"><?= h($bus['arrival_time']) ?></div>
-            <div class="bus-place"><?= h($bus['destination']) ?></div>
-          </div>
+
+<?php foreach ($buses as $bus): 
+$notEnough = $bus['available_seats'] < $passengers;
+?>
+
+<div class="bus-card">
+
+    <div class="bus-header">
+
+        <div>
+            <div class="operator">
+                <?= h($bus['operator']) ?>
+            </div>
+
+            <div class="bus-number">
+                <?= h($bus['bus_number']) ?>
+            </div>
+
+            <span class="<?= badge_class($bus['bus_type']) ?>">
+                <?= strtoupper($bus['bus_type']) ?>
+            </span>
+
         </div>
-        <div class="flex-wrap gap-6" style="align-items:center;">
-          <div>
-            <div class="flex-wrap gap-1 mb-4">
-              <?php foreach (explode(',', $bus['amenities']) as $a): ?>
-                <span class="amenity sm"><?= h($a) ?></span>
-              <?php endforeach; ?>
+
+        <div class="route-time">
+
+            <div>
+                <h2><?= h($bus['departure_time']) ?></h2>
+                <small><?= h($bus['origin']) ?></small>
+            </div>
+
+            <div class="duration">
+                <?= format_duration((int)$bus['duration_minute']) ?>
+                →
+            </div>
+
+            <div>
+                <h2><?= h($bus['arrival_time']) ?></h2>
+                <small><?= h($bus['destination']) ?></small>
+            </div>
+
+        </div>
+
+        <div class="fare-area">
+
+            <div class="fare">
+                <?= peso($bus['fare_per_seat']) ?>
+            </div>
+
+            <small>per seat</small>
+            <a 
+            class="select-btn <?= $notEnough ? 'disabled':'' ?>"
+            href="<?= $notEnough ? '#' : 'bus.php?schedule_id='.(int)$bus['schedule_id'] ?>">
+          
+            <?= $notEnough ? 'FULL':'SELECT →' ?>
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="bus-footer">
+
+        <div class="amenities">
+
+        <?php foreach(explode(',', $bus['amenities']) as $a): ?>
+
+            <span>
+                <?= h($a) ?>
+            </span>
+
+        <?php endforeach; ?>
+        </div>
+
+        <div class="seats">
+            <?= (int)$bus['available_seats'] ?> seats available
+        </div>
+
+    </div>
+</div>
+
+<?php endforeach; ?>
+</div>
             </div>
             <div class="seats-left <?= ($notEnough || $bus['available_seats'] < 10) ? 'low' : '' ?>">
               <?= (int) $bus['available_seats'] ?> seats available<?= $notEnough ? ' — need ' . $passengers : '' ?>
