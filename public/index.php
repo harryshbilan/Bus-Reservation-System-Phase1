@@ -301,7 +301,54 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
     </div>
 
 </section>
+<section class="why-busway">
 
+    <div class="why-header">
+        <h2>WHY CHOOSE BUSWAY?</h2>
+        <p>Trusted by millions of Filipinos for comfortable inter-city travel.</p>
+    </div>
+
+
+    <div class="why-grid">
+
+        <div class="why-item">
+            <div class="why-icon">🛡️</div>
+            <h3>SAFE & INSURED</h3>
+            <p>
+                All buses fully inspected and drivers professionally trained.
+            </p>
+        </div>
+
+
+        <div class="why-item">
+            <div class="why-icon">💰</div>
+            <h3>BEST VALUE</h3>
+            <p>
+                Guaranteed lowest fares with no hidden booking fees.
+            </p>
+        </div>
+
+
+        <div class="why-item">
+            <div class="why-icon">⏱️</div>
+            <h3>ON TIME</h3>
+            <p>
+                Industry-leading on-time departure rate across all routes.
+            </p>
+        </div>
+
+
+        <div class="why-item">
+            <div class="why-icon">🌱</div>
+            <h3>NATIONWIDE</h3>
+            <p>
+                Over 200 routes connecting cities, towns, and provinces.
+            </p>
+        </div>
+
+    </div>
+
+</section>
 <section class="bus-lines">
 
     <div class="section-head">
