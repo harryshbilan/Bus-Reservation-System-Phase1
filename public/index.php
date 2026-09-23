@@ -295,15 +295,9 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                     <p>
                         Reserve early and save more.
                     </p>
-
                 </div>
-
             </div>
-
-
         </div>
-
-
     </div>
 
 </section>
@@ -326,8 +320,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
         </p>
 
     </div>
-
-
 
     <div class="bus-grid">
 
