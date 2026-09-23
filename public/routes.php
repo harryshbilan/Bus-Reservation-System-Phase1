@@ -87,9 +87,8 @@ $notEnough = $bus['available_seats'] < $passengers;
             </div>
 
             <div class="duration">
-            <span>────────</span>
-            <span>→</span>
-            <span>────────</span>
+              <?= floor($bus['duration_minutes'] / 60) ?>h 
+              <?= $bus['duration_minutes'] % 60 ?>m
             </div>
 
             <div>
@@ -139,22 +138,7 @@ $notEnough = $bus['available_seats'] < $passengers;
 
 <?php endforeach; ?>
 </div>
-            </div>
-            <div class="seats-left <?= ($notEnough || $bus['available_seats'] < 10) ? 'low' : '' ?>">
-              <?= (int) $bus['available_seats'] ?> seats available<?= $notEnough ? ' — need ' . $passengers : '' ?>
-            </div>
-          </div>
-          <div class="text-right">
-            <div class="bus-fare"><?= peso($bus['fare_per_seat']) ?></div>
-            <div class="bus-fare-unit">per seat</div>
-          </div>
-          <div class="bus-select-pill <?= $notEnough ? 'full' : '' ?>"><?= $notEnough ? 'FULL' : 'SELECT &rarr;' ?></div>
-        </div>
-      </div>
-    <?= $notEnough ? '</div>' : '</a>' ?>
-
-</div>
-
+         
 <a class="link-back" href="index.php">&larr; Modify search</a>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>

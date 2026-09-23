@@ -55,7 +55,6 @@ $rows = $stmt->fetchAll(PDO::FETCH_NUM);
     ? (strtotime($r[8]) - strtotime($r[7])) / 60
     : ((strtotime($r[8]) + 86400) - strtotime($r[7])) / 60
 ),
-'fare_per_seat' => $r[9],
 'boarding_point' => $r[10],
 ];
     }
