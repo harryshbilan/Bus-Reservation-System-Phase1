@@ -66,7 +66,7 @@ $notEnough = $bus['available_seats'] < $passengers;
 
         <div>
             <div class="operator">
-                <?= h($bus['operator']) ?>
+                <?= h($bus['bus_type']) ?>
             </div>
 
             <div class="bus-number">
@@ -87,8 +87,9 @@ $notEnough = $bus['available_seats'] < $passengers;
             </div>
 
             <div class="duration">
-                <?= format_duration((int)$bus['duration_minute']) ?>
-                →
+            <span>────────</span>
+            <span>→</span>
+            <span>────────</span>
             </div>
 
             <div>
@@ -101,7 +102,7 @@ $notEnough = $bus['available_seats'] < $passengers;
         <div class="fare-area">
 
             <div class="fare">
-                <?= peso($bus['fare_per_seat']) ?>
+                <?= peso((int)$bus['fare']) ?>
             </div>
 
             <small>per seat</small>

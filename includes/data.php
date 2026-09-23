@@ -48,7 +48,8 @@ $rows = $stmt->fetchAll(PDO::FETCH_NUM);
     'origin' => $r[5],
     'destination' => $r[6],
     'departure_time' => $r[7],
-  'arrival_time' => $r[8],
+    'arrival_time' => $r[8],
+    'fare' => $r[9],
 'duration_minutes' => (
     strtotime($r[8]) >= strtotime($r[7])
     ? (strtotime($r[8]) - strtotime($r[7])) / 60
