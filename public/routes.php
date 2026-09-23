@@ -151,7 +151,7 @@ $notEnough = $bus['available_seats'] < $passengers;
         </div>
       </div>
     <?= $notEnough ? '</div>' : '</a>' ?>
-  <?php endforeach; ?>
+
 </div>
 
 <a class="link-back" href="index.php">&larr; Modify search</a>
