@@ -344,8 +344,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
 
         </div>
 
-
-
         <div class="bus-card blue">
 
             <h3>LAKBAY EXPRESS</h3>
@@ -386,8 +384,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
 
         </div>
 
-
-
         <div class="bus-card blue">
 
             <h3>DAGAT COACHES</h3>
@@ -405,8 +401,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </a>
 
         </div>
-
-
 
         <div class="bus-card orange">
 
@@ -427,8 +421,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </a>
 
         </div>
-
-
 
         <div class="bus-card purple">
 
@@ -452,7 +444,6 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
 
 
     </div>
-
 
 </section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>
