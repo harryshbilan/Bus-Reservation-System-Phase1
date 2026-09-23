@@ -118,7 +118,7 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
     <div class="destination-grid">
 
         <div class="destination-card">
-            <img src="../assets/images/palawan.jpg">
+            <img src="../assets/images/el nido palawan.jpg">
 
             <div class="destination-overlay">
                 <span>ISLAND PARADISE</span>
@@ -140,7 +140,7 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
 
 
         <div class="destination-card">
-            <img src="../assets/images/coron.jpg">
+            <img src="../assets/images/coron palawan.jpg">
 
             <div class="destination-overlay">
                 <span>DIVE DESTINATION</span>
@@ -187,4 +187,292 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
 
 </section>
 
+<section class="promos">
+
+    <div class="section-head">
+        <div class="eyebrow accent">
+            LIMITED TIME OFFERS
+        </div>
+
+        <h2 class="section-title">
+            PROMOS & DEALS
+        </h2>
+    </div>
+
+
+    <div class="promo-container">
+
+
+        <!-- Main Promo -->
+
+        <div class="main-promo">
+
+            <div class="promo-code">
+                🎟 PROMO CODE: We_Love_NEU
+            </div>
+
+            <h3>
+                10% OFF<br>
+                YOUR NEXT TRIP
+            </h3>
+
+            <p>
+                Valid on all routes and bus types.
+                Use code We_Love_NEU at checkout.
+            </p>
+
+
+            <button class="btn-primary">
+                BOOK NOW →
+            </button>
+
+        </div>
+
+
+
+        <!-- Small Cards -->
+
+        <div class="small-promos">
+
+
+            <div class="promo-card">
+
+                <span>
+                    👴
+                </span>
+
+                <div>
+                    <small>
+                        SENIOR / PWD
+                    </small>
+
+                    <h4>
+                        20% DISCOUNT
+                    </h4>
+
+                    <p>
+                        Present valid ID before boarding.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="promo-card">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <small>
+                        GROUP BOOKING
+                    </small>
+
+                    <h4>
+                        GROUP OF 10+
+                    </h4>
+
+                    <p>
+                        Enjoy special group rates.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="promo-card">
+
+                <span>
+                    🌅
+                </span>
+
+                <div>
+
+                    <small>
+                        EARLY BIRD
+                    </small>
+
+                    <h4>
+                        BOOK 7 DAYS AHEAD
+                    </h4>
+
+                    <p>
+                        Reserve early and save more.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+<section class="bus-lines">
+
+    <div class="section-head">
+
+        <div class="eyebrow accent">
+            OUR PARTNER OPERATORS
+        </div>
+
+        <h2 class="section-title">
+            BUS TRANSIT LINES
+        </h2>
+
+        <p>
+            BUSWAY partners with accredited operators covering Luzon,
+            Visayas, and Mindanao.
+        </p>
+
+    </div>
+
+
+
+    <div class="bus-grid">
+
+
+        <div class="bus-card red">
+
+            <h3>AGILA LINER</h3>
+
+            <em>
+                "Soar Above the Rest"
+            </em>
+
+            <p>
+                5 buses available • Manila → Baguio
+                <br>
+                Cubao → Baler
+            </p>
+
+            <a>
+                VIEW SCHEDULES →
+            </a>
+
+        </div>
+
+
+
+        <div class="bus-card blue">
+
+            <h3>LAKBAY EXPRESS</h3>
+
+            <em>
+                "Your Journey, Our Pride"
+            </em>
+
+            <p>
+                5 buses available • Cubao → Dagupan
+                <br>
+                Cebu City → Moalboal
+            </p>
+
+            <a>
+                VIEW SCHEDULES →
+            </a>
+
+        </div>
+
+
+
+        <div class="bus-card green">
+
+            <h3>BUNDOK TRANSIT</h3>
+
+            <em>
+                "Mountains to Shores"
+            </em>
+
+            <p>
+                5 buses available • PITX → Batangas
+                <br>
+                Manila → Banaue
+            </p>
+
+            <a>
+                VIEW SCHEDULES →
+            </a>
+
+        </div>
+
+
+
+        <div class="bus-card blue">
+
+            <h3>DAGAT COACHES</h3>
+
+            <em>
+                "Ride the Blue Horizon"
+            </em>
+
+            <p>
+                4 buses available • Cubao → Cabanatuan
+            </p>
+
+            <a>
+                VIEW SCHEDULES →
+            </a>
+
+        </div>
+
+
+
+        <div class="bus-card orange">
+
+            <h3>SINAG LINES</h3>
+
+            <em>
+                "Shining the Way Forward"
+            </em>
+
+            <p>
+                Manila → Vigan
+                <br>
+                Manila → Cebu
+            </p>
+
+            <a>
+                VIEW SCHEDULES →
+            </a>
+
+        </div>
+
+
+
+        <div class="bus-card purple">
+
+            <h3>HALIGI MOTORS</h3>
+
+            <em>
+                "Strong. Steady. Reliable."
+            </em>
+
+            <p>
+                PITX → Lucena
+                <br>
+                Cubao → Laoag
+            </p>
+
+            <a>
+                VIEW SCHEDULES →
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+</section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

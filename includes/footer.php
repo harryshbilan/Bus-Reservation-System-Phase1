@@ -1,28 +1,21 @@
 </main>
 
-
 <section class="cta">
-
-    <h2>
+   <h2>
         READY TO HIT THE ROAD?
     </h2>
-
     <p>
         Book your next bus trip in minutes. Fast, easy, and secure.
     </p>
-
 
     <a href="index.php" class="cta-btn">
         BOOK NOW →
     </a>
 
-
 </section>
 
 <footer class="footer">
-
 <div class="footer-grid">
-
 
 <div>
 <h3>SERVICES</h3>
@@ -54,8 +47,6 @@
 
 </div>
 
-
-
 <div>
 <h3>SUPPORT</h3>
 
@@ -65,11 +56,7 @@
 
 </div>
 
-
-
 </div>
-
-
 
 <div class="footer-bottom">
 
@@ -79,9 +66,9 @@
 
 </div>
 
-
 </footer>
 
 
 </body>
 </html>
+

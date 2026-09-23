@@ -5,6 +5,7 @@ session_start();
 
 require __DIR__ . '/data.php';
 require __DIR__ . '/functions.php';
+require __DIR__ . '/database.php';
 
 if (!isset($_SESSION['booking'])) {
     $_SESSION['booking'] = [];
