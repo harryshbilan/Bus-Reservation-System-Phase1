@@ -630,8 +630,8 @@ select.input { cursor: pointer; }
     display:grid;
     grid-template-columns:2fr 1fr;
     gap:25px;
-    max-width:1000px;
-    margin:auto;
+    max-width:1100px;
+    margin:80px auto;
 
 }
 
@@ -940,3 +940,4 @@ select.input { cursor: pointer; }
 }
 
 }
+
