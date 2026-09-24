@@ -36,7 +36,7 @@ if (!defined('BUSWAY_APP')) {
 
 <nav>
 
-<a href="#">CANCEL RESERVATION</a>
+<a href="cancellation.php">CANCEL RESERVATION</a>
 <a href="#">SUPPORT</a>
 
 <button class="menu-btn">
