@@ -98,17 +98,6 @@ $notEnough = $bus['available_seats'] < $passengers;
 
         </div>
 
-        <div class="bus-meta">
-          <div class="amenities">
-          <?php foreach(explode(',', $bus['amenities']) as $a): ?>
-            <span><?= h($a) ?></span>
-          <?php endforeach; ?>
-          </div>
-          <div class="seats">
-            <?= (int)$bus['available_seats'] ?> seats available
-          </div>
-        </div>
-
         <div class="fare-area">
 
             <div class="fare">
@@ -127,6 +116,24 @@ $notEnough = $bus['available_seats'] < $passengers;
 
     </div>
 
+    <div class="bus-footer">
+
+        <div class="amenities">
+
+        <?php foreach(explode(',', $bus['amenities']) as $a): ?>
+
+            <span>
+                <?= h($a) ?>
+            </span>
+
+        <?php endforeach; ?>
+        </div>
+
+        <div class="seats">
+            <?= (int)$bus['available_seats'] ?> seats available
+        </div>
+
+    </div>
 </div>
 
 <?php endforeach; ?>
