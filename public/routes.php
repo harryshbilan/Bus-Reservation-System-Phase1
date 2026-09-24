@@ -28,6 +28,7 @@ $activeStep = 'routes';
 require __DIR__ . '/../includes/header.php';
 ?>
 
+<div class="scoped-timetable">
 <div class="bus-row-inner mb-6" style="align-items:flex-start;">
   <div>
     <div class="eyebrow">AVAILABLE BUSES</div>
@@ -101,7 +102,7 @@ $notEnough = $bus['available_seats'] < $passengers;
         <div class="fare-area">
 
             <div class="fare">
-                <?= peso((int)$bus['fare']) ?>
+                <?= peso((int)$bus['fare_per_seat']) ?>
             </div>
 
             <small>per seat</small>
@@ -140,5 +141,6 @@ $notEnough = $bus['available_seats'] < $passengers;
 </div>
          
 <a class="link-back" href="index.php">&larr; Modify search</a>
+</div>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>

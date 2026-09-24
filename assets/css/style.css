@@ -132,6 +132,13 @@ h2.section-title {
   color: var(--text); padding: 14px 16px; font-size: 15px; font-family: var(--font-body);
   outline: none; color-scheme: dark;
 }
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--text);
+}
 .input:focus { border-color: var(--accent); }
 .input::placeholder { color: #4b5170; }
 select.input { cursor: pointer; }
@@ -663,6 +670,7 @@ select.input { cursor: pointer; }
     gap:20px;
     max-width:1100px;
     margin:40px auto 0;
+    align-items:stretch;
 
 }
 
@@ -677,6 +685,7 @@ select.input { cursor: pointer; }
     border-radius:12px;
 
     min-height:320px;
+    height:100%;
 
     display:flex;
     flex-direction:column;
@@ -728,9 +737,10 @@ select.input { cursor: pointer; }
 /* SMALL CARDS */
 
 .small-promos {
-    display:flex;
-    flex-direction:column;
-    gap:15px;
+    display:grid;
+    grid-template-rows:repeat(3, minmax(0, 1fr));
+    gap:16px;
+    height:100%;
 }
 
 .promo-card {
@@ -739,17 +749,19 @@ select.input { cursor: pointer; }
 
     border:1px solid #ddd;
 
-    padding:20px;
+    padding:20px 22px;
 
-    display:flex;
+    display:grid;
+    grid-template-columns:36px minmax(0, 1fr);
 
-    gap:15px;
+    gap:16px;
 
-    align-items:flex-start;
+    align-items:center;
 
     border-radius:8px;
 
-    min-height:90px;
+    min-height:0;
+    height:100%;
 
 }
 
@@ -757,13 +769,19 @@ select.input { cursor: pointer; }
 .promo-card span {
 
     font-size:25px;
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
 }
 .promo-card h4 {
 
-    margin:5px 0;
+    margin:5px 0 6px;
 
     font-size:20px;
+    line-height:1.1;
 
     font-weight:800;
 
@@ -788,6 +806,10 @@ select.input { cursor: pointer; }
     letter-spacing:1px;
 
 }
+
+.promo-card:nth-child(1) small { color:#2f8f5b; }
+.promo-card:nth-child(2) small { color:#2878b8; }
+.promo-card:nth-child(3) small { color:#7540a5; }
 
 /* BUS LINES */
 
@@ -1555,4 +1577,163 @@ font-weight:600;
     justify-content:space-between;
     align-items:center;
     margin-top:25px;
+}
+
+/* ---------- routes timetable ---------- */
+.scoped-timetable {
+    max-width:1040px;
+    margin:0 auto;
+    padding:32px 0 48px;
+}
+
+.scoped-timetable > .bus-row-inner {
+    margin-bottom:28px;
+}
+
+.scoped-timetable .section-title {
+    font-size:38px;
+}
+
+.scoped-timetable .bus-list {
+    gap:0;
+    background:transparent;
+}
+
+.scoped-timetable .bus-card {
+    display:grid;
+    grid-template-columns:1fr;
+    gap:0;
+    min-height:0;
+    margin:0;
+    padding:22px 28px 14px;
+    background:var(--panel);
+    border:1px solid #e3dfd8;
+    border-radius:0;
+    box-shadow:none;
+}
+
+.scoped-timetable .bus-card + .bus-card {
+    border-top:0;
+}
+
+.scoped-timetable .bus-header {
+    display:grid;
+    grid-template-columns:180px minmax(0, 1fr) 260px;
+    align-items:center;
+    gap:28px;
+}
+
+.scoped-timetable .operator {
+    font-size:12px;
+    letter-spacing:.06em;
+}
+
+.scoped-timetable .bus-number {
+    font-family:var(--font-display);
+    font-size:30px;
+    line-height:1;
+}
+
+.scoped-timetable .route-time {
+    display:grid;
+    grid-template-columns:1fr 90px 1fr;
+    align-items:center;
+    width:100%;
+    gap:18px;
+}
+
+.scoped-timetable .route-time h2 {
+    font-family:var(--font-display);
+    font-size:32px;
+    line-height:1;
+}
+
+.scoped-timetable .route-time small {
+    display:block;
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.scoped-timetable .duration {
+    background:none;
+    padding:0;
+    border-radius:0;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:400;
+    white-space:nowrap;
+}
+
+.scoped-timetable .fare-area {
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:2px 16px;
+}
+
+.scoped-timetable .fare {
+    grid-column:1;
+    grid-row:1;
+    font-family:var(--font-display);
+    font-size:34px;
+    line-height:1;
+    color:var(--accent);
+    text-align:right;
+}
+
+.scoped-timetable .fare-area > small {
+    grid-column:1;
+    grid-row:2;
+    color:var(--muted);
+    font-size:11px;
+    text-align:right;
+}
+
+.scoped-timetable .select-btn {
+    grid-column:2;
+    grid-row:1 / span 2;
+    margin:0;
+    padding:14px 20px;
+    border-radius:0;
+    font-family:var(--font-display);
+    font-size:15px;
+    white-space:nowrap;
+}
+
+.scoped-timetable .bus-footer {
+    grid-column:1 / -1;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+    padding-top:10px;
+}
+
+.scoped-timetable .amenities span {
+    padding:4px 9px;
+    margin-right:4px;
+    font-size:11px;
+}
+
+.scoped-timetable .seats {
+    color:var(--muted);
+    font-size:12px;
+}
+
+@media (max-width:800px) {
+    .scoped-timetable {
+        width:calc(100% - 32px);
+        padding-top:24px;
+    }
+
+    .scoped-timetable .bus-header {
+        grid-template-columns:150px minmax(0, 1fr);
+    }
+
+    .scoped-timetable .fare-area {
+        grid-column:1 / -1;
+        justify-self:end;
+    }
 }
