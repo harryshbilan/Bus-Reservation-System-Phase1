@@ -1,5 +1,5 @@
 </main>
-
+<?php if (basename($_SERVER['PHP_SELF']) == 'index.php'): ?>
 <section class="cta">
    <h2>
         READY TO HIT THE ROAD?
@@ -13,7 +13,7 @@
     </a>
 
 </section>
-
+<?php endif; ?>
 <footer class="footer">
 <div class="footer-grid">
 
