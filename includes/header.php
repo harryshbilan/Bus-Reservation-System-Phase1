@@ -50,6 +50,26 @@ SUPPORT
 
 </nav>
 
+<div class="mobile-menu" id="mobileMenu">
+
+<a href="index.php">
+HOME
+</a>
+
+<a href="#journey-details">
+BOOK NOW
+</a>
+
+<a href="#destinations">
+DESTINATIONS
+</a>
+
+<a href="#support">
+SUPPORT
+</a>
+
+</div>
+
 </div>
 
 </header>

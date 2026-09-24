@@ -120,3 +120,11 @@ function openCancelModal() {
 function closeCancelModal() {
   document.getElementById('cancel-modal').classList.remove('open');
 }
+
+function toggleMenu(){
+
+const menu = document.getElementById("mobileMenu");
+
+menu.classList.toggle("show");
+
+}
