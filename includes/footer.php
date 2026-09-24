@@ -8,7 +8,7 @@
         Book your next bus trip in minutes. Fast, easy, and secure.
     </p>
 
-    <a href="index.php" class="cta-btn">
+    <a href="index.php#journey-details" class="cta-btn">
         BOOK NOW →
     </a>
 
@@ -68,6 +68,7 @@
 
 </footer>
 
+<script src="../assets/js/app.js"></script>
 
 </body>
 </html>

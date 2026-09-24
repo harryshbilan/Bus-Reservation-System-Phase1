@@ -1,6 +1,32 @@
 // BUSWAY — small progressive-enhancement helpers (each page works without JS too,
 // aside from live seat/counter feedback, which requires it by nature).
 
+function centerJourneyDetails() {
+  const journeyDetails = document.getElementById('journey-details');
+  if (journeyDetails) {
+    journeyDetails.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('a[href$="#journey-details"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const targetUrl = new URL(link.href, window.location.href);
+      const isCurrentPage = targetUrl.pathname === window.location.pathname;
+
+      if (isCurrentPage) {
+        event.preventDefault();
+        window.history.replaceState(null, '', '#journey-details');
+        centerJourneyDetails();
+      }
+    });
+  });
+
+  if (window.location.hash === '#journey-details') {
+    window.requestAnimationFrame(centerJourneyDetails);
+  }
+});
+
 function adjustPassengers(delta, min, max) {
   const input = document.getElementById('passengers');
   const val = Math.max(min, Math.min(max, parseInt(input.value, 10) + delta));

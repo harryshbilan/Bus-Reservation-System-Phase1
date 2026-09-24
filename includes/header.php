@@ -28,10 +28,10 @@ if (!defined('BUSWAY_APP')) {
 
 <div class="header-container">
 
-<div class="brand">
-    <span class="brand-icon">🚌</span>
-    <span>BUSWAY</span>
-</div>
+<a href="index.php" class="brand">
+    <img src="../assets/images/logo.jpg" alt="BUSWAY logo">
+    <span class="brand-name">BUSWAY</span>
+</a>
 
 
 <nav>
