@@ -26,7 +26,7 @@ $destination = $booking['destination'] ?? '';
 $travelDate = $booking['travel_date'] ?? '';
 $passengers = $booking['passengers'] ?? 1;
 
-$pageTitle = 'Search';
+$pageTitle = 'Home';
 $activeStep = null;
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -58,7 +58,7 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
   </div>
 <?php endif; ?>
 
-<div class="card">
+<div class="card" id="journey-details">
   <div class="card-title">JOURNEY DETAILS</div>
   <form method="post" action="index.php">
     <div class="grid-2 mb-6">
@@ -202,8 +202,12 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
 
         <div class="main-promo">
 
-            <div class="promo-code">
-                🎟 PROMO CODE: We_Love_NEU
+            <div class="promo-topline">
+                <img class="promo-logo" src="../assets/images/logo.jpg" alt="BUSWAY logo">
+
+                <div class="promo-code">
+                    🎟 PROMO CODE: We_Love_NEU
+                </div>
             </div>
 
             <h3>
@@ -216,9 +220,9 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 Use code We_Love_NEU at checkout.
             </p>
 
-            <button class="btn-primary">
+            <a class="btn-primary" href="#journey-details">
                 BOOK NOW →
-            </button>
+            </a>
 
         </div>
 
@@ -386,7 +390,9 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </p>
 
             <a>
-                VIEW SCHEDULES →
+                <a href="#journey-details">
+                    VIEW SCHEDULES →
+                </a>
             </a>
 
         </div>
@@ -406,7 +412,10 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </p>
 
             <a>
-                VIEW SCHEDULES →
+                <a href="#journey-details">
+                    VIEW SCHEDULES →
+                </a>
+  
             </a>
 
         </div>
@@ -426,8 +435,9 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
             </p>
 
             <a>
-                VIEW SCHEDULES →
-            </a>
+                <a href="#journey-details">
+                    VIEW SCHEDULES →
+                </a>
 
         </div>
 
@@ -443,9 +453,11 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 4 buses available • Cubao → Cabanatuan
             </p>
 
-            <a>
-                VIEW SCHEDULES →
-            </a>
+           
+                <a href="#journey-details">
+                    VIEW SCHEDULES →
+                </a>
+          
 
         </div>
 
@@ -463,10 +475,9 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 Manila → Cebu
             </p>
 
-            <a>
+            <a href="#journey-details">
                 VIEW SCHEDULES →
             </a>
-
         </div>
 
         <div class="bus-card purple">
@@ -483,10 +494,9 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
                 Cubao → Laoag
             </p>
 
-            <a>
+            <a href="#journey-details">
                 VIEW SCHEDULES →
             </a>
-
         </div>
 
 
