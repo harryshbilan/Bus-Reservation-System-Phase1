@@ -1,18 +1,14 @@
 </main>
-<?php if (basename($_SERVER['PHP_SELF']) == 'index.php'): ?>
-<section class="cta">
-   <h2>
-        READY TO HIT THE ROAD?
-    </h2>
-    <p>
-        Book your next bus trip in minutes. Fast, easy, and secure.
-    </p>
+<?php if ($pageTitle === 'Home'): ?>
 
-    <a href="index.php#journey-details" class="cta-btn">
+<section class="cta-section">
+    <h2>READY TO HIT THE ROAD?</h2>
+    <p>Book your next bus trip in minutes. Fast, easy, and secure.</p>
+    <a href="index.php" class="cta-btn">
         BOOK NOW →
     </a>
-
 </section>
+
 <?php endif; ?>
 <footer class="footer">
 <div class="footer-grid">

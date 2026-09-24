@@ -26,7 +26,7 @@ $destination = $booking['destination'] ?? '';
 $travelDate = $booking['travel_date'] ?? '';
 $passengers = $booking['passengers'] ?? 1;
 
-$pageTitle = 'Search';
+$pageTitle = 'Home';
 $activeStep = null;
 require __DIR__ . '/../includes/header.php';
 ?>

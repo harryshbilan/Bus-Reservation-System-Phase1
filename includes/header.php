@@ -23,7 +23,6 @@ if (!defined('BUSWAY_APP')) {
 
 <body>
 
-
 <header class="main-header">
 
 <div class="header-container">
@@ -32,7 +31,6 @@ if (!defined('BUSWAY_APP')) {
     <img src="../assets/images/logo.jpg" alt="BUSWAY logo">
     <span class="brand-name">BUSWAY</span>
 </a>
-
 
 <nav>
 
@@ -63,15 +61,46 @@ BOOK NOW
 <a href="#destinations">
 DESTINATIONS
 </a>
-
 <a href="#support">
 SUPPORT
 </a>
-
 </div>
-
 </div>
-
 </header>
+
+<?php if(isset($activeStep)): ?>
+<div class="booking-progress">
+
+<?php
+$steps = [
+    'routes' => 'AVAILABLE BUSES',
+    'bus' => 'BUS SELECTION',
+    'seat' => 'SEAT SELECTION',
+    'passenger' => 'PASSENGER INFO',
+    'fare' => 'FARE SUMMARY',
+    'payment' => 'PAYMENT',
+    'ticket' => 'TICKET',
+    'cancel' => 'CANCEL',
+    'cancelled' => 'CANCELLED'
+];
+
+$count = 1;
+
+foreach($steps as $key => $label):
+?>
+
+<div class="progress-step <?= $activeStep == $key ? 'active' : '' ?>">
+    <span><?= $count ?></span>
+    <?= $label ?>
+</div>
+
+<?php
+$count++;
+endforeach;
+?>
+
+</div>
+<?php endif; ?>
+
 
 <main class="page-container">
