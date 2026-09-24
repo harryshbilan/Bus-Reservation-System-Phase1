@@ -36,10 +36,15 @@ if (!defined('BUSWAY_APP')) {
 
 <nav>
 
-<a href="#">CANCEL RESERVATION</a>
-<a href="#">SUPPORT</a>
+<a href="index.php" onclick="sessionStorage.clear();">
+CANCEL RESERVATION
+</a>
 
-<button class="menu-btn">
+<a href="#support">
+SUPPORT
+</a>
+
+<button class="menu-btn" onclick="toggleMenu()">
 ☰
 </button>
 
