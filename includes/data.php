@@ -16,6 +16,7 @@ function get_schedules(): array
    $stmt = $pdo->query("
     SELECT 
         s.schedule_id,
+        b.bus_id,
         b.bus_number,
         b.bus_type,
         b.total_seats,
@@ -40,17 +41,18 @@ $rows = $stmt->fetchAll(PDO::FETCH_NUM);
         $id = $i + 1;
      $schedules[$id] = [
     'schedule_id' => $r[0],
-    'bus_id' => $r[0],
-    'bus_number' => $r[1],
-    'bus_type' => $r[2],
-    'total_seats' => $r[3],
-    'amenities' => $r[4],
-    'origin' => $r[5],
-    'destination' => $r[6],
-    'departure_time' => $r[7],
-    'arrival_time' => $r[8],
-    'fare_per_seat' => $r[9],
-'duration_minutes' => (
+    'bus_id' => $r[1],
+    'bus_number' => $r[2],
+    'bus_type' => $r[3],
+    'total_seats' => $r[4],
+    'amenities' => $r[5],
+    'origin' => $r[6],
+    'destination' => $r[7],
+    'departure_time' => $r[8],
+    'arrival_time' => $r[9],
+    'fare_per_seat' => $r[10],
+    'boarding_point' => $r[11],
+    'duration_minutes' => (
     strtotime($r[8]) >= strtotime($r[7])
     ? (strtotime($r[8]) - strtotime($r[7])) / 60
     : ((strtotime($r[8]) + 86400) - strtotime($r[7])) / 60
