@@ -83,7 +83,7 @@ $notEnough = $bus['available_seats'] < $passengers;
         <div class="route-time">
 
             <div>
-                <h2><?= h($bus['departure_time']) ?></h2>
+                <?= date("h:i A", strtotime($bus['departure_time'])) ?>
                 <small><?= h($bus['origin']) ?></small>
             </div>
 
@@ -93,7 +93,7 @@ $notEnough = $bus['available_seats'] < $passengers;
             </div>
 
             <div>
-                <h2><?= h($bus['arrival_time']) ?></h2>
+                <?= date("h:i A", strtotime($bus['arrival_time'])) ?>
                 <small><?= h($bus['destination']) ?></small>
             </div>
 
