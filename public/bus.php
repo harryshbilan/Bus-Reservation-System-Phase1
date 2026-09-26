@@ -75,8 +75,15 @@ require __DIR__ . '/../includes/header.php';
   </div>
 
   <div class="btn-row">
-    <a class="btn-ghost" href="routes.php">&larr; BACK</a>
-  </div>
+
+    <a class="btn-ghost" href="routes.php">
+        &larr; BACK
+    </a>
+
+    <a class="btn-primary" href="seat.php">
+        CONTINUE TO SEAT SELECTION →
+    </a>
+
 </div>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
