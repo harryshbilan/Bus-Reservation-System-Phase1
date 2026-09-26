@@ -34,7 +34,7 @@ if (!defined('BUSWAY_APP')) {
 
 <nav>
 
-<a href="index.php" onclick="sessionStorage.clear();">
+<a href="cancellation.php" onclick="sessionStorage.clear();">
 CANCEL RESERVATION
 </a>
 
