@@ -52,113 +52,140 @@ $ticket = $stmt->fetch();
 $pageTitle = 'Ticket';
 $activeStep = 'ticket';
 
+require __DIR__ . '/../includes/header.php';
 ?>
-<div class="container">
+<div class="ticket-container">
 
-    <h1 class="mb-4">Booking Confirmed!</h1>
+    <div class="ticket-card">
+
+        <!-- HEADER -->
+        <div class="ticket-header">
+            <h1>Booking Confirmed!</h1>
+            <p>Your reservation has been successfully completed.</p>
+
+            <div class="ticket-status">
+                <?= h($ticket['status'] ?? 'PAID') ?>
+            </div>
+        </div>
 
 
-    <div class="card mb-4">
+        <!-- TICKET INFORMATION -->
+        <div class="ticket-section">
 
-        <h3>Ticket Information</h3>
+            <h3>Ticket Information</h3>
 
-        <p>
-            <strong>Ticket Number:</strong>
-            <?= h($ticket['ticket_number'] ?? 'N/A') ?>
-        </p>
+            <p>
+                <strong>Ticket Number:</strong>
+                <?= h($ticket['ticket_number'] ?? 'N/A') ?>
+            </p>
+
+        </div>
 
 
-        <p>
-            <strong>Status:</strong>
-            <?= h($ticket['status'] ?? 'PAID') ?>
-        </p>
+
+        <!-- PASSENGER -->
+        <div class="ticket-section">
+
+            <h3>Passenger Details</h3>
+
+            <p>
+                <strong>Name:</strong>
+                <?= h($passenger['name']) ?>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <?= h($passenger['email']) ?>
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                <?= h($passenger['phone']) ?>
+            </p>
+
+        </div>
+
+
+
+        <!-- TRIP -->
+        <div class="ticket-section">
+
+            <h3>Trip Details</h3>
+
+            <p>
+                <strong>Bus:</strong>
+                <?= h($bus['bus_name'] ?? 'BUSWAY') ?>
+            </p>
+
+
+            <p>
+                <strong>Route:</strong>
+
+                <?= h($bus['origin']) ?>
+
+                →
+
+                <?= h($bus['destination']) ?>
+
+            </p>
+
+
+            <p>
+                <strong>Seats:</strong>
+
+                <?php foreach($selectedSeats as $seat): ?>
+
+                    <?= h($seat) ?>
+
+                <?php endforeach; ?>
+
+            </p>
+
+
+        </div>
+
+
+
+        <!-- PAYMENT -->
+        <div class="ticket-section">
+
+            <h3>Payment Details</h3>
+
+
+            <p>
+                <strong>Payment Method:</strong>
+
+                <?= h($ticket['payment_method'] ?? 'N/A') ?>
+
+            </p>
+
+
+            <p>
+                <strong>Total Amount:</strong>
+
+                <?= peso($ticket['amount'] ?? 0) ?>
+
+            </p>
+
+
+        </div>
+
+
+        <!-- BUTTONS -->
+        <div class="ticket-actions">
+
+            <button onclick="window.print()">
+                Print Ticket
+            </button>
+
+
+            <a href="index.php">
+                Book Another Trip
+            </a>
+
+        </div>
+
 
     </div>
-
-
-    <div class="card mb-4">
-
-        <h3>Passenger Details</h3>
-
-        <p>
-            <strong>Name:</strong>
-            <?= h($passenger['name']) ?>
-        </p>
-
-
-        <p>
-            <strong>Email:</strong>
-            <?= h($passenger['email']) ?>
-        </p>
-
-
-        <p>
-            <strong>Phone:</strong>
-            <?= h($passenger['phone']) ?>
-        </p>
-
-    </div>
-
-
-
-    <div class="card mb-4">
-
-        <h3>Trip Details</h3>
-
-        <p>
-            <strong>Bus:</strong>
-            <?= h($bus['bus_name'] ?? 'BUSWAY') ?>
-        </p>
-
-
-        <p>
-            <strong>Route:</strong>
-            <?= h($bus['origin']) ?>
-            →
-            <?= h($bus['destination']) ?>
-        </p>
-
-
-        <p>
-            <strong>Seats:</strong>
-
-            <?php foreach($selectedSeats as $seat): ?>
-
-                <?= h($seat) ?>
-
-            <?php endforeach; ?>
-
-        </p>
-
-    </div>
-
-
-
-    <div class="card mb-4">
-
-        <h3>Payment Details</h3>
-
-
-        <p>
-            <strong>Payment Method:</strong>
-            <?= h($ticket['payment_method'] ?? 'N/A') ?>
-        </p>
-
-
-        <p>
-            <strong>Total Amount:</strong>
-            <?= peso($ticket['amount'] ?? 0) ?>
-        </p>
-
-
-    </div>
-
 
 </div>
-
-
-<?php require __DIR__ . '/../includes/footer.php'; ?>
-
-require __DIR__ . '/../includes/header.php';
-
-?>

@@ -17,7 +17,7 @@ if (!defined('BUSWAY_APP')) {
 <?= h($pageTitle ?? 'BUSWAY') ?>
 </title>
 
-<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="/Bus-Reservation-System-Phase1/assets/css/style.css">
 
 </head>
 
@@ -28,7 +28,7 @@ if (!defined('BUSWAY_APP')) {
 <div class="header-container">
 
 <a href="index.php" class="brand">
-    <img src="../assets/images/logo.jpg" alt="BUSWAY logo">
+    <img src="/Bus-Reservation-System-Phase1/assets/images/logo.jpg">
     <span class="brand-name">BUSWAY</span>
 </a>
 
