@@ -41,9 +41,89 @@ $fare = fare_breakdown(
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $_SESSION['booking']['payment_method'] = $_POST['payment_method'];
 
-    $_SESSION['booking']['payment_status'] = 'PAID';
+    $paymentMethod = $_POST['payment_method'];
+
+
+    // 1. Insert passenger
+
+    $stmt = $pdo->prepare("
+        INSERT INTO passengers
+        (name, email, phone)
+        VALUES (?, ?, ?)
+    ");
+
+    $stmt->execute([
+        $passenger['name'],
+        $passenger['email'],
+        $passenger['phone']
+    ]);
+
+    $passengerId = $pdo->lastInsertId();
+    
+    $_SESSION['booking']['passenger']['id'] = $passengerId;
+
+
+    // 2. Generate ticket number
+
+    $ticketNumber = 'BW-' . strtoupper(uniqid());
+
+
+
+    // 3. Insert reservation
+
+    foreach($selectedSeats as $seat){
+
+
+        $stmt = $pdo->prepare("
+            INSERT INTO reservations
+            (
+                ticket_number,
+                passenger_id,
+                schedule_id,
+                seat_number,
+                status
+            )
+            VALUES (?, ?, ?, ?, ?)
+        ");
+
+
+        $stmt->execute([
+            $ticketNumber,
+            $passengerId,
+            $scheduleId,
+            $seat,
+            'PAID'
+        ]);
+
+        $reservationId = $pdo->lastInsertId();
+
+        // 4. Insert payment
+
+        $stmt = $pdo->prepare("
+            INSERT INTO payments
+            (
+                reservation_id,
+                amount,
+                payment_method,
+                status
+            )
+            VALUES (?, ?, ?, ?)
+        ");
+
+
+        $stmt->execute([
+            $reservationId,
+            $total,
+            $paymentMethod,
+            'PAID'
+        ]);
+
+    }
+
+
+
+    $_SESSION['booking']['ticket_number'] = $ticketNumber;
 
 
     redirect('ticket.php');
