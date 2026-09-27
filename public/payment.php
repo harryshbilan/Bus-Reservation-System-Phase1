@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
 
     $passengerId = $pdo->lastInsertId();
-    
+
     $_SESSION['booking']['passenger']['id'] = $passengerId;
 
 
@@ -71,6 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     // 3. Insert reservation
+
+    $reservationIds = [];
 
     foreach($selectedSeats as $seat){
 
@@ -98,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $reservationId = $pdo->lastInsertId();
 
+        $reservationIds[] = $reservationId;
+
         // 4. Insert payment
 
         $stmt = $pdo->prepare("
@@ -123,7 +127,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-    $_SESSION['booking']['ticket_number'] = $ticketNumber;
+        $_SESSION['booking']['ticket_number'] = $ticketNumber;
+
+        $_SESSION['booking']['reservation_ids'] = $reservationIds;
 
 
     redirect('ticket.php');

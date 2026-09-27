@@ -6,9 +6,9 @@ require __DIR__ . '/../includes/bootstrap.php';
 require_booking_keys(['travel_date', 'schedule_id'], 'index.php');
 
 
-$scheduleId = (int) $_SESSION['booking']['schedule_id'];
+    $scheduleId = (int) $_SESSION['booking']['schedule_id'];
 
-$bus = get_schedule($scheduleId);
+    $bus = get_schedule($scheduleId);
 
 if (!$bus) {
     redirect('routes.php');
@@ -63,60 +63,59 @@ require __DIR__ . '/../includes/header.php';
 ?>
 
 
-<div class="max-w-2xl">
+    <div class="max-w-2xl">
 
 
-<div class="section-head">
+    <div class="section-head">
 
-<div class="eyebrow">
-SEAT SELECTION
+        <div class="eyebrow">
+            SEAT SELECTION
+    </div>
+
+
+    <h2 class="section-title">
+        BUS <?= h($bus['bus_number']) ?>
+    </h2>
+
+
 </div>
 
 
-<h2 class="section-title">
-BUS <?= h($bus['bus_number']) ?>
-</h2>
+
+    <div class="card mb-6">
 
 
-</div>
+            <h3>
+        Select your seats
+            </h3>
 
 
+    <div style="text-align:center;margin:30px 0;">
 
-<div class="card mb-6">
-
-
-<h3>
-Select your seats
-</h3>
-
-
-<div style="text-align:center;margin:30px 0;">
-
-<div style="margin-bottom:20px;">
-DRIVER
-</div>
+            <div style="margin-bottom:20px;">
+                    DRIVER
+            </div>
 
 <?php foreach($layout as $row): ?>
 
-<div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;">
 
-<?php foreach($row as $seat): ?>
+        <?php foreach($row as $seat): ?>
 
-<?php 
-if($seat):
-?>
+    <?php 
+        if($seat):
+     ?>
 
 <button 
-type="button"
-class="seat-btn <?= $seat['booked'] ? 'booked':'' ?>"
-data-seat="<?= $seat['id'] ?>"
+    type="button"
+    class="seat-btn <?= $seat['booked'] ? 'booked':'' ?>"
+    data-seat="<?= $seat['label'] ?>"
 >
 <?= h($seat['label']) ?>
 </button>
-
-<?php
+    <?php
 else:
-?>
+    ?>
 
 <div></div>
 
@@ -126,10 +125,10 @@ else:
 </div>
 
 
-<?php endforeach; ?>
+    <?php endforeach; ?>
 
 
-</div>
+    </div>
 
 
 </div>
@@ -144,11 +143,7 @@ else:
 
 <form method="POST">
 
-<input 
-type="hidden" 
-name="selected_seats[]" 
-id="selectedSeats"
->
+<div id="selectedSeatsContainer"></div>
 
 <button type="submit" name="continue" class="btn-primary">
     CONTINUE →
@@ -163,43 +158,64 @@ let selectedSeats = [];
 
 document.querySelectorAll('.seat-btn').forEach(button => {
 
-button.addEventListener('click',()=>{
+    button.addEventListener('click', function(){
 
-if(button.classList.contains('booked')){
-    return;
-}
-
-
-let seat = button.dataset.seat;
+        if(this.classList.contains('booked')){
+            return;
+        }
 
 
-if(button.classList.contains('selected')){
-
-button.classList.remove('selected');
-
-selectedSeats = selectedSeats.filter(
-id => id != seat
-);
+        let seat = this.dataset.seat;
 
 
-}else{
+        if(this.classList.contains('selected')){
 
-if(selectedSeats.length >= <?= $passengers ?>){
-    alert("You can only select <?= $passengers ?> seat(s)");
-    return;
-}
+            this.classList.remove('selected');
 
-selectedSeats.push(seat);
+            selectedSeats = selectedSeats.filter(
+                item => item !== seat
+            );
 
-button.classList.add('selected');
-
-}
+        } else {
 
 
-document.getElementById('selectedSeats').value = selectedSeats;
+            if(selectedSeats.length >= <?= $passengers ?>){
+
+                alert("You can only select <?= $passengers ?> seat(s)");
+                return;
+
+            }
 
 
-});
+            selectedSeats.push(seat);
+
+            this.classList.add('selected');
+
+        }
+
+
+        let container = document.getElementById('selectedSeatsContainer');
+
+        container.innerHTML = "";
+
+
+        selectedSeats.forEach(seat => {
+
+            let input = document.createElement("input");
+
+            input.type = "hidden";
+            input.name = "selected_seats[]";
+            input.value = seat;
+
+            container.appendChild(input);
+
+        });
+
+
+        console.log(selectedSeats);
+
+
+    });
 
 
 });
