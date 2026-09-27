@@ -28,18 +28,30 @@ $passenger = $_SESSION['booking']['passenger'];
 $stmt = $pdo->prepare("
     SELECT 
         r.ticket_number,
-        r.seat_number,
+        GROUP_CONCAT(r.seat_number SEPARATOR ', ') AS seats,
         r.status,
+        b.bus_number,
+        s.travel_date,
+        s.departure_time,
         p.payment_method,
         p.amount
     FROM reservations r
+
     JOIN payments p 
         ON r.reservation_id = p.reservation_id
+
+    JOIN schedules s
+        ON r.schedule_id = s.schedule_id
+
+    JOIN buses b
+        ON s.bus_id = b.bus_id
+
     WHERE r.passenger_id = ?
+
+    GROUP BY r.ticket_number
     ORDER BY r.reservation_id DESC
     LIMIT 1
 ");
-
 
 $stmt->execute([
     $passenger['id'] ?? 0
@@ -129,15 +141,20 @@ require __DIR__ . '/../includes/header.php';
 
             </p>
 
+            <p>
+                <strong>Date:</strong>
+        <?= h($ticket['travel_date'] ?? 'N/A') ?>
+        </p>
+
+<p>
+<strong>Departure:</strong>
+<?= h($ticket['departure_time'] ?? 'N/A') ?>
+</p>
 
             <p>
                 <strong>Seats:</strong>
 
-                <?php foreach($selectedSeats as $seat): ?>
-
-                    <?= h($seat) ?>
-
-                <?php endforeach; ?>
+                <?= h($ticket['seats'] ?? 'N/A') ?>
 
             </p>
 
