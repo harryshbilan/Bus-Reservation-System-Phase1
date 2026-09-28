@@ -1844,3 +1844,33 @@ transform:translateY(0);
     cursor:pointer;
 
 }
+@media print {
+
+    body {
+        background: white;
+    }
+
+
+    header,
+    footer,
+    .booking-progress,
+    .btn-row,
+    button {
+        display: none !important;
+    }
+
+
+    .ticket-container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+
+    .ticket-card {
+        border: none;
+        box-shadow: none;
+    }
+
+
+}

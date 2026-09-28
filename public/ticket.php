@@ -191,7 +191,7 @@ require __DIR__ . '/../includes/header.php';
         <!-- BUTTONS -->
         <div class="ticket-actions">
 
-            <button onclick="window.print()">
+            <button onclick="window.print()" class="btn-primary">
                 Print Ticket
             </button>
 
