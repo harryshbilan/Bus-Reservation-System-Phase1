@@ -2,7 +2,7 @@
 
 define('BUSWAY_APP', true);
 
-require __DIR__ . '/../includes/bootstrap.php';
+    require __DIR__ . '/../includes/bootstrap.php';
 
 
 require_booking_keys(
@@ -11,12 +11,12 @@ require_booking_keys(
 );
 
 
-$scheduleId = (int) $_SESSION['booking']['schedule_id'];
+    $scheduleId = (int) $_SESSION['booking']['schedule_id'];
 
-$bus = get_schedule($scheduleId);
+    $bus = get_schedule($scheduleId);
 
 
-if(!$bus){
+        if(!$bus){
     redirect('routes.php');
 }
 

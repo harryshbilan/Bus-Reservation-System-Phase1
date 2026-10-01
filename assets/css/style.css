@@ -1118,18 +1118,17 @@ box-shadow:0 10px 25px rgba(245,160,0,.4);
 }
 
 .bus-header{
-display:grid;
-grid-template-columns:180px 1fr 180px;
-align-items:center;
-gap:30px;
+    display:grid;
+    grid-template-columns:170px 1fr 220px;
+    align-items:center;
+    gap:40px;
 }
 
-.route-time {
-    display: grid;
-    grid-template-columns: 220px 120px 220px;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
+.route-time{
+    display:grid;
+    grid-template-columns:180px 90px 180px;
+    align-items:center;
+    gap:25px;
 }
 
 .route-time small{
@@ -1874,3 +1873,4 @@ transform:translateY(0);
 
 
 }
+

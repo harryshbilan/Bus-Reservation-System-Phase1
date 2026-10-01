@@ -23,10 +23,10 @@ if (!$bus) {
 }
 
 
-$selectedSeats = $_SESSION['booking']['selected_seats'];
+    $selectedSeats = $_SESSION['booking']['selected_seats'];
 
 
-$passenger = $_SESSION['booking']['passenger'] ?? [];
+    $passenger = $_SESSION['booking']['passenger'] ?? [];
 
 
 $seatCount = count($selectedSeats);

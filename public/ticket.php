@@ -94,7 +94,6 @@ require __DIR__ . '/../includes/header.php';
         </div>
 
 
-
         <!-- PASSENGER -->
         <div class="ticket-section">
 
@@ -146,10 +145,10 @@ require __DIR__ . '/../includes/header.php';
         <?= h($ticket['travel_date'] ?? 'N/A') ?>
         </p>
 
-<p>
-<strong>Departure:</strong>
-<?= h($ticket['departure_time'] ?? 'N/A') ?>
-</p>
+    <p>
+        <strong>Departure:</strong>
+        <?= h($ticket['departure_time'] ?? 'N/A') ?>
+    </p>
 
             <p>
                 <strong>Seats:</strong>
