@@ -34,7 +34,10 @@ $stmt = $pdo->prepare("
         s.travel_date,
         s.departure_time,
         p.payment_method,
-        p.amount
+        SUM(p.amount) AS amount,
+        pax.name AS passenger_name,
+        pax.email AS passenger_email,
+        pax.phone AS passenger_phone
     FROM reservations r
 
     JOIN payments p 
@@ -46,15 +49,27 @@ $stmt = $pdo->prepare("
     JOIN buses b
         ON s.bus_id = b.bus_id
 
-    WHERE r.passenger_id = ?
+    JOIN passengers pax
+    ON r.passenger_id = pax.passenger_id
 
-    GROUP BY r.ticket_number
+    WHERE r.ticket_number = ?
+
+    GROUP BY 
+    r.ticket_number,
+    r.status,
+    b.bus_number,
+    s.travel_date,
+    s.departure_time,
+    p.payment_method,
+    pax.name,
+    pax.email,
+    pax.phone
     ORDER BY r.reservation_id DESC
     LIMIT 1
 ");
 
 $stmt->execute([
-    $passenger['id'] ?? 0
+    $_SESSION['booking']['ticket_number']
 ]);
 
 
@@ -101,17 +116,17 @@ require __DIR__ . '/../includes/header.php';
 
             <p>
                 <strong>Name:</strong>
-                <?= h($passenger['name']) ?>
+                <?= h($ticket['passenger_name'] ?? 'N/A') ?>
             </p>
 
             <p>
                 <strong>Email:</strong>
-                <?= h($passenger['email']) ?>
+                <?= h($ticket['passenger_email'] ?? 'N/A') ?>
             </p>
 
             <p>
                 <strong>Phone:</strong>
-                <?= h($passenger['phone']) ?>
+                <?= h($ticket['passenger_phone'] ?? 'N/A') ?>
             </p>
 
         </div>
