@@ -279,7 +279,7 @@ require __DIR__ . '/../includes/header.php';
               </div>
 
               <div class="tdv">
-                <?= h($reservation['passenger']['name'] ?? '') ?>
+                <?= h($reservation['name']) ?>
               </div>
             </div>
 
