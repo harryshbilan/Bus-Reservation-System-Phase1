@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        $reservation = find_reservation_by_ticket($ticketNumber, $email);
+        $reservation = find_database_reservation($ticketNumber, $email);
 
         if (!$reservation) {
 
@@ -44,33 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     (float) ($reservation['total_fare'] ?? 0)
                 );
 
-                // Release reserved seats.
-                $seatIds = array_map(
-                    'intval',
-                    $reservation['seat_ids'] ?? []
-                );
 
-                if (
-                    $seatIds &&
-                    isset($reservation['bus_id'], $reservation['travel_date'])
-                ) {
-
-                    release_seats(
-                        (int) $reservation['bus_id'],
-                        (string) $reservation['travel_date'],
-                        $seatIds
-                    );
-                }
 
                 // Update reservation.
-                update_reservation(
-                    (int) $reservation['reservation_id'],
-                    [
-                        'status' => 'CANCELLED',
-                        'cancellation_fee' => $fee,
-                        'refund_amount' => $refund,
-                        'cancelled_at' => date('c'),
-                    ]
+                cancel_database_reservation(
+                (int)$reservation['reservation_id']
                 );
 
                 // Update local reservation data.
