@@ -47,11 +47,44 @@ $availableSeats = available_seat_count(
 $selectedSeats = $_SESSION['booking']['selected_seats'] ?? [];
 
 
+// Get already reserved seats
+$stmt = $pdo->prepare("
+    SELECT seat_number
+    FROM reservations
+    WHERE schedule_id = ?
+    AND status = 'PAID'
+");
+
+$stmt->execute([$scheduleId]);
+
+$bookedSeats = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+
+
 $layout = seat_layout(
     (int)$bus['bus_id'],
     (int)$bus['total_seats'],
     $travelDate
 );
+
+
+// Mark seats as booked
+foreach ($layout as &$row) {
+
+    foreach ($row as &$seat) {
+
+        if ($seat) {
+
+            $seat['booked'] = in_array(
+                $seat['label'],
+                $bookedSeats
+            );
+
+        }
+
+    }
+
+}
 
 
 $pageTitle = 'Seat Selection';
@@ -106,10 +139,11 @@ require __DIR__ . '/../includes/header.php';
         if($seat):
      ?>
 
-<button 
-    type="button"
-    class="seat-btn <?= $seat['booked'] ? 'booked':'' ?>"
-    data-seat="<?= $seat['label'] ?>"
+<button
+type="button"
+class="seat-btn <?= $seat['booked'] ? 'booked':'' ?>"
+data-seat="<?= $seat['label'] ?>"
+<?= $seat['booked'] ? 'disabled' : '' ?>
 >
 <?= h($seat['label']) ?>
 </button>

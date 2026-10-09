@@ -191,8 +191,6 @@ Seats:
 </div>
 
 
-
-
 <div class="card mb-6">
 
 
