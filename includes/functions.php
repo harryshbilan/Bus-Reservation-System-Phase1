@@ -87,7 +87,7 @@ function booked_seat_ids(int $busId, string $travelDate): array
     $stmt = $pdo->prepare("
         SELECT r.seat_number
         FROM reservations r
-        JOIN schedules s 
+        JOIN schedules s
             ON r.schedule_id = s.schedule_id
         WHERE s.bus_id = ?
         AND s.travel_date = ?
@@ -99,29 +99,10 @@ function booked_seat_ids(int $busId, string $travelDate): array
         $travelDate
     ]);
 
-    $bookedLabels = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    $bookedIds = [];
-
-    foreach ($bookedLabels as $label) {
-
-        $row = intval($label);
-
-        $letter = strtoupper(substr($label, -1));
-
-        $col = [
-            'A'=>0,
-            'B'=>1,
-            'C'=>2,
-            'D'=>3
-        ];
-
-        $seatId = (($row - 1) * 4) + $col[$letter] + 1;
-
-        $bookedIds[] = $seatId;
-    }
-
-    return $bookedIds;
+    return array_map(
+        'intval',
+        $stmt->fetchAll(PDO::FETCH_COLUMN)
+    );
 }
 
 function mark_seats_booked(int $busId, string $travelDate, array $seatIds): void
