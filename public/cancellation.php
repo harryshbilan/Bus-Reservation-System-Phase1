@@ -245,8 +245,9 @@ require __DIR__ . '/../includes/header.php';
     <?php if ($reservation && $action !== 'cancel'): ?>
 
       <?php
-        $totalFare = (float) ($reservation['total_fare'] ?? 0);
-        [$fee, $refund] = cancellation_breakdown($totalFare);
+        $totalFare = (float)$reservation['total_fare'];
+
+        [$fee,$refund] = cancellation_breakdown($totalFare);
       ?>
 
 

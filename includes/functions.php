@@ -247,6 +247,8 @@ function find_database_reservation(string $ticketNumber, string $email): ?array
 
     $stmt = $pdo->prepare("
         SELECT 
+            pay.amount AS total_fare,
+            pay.payment_method,
             r.*,
             p.name,
             p.email,
@@ -269,6 +271,9 @@ function find_database_reservation(string $ticketNumber, string $email): ?array
         JOIN routes rt
             ON s.route_id = rt.route_id
 
+        LEFT JOIN payments pay
+        ON r.reservation_id = pay.reservation_id
+        
         WHERE r.ticket_number = ?
         AND p.email = ?
         LIMIT 1
