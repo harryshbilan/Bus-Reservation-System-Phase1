@@ -84,6 +84,12 @@ $stmt->execute([
 
 $ticket = $stmt->fetch();
 
+// Calculate ticket fare breakdown
+    [$baseFare, $serviceFee, $tax] = fare_breakdown(
+    (float) $bus['fare_per_seat'],
+    count($selectedSeats)
+);
+
 
 $pageTitle = 'Ticket';
 $activeStep = 'ticket';
@@ -187,28 +193,32 @@ require __DIR__ . '/../includes/header.php';
 
 
         <!-- PAYMENT -->
-        <div class="ticket-section">
+    <p>
+        <strong>Payment Method:</strong>
+        <?= h($ticket['payment_method'] ?? 'N/A') ?>
+    </p>
 
-            <h3>Payment Details</h3>
+    <p>
+        <strong>Base Fare:</strong>
+        <?= peso($baseFare) ?>
+    </p>
 
+    <p>
+        <strong>Service Fee (5%):</strong>
+        <?= peso($serviceFee) ?>
+    </p>
 
-            <p>
-                <strong>Payment Method:</strong>
+    <p>
+        <strong>Tax (8%):</strong>
+        <?= peso($tax) ?>
+    </p>
 
-                <?= h($ticket['payment_method'] ?? 'N/A') ?>
+    <hr>
 
-            </p>
-
-
-            <p>
-                <strong>Total Amount:</strong>
-
-                <?= peso($ticket['amount'] ?? 0) ?>
-
-            </p>
-
-
-        </div>
+        <p>
+    <strong>Total Amount:</strong>
+    <?= peso($ticket['amount'] ?? 0) ?>
+    </p>
 
 
         <!-- BUTTONS -->
