@@ -246,8 +246,14 @@ function find_database_reservation(string $ticketNumber, string $email): ?array
     global $pdo;
 
     $stmt = $pdo->prepare("
-        SELECT 
-            pay.amount AS total_fare,
+            SELECT 
+            (
+            SELECT COALESCE(SUM(pay_all.amount), 0)
+            FROM reservations r_all
+            LEFT JOIN payments pay_all
+            ON r_all.reservation_id = pay_all.reservation_id
+            WHERE r_all.ticket_number = r.ticket_number
+            ) AS total_fare,
             pay.payment_method,
             r.*,
             p.name,
@@ -293,19 +299,19 @@ function find_database_reservation(string $ticketNumber, string $email): ?array
     return $reservation;
 }
 
-
-function cancel_database_reservation(int $reservationId): void
+function cancel_database_reservation(string $ticketNumber): void
 {
     global $pdo;
 
     $stmt = $pdo->prepare("
         UPDATE reservations
         SET status = 'CANCELLED'
-        WHERE reservation_id = ?
+        WHERE ticket_number = ?
+        AND status = 'PAID'
     ");
 
     $stmt->execute([
-        $reservationId
+        $ticketNumber
     ]);
 }
 

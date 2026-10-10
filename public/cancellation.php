@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-                // Update reservation.
+                // Cancel all seats under the same ticket number.
                 cancel_database_reservation(
-                (int)$reservation['reservation_id']
+                $reservation['ticket_number']
                 );
 
                 // Update local reservation data.
@@ -118,12 +118,12 @@ require __DIR__ . '/../includes/header.php';
 
         <div class="ticket-detail-grid">
 
-          <div>
-            <div class="tdl">PASSENGER</div>
-            <div class="tdv">
-              <?= h($cancelled['passenger']['name'] ?? '') ?>
-            </div>
-          </div>
+    <div>
+      <div class="tdl">PASSENGER</div>
+      <div class="tdv">
+      <?= h($cancelled['name'] ?? 'N/A') ?>
+     </div>
+ </div>
 
 
           <div>
