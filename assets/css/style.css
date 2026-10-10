@@ -1845,34 +1845,107 @@ transform:translateY(0);
     cursor:pointer;
 
 }
+/* ==========================
+   TICKET PRINT LAYOUT
+========================== */
+
+/* ==========================
+   BUSWAY TICKET PRINT LAYOUT
+========================== */
+
+@page {
+    size: A4 portrait;
+    margin: 12mm;
+}
+
 @media print {
 
-    body {
-        background: white;
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        background: white !important;
+        color: black !important;
     }
 
-
+    /* Hide unnecessary elements */
     header,
     footer,
     .booking-progress,
     .btn-row,
-    button {
+    .ticket-actions {
         display: none !important;
     }
 
+    /* Remove page spacing */
+    main.page-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
 
     .ticket-container {
-        width: 100%;
-        margin: 0;
-        padding: 0;
+        min-height: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
     }
 
-
+    /* Ticket card */
     .ticket-card {
-        border: none;
-        box-shadow: none;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
     }
 
+    /* Ticket heading */
+    .ticket-header {
+        padding-bottom: 10px !important;
+    }
 
+    .ticket-header h1 {
+        font-size: 25px !important;
+        margin: 0 0 6px !important;
+    }
+
+    .ticket-header p {
+        font-size: 12px !important;
+        margin: 0 !important;
+    }
+
+    .ticket-status {
+        margin-top: 7px !important;
+        padding: 4px 12px !important;
+        background: transparent !important;
+        color: black !important;
+        border: 1px solid black;
+    }
+
+    /* Compact ticket sections */
+    .ticket-section {
+        margin-top: 10px !important;
+        padding-bottom: 7px !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .ticket-section h3 {
+        font-size: 14px !important;
+        margin: 0 0 5px !important;
+    }
+
+    .ticket-section p {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        margin: 4px 0 !important;
+    }
 }
 
