@@ -28,7 +28,16 @@ $passenger = $_SESSION['booking']['passenger'];
 $stmt = $pdo->prepare("
     SELECT 
         r.ticket_number,
-        GROUP_CONCAT(r.seat_number SEPARATOR ', ') AS seats,
+        GROUP_CONCAT(
+        r.seat_number
+        ORDER BY
+        CAST(
+            LEFT(r.seat_number, LENGTH(r.seat_number) - 1)
+            AS UNSIGNED
+        ),
+        RIGHT(r.seat_number, 1)
+        SEPARATOR ', '
+        ) AS seats,
         r.status,
         b.bus_number,
         s.travel_date,
@@ -140,7 +149,7 @@ require __DIR__ . '/../includes/header.php';
 
             <p>
                 <strong>Bus:</strong>
-                <?= h($bus['bus_name'] ?? 'BUSWAY') ?>
+                <?= h($ticket['bus_number'] ?? 'N/A') ?>
             </p>
 
 

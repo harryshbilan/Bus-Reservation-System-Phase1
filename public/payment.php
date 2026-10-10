@@ -74,7 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $reservationIds = [];
 
-    foreach($selectedSeats as $seat){
+    $seatCount = count($selectedSeats);
+
+    $amountPerSeat = round($total / $seatCount, 2);
+
+    foreach ($selectedSeats as $index => $seat) {
+
+    $paymentAmount = ($index === $seatCount - 1)
+        ? round($total - ($amountPerSeat * ($seatCount - 1)), 2)
+        : $amountPerSeat;
 
 
         $stmt = $pdo->prepare("
@@ -117,15 +125,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         $stmt->execute([
-            $reservationId,
-            $total,
-            $paymentMethod,
-            'PAID'
+        $reservationId,
+        $paymentAmount,
+        $paymentMethod,
+        'PAID'
         ]);
 
     }
-
-
 
         $_SESSION['booking']['ticket_number'] = $ticketNumber;
 
