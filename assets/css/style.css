@@ -283,7 +283,18 @@ select.input { cursor: pointer; }
 .empty-box { background: var(--panel); border: 1px solid var(--border); padding: 40px 28px; text-align: center; margin-bottom: 16px; }
 .empty-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
 .empty-hint { font-size: 13px; color: var(--dim); }
-.link-back { margin-top: 24px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0; text-decoration: none; display: inline-block; }
+.link-back { 
+    margin-top: 24px; 
+    background: none; 
+    border: none; 
+    color: var(--muted); 
+    cursor: pointer; 
+    font-size: 18px; 
+    font-weight: 700;
+    padding: 0; 
+    text-decoration: none; 
+    display: inline-block; 
+}
 
 /* ---------- seat map ---------- */
 .legend { display: flex; gap: 24px; margin-bottom: 24px; }
@@ -461,9 +472,9 @@ select.input { cursor: pointer; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .flex-wrap { display: flex; flex-wrap: wrap; }
 .gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-6 { gap: 24px; }
-.mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; } .mt-4 { margin-bottom: 16px; }
+.mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; } .mt-4 { margin-top: 16px; }
 .max-w-2xl { max-width: 672px; 
-             margin-left: auto; 
+            margin-left: auto; 
              margin-right: auto;}
 .text-right { text-align: right; }
 
@@ -1949,3 +1960,23 @@ transform:translateY(0);
     }
 }
 
+.modify-search-btn {
+    display: inline-block;
+    background: #E8940A;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border: 2px solid #A65F00;
+    box-shadow: 0 4px 0 #8C4B00;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 24px;
+}
+
+.modify-search-btn:hover {
+    background: #D98200;
+    color: #fff;
+    border-color: #8C4B00;
+    box-shadow: 0 4px 0 #704000;
+}

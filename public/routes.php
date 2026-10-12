@@ -140,7 +140,8 @@ $notEnough = $bus['available_seats'] < $passengers;
 <?php endforeach; ?>
 </div>
          
-<a class="link-back" href="index.php">&larr; Modify search</a>
+<a class="modify-search-btn" href="index.php">&larr;
+     Modify Search</a>
 </div>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
