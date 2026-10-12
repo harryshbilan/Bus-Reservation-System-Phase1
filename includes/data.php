@@ -37,8 +37,8 @@ function get_schedules(): array
 $rows = $stmt->fetchAll(PDO::FETCH_NUM);
 
     $schedules = [];
-    foreach ($rows as $i => $r) {
-        $id = $i + 1;
+    foreach ($rows as $r) {
+        $id = (int) $r[0];
      $schedules[$id] = [
     'schedule_id' => $r[0],
     'bus_id' => $r[1],
@@ -57,7 +57,6 @@ $rows = $stmt->fetchAll(PDO::FETCH_NUM);
     ? (strtotime($r[9]) - strtotime($r[8])) / 60
     : ((strtotime($r[9]) + 86400) - strtotime($r[8])) / 60
 ),
-'boarding_point' => $r[10],
 ];
     }
     return $schedules;
