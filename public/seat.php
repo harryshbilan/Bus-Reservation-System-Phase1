@@ -85,7 +85,8 @@ foreach ($layout as &$row) {
     }
 
 }
-
+// Clear foreach references
+unset($row, $seat);
 
 $pageTitle = 'Seat Selection';
 $activeStep = 'seats';

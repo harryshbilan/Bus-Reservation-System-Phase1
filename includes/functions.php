@@ -99,10 +99,7 @@ function booked_seat_ids(int $busId, string $travelDate): array
         $travelDate
     ]);
 
-    return array_map(
-        'intval',
-        $stmt->fetchAll(PDO::FETCH_COLUMN)
-    );
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
 function mark_seats_booked(int $busId, string $travelDate, array $seatIds): void
