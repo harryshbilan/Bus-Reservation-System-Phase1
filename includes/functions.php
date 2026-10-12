@@ -82,8 +82,27 @@ function generate_ref(string $prefix): string
 
 function booked_seat_ids(int $busId, string $travelDate): array
 {
-    $key = $busId . '|' . $travelDate;
-    return $_SESSION['seat_bookings'][$key] ?? [];
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+        SELECT r.seat_number
+        FROM reservations r
+        JOIN schedules s
+            ON r.schedule_id = s.schedule_id
+        WHERE s.bus_id = ?
+        AND s.travel_date = ?
+        AND r.status = 'PAID'
+    ");
+
+    $stmt->execute([
+        $busId,
+        $travelDate
+    ]);
+
+    return array_map(
+        'intval',
+        $stmt->fetchAll(PDO::FETCH_COLUMN)
+    );
 }
 
 function mark_seats_booked(int $busId, string $travelDate, array $seatIds): void
@@ -108,10 +127,12 @@ function seat_layout(int $busId, int $totalSeats, string $travelDate): array
     for ($seatNum = 1; $seatNum <= $totalSeats; $seatNum++) {
         $rowIndex = intdiv($seatNum - 1, 4);
         $col = $cols[($seatNum - 1) % 4];
+        $label = (($rowIndex) + 1) . $col;
+
         $layout[$rowIndex][$col] = [
-            'id'     => $seatNum,
-            'label'  => (($rowIndex) + 1) . $col,
-            'booked' => in_array($seatNum, $booked, true),
+        'id'     => $seatNum,
+        'label'  => $label,
+        'booked' => in_array($label, $booked, true),
         ];
     }
     ksort($layout, SORT_NUMERIC);
@@ -218,3 +239,80 @@ function ticket_number_exists(string $ticketNumber): bool
     }
     return false;
 }
+
+
+function find_database_reservation(string $ticketNumber, string $email): ?array
+{
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+            SELECT 
+            (
+            SELECT COALESCE(SUM(pay_all.amount), 0)
+            FROM reservations r_all
+            LEFT JOIN payments pay_all
+            ON r_all.reservation_id = pay_all.reservation_id
+            WHERE r_all.ticket_number = r.ticket_number
+            ) AS total_fare,
+            pay.payment_method,
+            r.*,
+            p.name,
+            p.email,
+            p.phone,
+            s.travel_date,
+            s.departure_time,
+            b.bus_number,
+            CONCAT(rt.origin,' → ',rt.destination) AS route
+        FROM reservations r
+
+        JOIN passengers p
+            ON r.passenger_id = p.passenger_id
+
+        JOIN schedules s
+            ON r.schedule_id = s.schedule_id
+
+        JOIN buses b
+            ON s.bus_id = b.bus_id
+
+        JOIN routes rt
+            ON s.route_id = rt.route_id
+
+        LEFT JOIN payments pay
+        ON r.reservation_id = pay.reservation_id
+        
+        WHERE r.ticket_number = ?
+        AND p.email = ?
+        LIMIT 1
+    ");
+
+    $stmt->execute([
+        $ticketNumber,
+        $email
+    ]);
+
+    $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$reservation) {
+        return null;
+    }
+
+    return $reservation;
+}
+
+function cancel_database_reservation(string $ticketNumber): void
+{
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+        UPDATE reservations
+        SET status = 'CANCELLED'
+        WHERE ticket_number = ?
+        AND status = 'PAID'
+    ");
+
+    $stmt->execute([
+        $ticketNumber
+    ]);
+}
+
+

@@ -28,13 +28,25 @@ $passenger = $_SESSION['booking']['passenger'];
 $stmt = $pdo->prepare("
     SELECT 
         r.ticket_number,
-        GROUP_CONCAT(r.seat_number SEPARATOR ', ') AS seats,
+        GROUP_CONCAT(
+        r.seat_number
+        ORDER BY
+        CAST(
+            LEFT(r.seat_number, LENGTH(r.seat_number) - 1)
+            AS UNSIGNED
+        ),
+        RIGHT(r.seat_number, 1)
+        SEPARATOR ', '
+        ) AS seats,
         r.status,
         b.bus_number,
         s.travel_date,
         s.departure_time,
         p.payment_method,
-        p.amount
+        SUM(p.amount) AS amount,
+        pax.name AS passenger_name,
+        pax.email AS passenger_email,
+        pax.phone AS passenger_phone
     FROM reservations r
 
     JOIN payments p 
@@ -46,19 +58,37 @@ $stmt = $pdo->prepare("
     JOIN buses b
         ON s.bus_id = b.bus_id
 
-    WHERE r.passenger_id = ?
+    JOIN passengers pax
+    ON r.passenger_id = pax.passenger_id
 
-    GROUP BY r.ticket_number
+    WHERE r.ticket_number = ?
+
+    GROUP BY 
+    r.ticket_number,
+    r.status,
+    b.bus_number,
+    s.travel_date,
+    s.departure_time,
+    p.payment_method,
+    pax.name,
+    pax.email,
+    pax.phone
     ORDER BY r.reservation_id DESC
     LIMIT 1
 ");
 
 $stmt->execute([
-    $passenger['id'] ?? 0
+    $_SESSION['booking']['ticket_number']
 ]);
 
 
 $ticket = $stmt->fetch();
+
+// Calculate ticket fare breakdown
+    [$baseFare, $serviceFee, $tax] = fare_breakdown(
+    (float) $bus['fare_per_seat'],
+    count($selectedSeats)
+);
 
 
 $pageTitle = 'Ticket';
@@ -101,17 +131,17 @@ require __DIR__ . '/../includes/header.php';
 
             <p>
                 <strong>Name:</strong>
-                <?= h($passenger['name']) ?>
+                <?= h($ticket['passenger_name'] ?? 'N/A') ?>
             </p>
 
             <p>
                 <strong>Email:</strong>
-                <?= h($passenger['email']) ?>
+                <?= h($ticket['passenger_email'] ?? 'N/A') ?>
             </p>
 
             <p>
                 <strong>Phone:</strong>
-                <?= h($passenger['phone']) ?>
+                <?= h($ticket['passenger_phone'] ?? 'N/A') ?>
             </p>
 
         </div>
@@ -125,7 +155,7 @@ require __DIR__ . '/../includes/header.php';
 
             <p>
                 <strong>Bus:</strong>
-                <?= h($bus['bus_name'] ?? 'BUSWAY') ?>
+                <?= h($ticket['bus_number'] ?? 'N/A') ?>
             </p>
 
 
@@ -163,28 +193,32 @@ require __DIR__ . '/../includes/header.php';
 
 
         <!-- PAYMENT -->
-        <div class="ticket-section">
+    <p>
+        <strong>Payment Method:</strong>
+        <?= h($ticket['payment_method'] ?? 'N/A') ?>
+    </p>
 
-            <h3>Payment Details</h3>
+    <p>
+        <strong>Base Fare:</strong>
+        <?= peso($baseFare) ?>
+    </p>
 
+    <p>
+        <strong>Service Fee (5%):</strong>
+        <?= peso($serviceFee) ?>
+    </p>
 
-            <p>
-                <strong>Payment Method:</strong>
+    <p>
+        <strong>Tax (8%):</strong>
+        <?= peso($tax) ?>
+    </p>
 
-                <?= h($ticket['payment_method'] ?? 'N/A') ?>
+    <hr>
 
-            </p>
-
-
-            <p>
-                <strong>Total Amount:</strong>
-
-                <?= peso($ticket['amount'] ?? 0) ?>
-
-            </p>
-
-
-        </div>
+        <p>
+    <strong>Total Amount:</strong>
+    <?= peso($ticket['amount'] ?? 0) ?>
+    </p>
 
 
         <!-- BUTTONS -->
