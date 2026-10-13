@@ -14,10 +14,17 @@ if (!in_array($sort, ['departure', 'fare', 'duration'], true)) {
     $sort = 'departure';
 }
 
-$buses = sort_schedules(search_schedules($origin, $destination), $sort);
-if (count($buses) === 0) {
-    $buses = sort_schedules(get_schedules(), $sort);
-}
+$buses = sort_schedules(
+    search_schedules($origin, $destination),
+    $sort
+);
+
+// Validate that each result matches the requested route.
+$buses = array_values(array_filter($buses, function ($bus) use ($origin, $destination) {
+    return strcasecmp(trim((string) ($bus['origin'] ?? '')), trim($origin)) === 0
+        && strcasecmp(trim((string) ($bus['destination'] ?? '')), trim($destination)) === 0;
+}));
+
 foreach ($buses as &$bus) {
     $bus['available_seats'] = available_seat_count((int) $bus['bus_id'], (int) $bus['total_seats'], $travelDate);
 }
