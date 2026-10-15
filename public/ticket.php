@@ -9,6 +9,7 @@ require_booking_keys(
     [
         'schedule_id',
         'selected_seats',
+        'ticket_number',
         'passenger'
     ],
     'index.php'
@@ -73,7 +74,7 @@ $stmt = $pdo->prepare("
     pax.name,
     pax.email,
     pax.phone
-    ORDER BY r.reservation_id DESC
+    ORDER BY MAX(r.reservation_id) DESC
     LIMIT 1
 ");
 
@@ -82,13 +83,14 @@ $stmt->execute([
 ]);
 
 
-$ticket = $stmt->fetch();
+$ticket = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Calculate ticket fare breakdown
-    [$baseFare, $serviceFee, $tax] = fare_breakdown(
-    (float) $bus['fare_per_seat'],
-    count($selectedSeats)
-);
+if (!$ticket) {
+    redirect('index.php');
+}
+
+$isPaid = $ticket['status'] === 'PAID';
+$isPending = $ticket['status'] === 'PENDING';
 
 
 $pageTitle = 'Ticket';
@@ -102,27 +104,26 @@ require __DIR__ . '/../includes/header.php';
 
         <!-- HEADER -->
         <div class="ticket-header">
-            <h1>Booking Confirmed!</h1>
-            <p>Your reservation has been successfully completed.</p>
+    <h1>
+        <?= $isPaid
+            ? 'Booking Confirmed!'
+            : ($isPending
+                ? 'Reservation Pending Payment'
+                : 'Reservation Cancelled') ?>
+    </h1>
 
-            <div class="ticket-status">
-                <?= h($ticket['status'] ?? 'PAID') ?>
-            </div>
-        </div>
+    <p>
+        <?= $isPaid
+            ? 'Your payment has been recorded.'
+            : ($isPending
+                ? 'No payment has been collected. Please pay at the counter. This is an unpaid reservation, not a paid boarding ticket.'
+                : 'This reservation is no longer active.') ?>
+    </p>
 
-
-        <!-- TICKET INFORMATION -->
-        <div class="ticket-section">
-
-            <h3>Ticket Information</h3>
-
-            <p>
-                <strong>Ticket Number:</strong>
-                <?= h($ticket['ticket_number'] ?? 'N/A') ?>
-            </p>
-
-        </div>
-
+    <div class="ticket-status">
+        <?= h($ticket['status']) ?>
+    </div>
+</div>
 
         <!-- PASSENGER -->
         <div class="ticket-section">
@@ -216,7 +217,14 @@ require __DIR__ . '/../includes/header.php';
     <hr>
 
         <p>
-    <strong>Total Amount:</strong>
+    <strong> <?= $isPaid
+        ? 'Total Paid:'
+            : ($isPending
+                ? 'Amount Due:'
+                : 'Original Amount:') ?>
+
+
+    </strong>
     <?= peso($ticket['amount'] ?? 0) ?>
     </p>
 
