@@ -91,7 +91,7 @@ function booked_seat_ids(int $busId, string $travelDate): array
             ON r.schedule_id = s.schedule_id
         WHERE s.bus_id = ?
         AND s.travel_date = ?
-        AND r.status = 'PAID'
+        AND r.status = IN ('PAID', 'PENDING')
     ");
 
     $stmt->execute([
