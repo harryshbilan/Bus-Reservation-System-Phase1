@@ -245,7 +245,7 @@ function find_database_reservation(string $ticketNumber, string $email): ?array
     $stmt = $pdo->prepare("
             SELECT 
             (
-            SELECT COALESCE(SUM(pay_all.amount), 0)
+            SELECT COALESCE(CASE WHEN pay_all.status = 'PAID' THEN SUM(pay_all.amount) ELSE 0 END, 0)
             FROM reservations r_all
             LEFT JOIN payments pay_all
             ON r_all.reservation_id = pay_all.reservation_id
@@ -300,16 +300,38 @@ function cancel_database_reservation(string $ticketNumber): void
 {
     global $pdo;
 
-    $stmt = $pdo->prepare("
-        UPDATE reservations
-        SET status = 'CANCELLED'
-        WHERE ticket_number = ?
-        AND status = 'PAID'
-    ");
+    $pdo->beginTransaction();
 
-    $stmt->execute([
-        $ticketNumber
-    ]);
+    try {
+        $stmt = $pdo->prepare("
+            UPDATE reservations
+            SET status = 'CANCELLED'
+            WHERE ticket_number = ?
+            AND status IN ('PENDING', 'PAID')
+        ");
+
+        $stmt->execute([$ticketNumber]);
+
+        $stmt = $pdo->prepare("
+            UPDATE payments p
+            JOIN reservations r
+                ON r.reservation_id = p.reservation_id
+            SET p.status = 'CANCELLED'
+            WHERE r.ticket_number = ?
+            AND r.status = 'CANCELLED'
+            AND p.status = 'PENDING'
+        ");
+
+        $stmt->execute([$ticketNumber]);
+
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        throw $error;
+    }
 }
 
 
