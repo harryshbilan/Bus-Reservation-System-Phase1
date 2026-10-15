@@ -231,58 +231,60 @@ TOTAL:
 
 
 <form method="POST">
-    
+
 <input
     type="hidden"
     name="checkout_token"
     value="<?= h($_SESSION['checkout_token']) ?>"
 >
 
-<h3>
-Select Payment Method
-</h3>
+<h3>Select Payment Method</h3>
 
-
-<label>
-<input type="radio" name="payment_method" value="Cash" required>
-Cash
-</label>
-
-
-<br>
-
+<p>
+    No payment is collected online. Your reservation stays pending
+    until payment is confirmed at the counter.
+</p>
 
 <label>
-<input type="radio" name="payment_method" value="GCash">
-GCash
+    <input
+        type="radio"
+        name="payment_method"
+        value="Cash"
+        required
+        checked
+    >
+    Pay at counter (cash)
 </label>
-
-
-<br>
-
-
-<label>
-<input type="radio" name="payment_method" value="Card">
-Card
-</label>
-
-
 
 <br><br>
 
+<label>
+    <input
+        type="radio"
+        name="payment_method"
+        value="GCash"
+        disabled
+    >
+    GCash — coming soon
+</label>
 
-<button class="btn-primary">
-PAY NOW →
+<br><br>
+
+<label>
+    <input
+        type="radio"
+        name="payment_method"
+        value="Card"
+        disabled
+    >
+    Card — coming soon
+</label>
+
+<br><br>
+
+<button type="submit" class="btn-primary">
+    RESERVE — PAY AT COUNTER →
 </button>
-
-
-</form>
-
-
-</div>
-
-
-</div>
 
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
