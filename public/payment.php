@@ -39,107 +39,60 @@ $fare = fare_breakdown(
 
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+require_once __DIR__ . '/../includes/checkout.php';
 
-
-    $paymentMethod = $_POST['payment_method'];
-
-
-    // 1. Insert passenger
-
-    $stmt = $pdo->prepare("
-        INSERT INTO passengers
-        (name, email, phone)
-        VALUES (?, ?, ?)
-    ");
-
-    $stmt->execute([
-        $passenger['name'],
-        $passenger['email'],
-        $passenger['phone']
-    ]);
-
-    $passengerId = $pdo->lastInsertId();
-
-    $_SESSION['booking']['passenger']['id'] = $passengerId;
-
-
-    // 2. Generate ticket number
-
-    $ticketNumber = 'BW-' . strtoupper(uniqid());
-
-
-
-    // 3. Insert reservation
-
-    $reservationIds = [];
-
-    $seatCount = count($selectedSeats);
-
-    $amountPerSeat = round($total / $seatCount, 2);
-
-    foreach ($selectedSeats as $index => $seat) {
-
-    $paymentAmount = ($index === $seatCount - 1)
-        ? round($total - ($amountPerSeat * ($seatCount - 1)), 2)
-        : $amountPerSeat;
-
-
-        $stmt = $pdo->prepare("
-            INSERT INTO reservations
-            (
-                ticket_number,
-                passenger_id,
-                schedule_id,
-                seat_number,
-                status
-            )
-            VALUES (?, ?, ?, ?, ?)
-        ");
-
-
-        $stmt->execute([
-            $ticketNumber,
-            $passengerId,
-            $scheduleId,
-            $seat,
-            'PAID'
-        ]);
-
-        $reservationId = $pdo->lastInsertId();
-
-        $reservationIds[] = $reservationId;
-
-        // 4. Insert payment
-
-        $stmt = $pdo->prepare("
-            INSERT INTO payments
-            (
-                reservation_id,
-                amount,
-                payment_method,
-                status
-            )
-            VALUES (?, ?, ?, ?)
-        ");
-
-
-        $stmt->execute([
-        $reservationId,
-        $paymentAmount,
-        $paymentMethod,
-        'PAID'
-        ]);
-
-    }
-
-        $_SESSION['booking']['ticket_number'] = $ticketNumber;
-
-        $_SESSION['booking']['reservation_ids'] = $reservationIds;
-
-
+// Show the existing receipt if this booking was already saved.
+if (!empty($_SESSION['booking']['ticket_number'])) {
     redirect('ticket.php');
+}
 
+// Create a token to protect the payment form.
+$_SESSION['checkout_token'] ??= bin2hex(random_bytes(32));
+
+$error = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $token = $_POST['checkout_token'] ?? '';
+    $method = $_POST['payment_method'] ?? '';
+
+    if (
+        !is_string($token) ||
+        !hash_equals($_SESSION['checkout_token'], $token)
+    ) {
+        $error = 'Your payment form has expired. Please try again.';
+    } elseif (!is_string($method)) {
+        $error = 'Please choose Pay at counter.';
+    } else {
+        try {
+            $receipt = create_counter_reservation(
+                $pdo,
+                $_SESSION['booking'],
+                $method
+            );
+
+            $_SESSION['booking']['ticket_number'] =
+                $receipt['ticket_number'];
+
+            $_SESSION['booking']['reservation_ids'] =
+                $receipt['reservation_ids'];
+
+            $_SESSION['booking']['passenger']['id'] =
+                $receipt['passenger_id'];
+
+            unset($_SESSION['checkout_token']);
+
+            redirect('ticket.php');
+        } catch (InvalidArgumentException $exception) {
+            $error = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log(
+                'BUSWAY checkout failed: ' . $exception->getMessage()
+            );
+
+            $error = 'We could not save your reservation. '
+                . 'No payment was taken. Please try again.';
+        }
+    }
 }
 
 
@@ -155,6 +108,12 @@ require __DIR__ . '/../includes/header.php';
 
 
 <div class="max-w-2xl">
+
+<?php if ($error): ?>
+    <div class="error-box" role="alert">
+        <?= h($error) ?>
+    </div>
+<?php endif; ?>
 
 <div class="section-head">
 
@@ -272,7 +231,12 @@ TOTAL:
 
 
 <form method="POST">
-
+    
+<input
+    type="hidden"
+    name="checkout_token"
+    value="<?= h($_SESSION['checkout_token']) ?>"
+>
 
 <h3>
 Select Payment Method
