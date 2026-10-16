@@ -1980,3 +1980,140 @@ transform:translateY(0);
     border-color: #8C4B00;
     box-shadow: 0 4px 0 #704000;
 }
+/* Cancellation Policy Page */
+.cancellation-wrapper {
+    background-color: #f8f6f0;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.cancellation-container {
+    max-width: 900px;
+    width: 100%;
+}
+
+.policy-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.policy-header .sub-title {
+    color: #e04f39;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.policy-header .main-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #111;
+    margin: 0.3rem 0;
+}
+
+.policy-header .description {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* 3-Column Policy Cards */
+.policy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.policy-card {
+    background: #f1efea;
+    border: 1px solid #e2ded5;
+    padding: 1.5rem;
+}
+
+.policy-card .card-num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #e69c24;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.policy-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #111;
+}
+
+.policy-card p {
+    font-size: 0.88rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* Info Alert Box */
+.info-alert {
+    border: 2px solid #e69c24;
+    background-color: #fffbf2;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.alert-icon {
+    background-color: #e69c24;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.alert-content strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #111;
+}
+
+.alert-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Buttons */
+.policy-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-secondary {
+    flex: 1;
+    text-align: center;
+    background-color: #e8e5de;
+    color: #333;
+    padding: 0.9rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.btn-primary {
+    flex: 2;
+    text-align: center;
+    background-color: #c0392b; /* Change to #e69c24 if you want orange button */
+    color: #fff;
+    padding: 0.9rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
