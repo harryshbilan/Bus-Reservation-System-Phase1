@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS admin_users (
+    admin_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    display_name VARCHAR(100) NOT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    failed_login_attempts INT UNSIGNED NOT NULL DEFAULT 0,
+    locked_until DATETIME DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
