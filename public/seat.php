@@ -52,7 +52,7 @@ $stmt = $pdo->prepare("
     SELECT seat_number
     FROM reservations
     WHERE schedule_id = ?
-    AND status = IN ('PAID', 'PENDING')
+    AND status IN ('PENDING', 'PAID')
 ");
 
 $stmt->execute([$scheduleId]);

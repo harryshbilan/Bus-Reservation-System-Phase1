@@ -91,7 +91,7 @@ function booked_seat_ids(int $busId, string $travelDate): array
             ON r.schedule_id = s.schedule_id
         WHERE s.bus_id = ?
         AND s.travel_date = ?
-        AND r.status = IN ('PAID', 'PENDING')
+        AND r.status IN ('PENDING', 'PAID')
     ");
 
     $stmt->execute([
@@ -245,7 +245,15 @@ function find_database_reservation(string $ticketNumber, string $email): ?array
     $stmt = $pdo->prepare("
             SELECT 
             (
-            SELECT COALESCE(CASE WHEN pay_all.status = 'PAID' THEN SUM(pay_all.amount) ELSE 0 END, 0)
+            SELECT COALESCE(
+        SUM(
+            CASE
+            WHEN pay_all.status = 'PAID' THEN pay_all.amount
+            ELSE 0
+            END
+        ),
+            0
+        )
             FROM reservations r_all
             LEFT JOIN payments pay_all
             ON r_all.reservation_id = pay_all.reservation_id

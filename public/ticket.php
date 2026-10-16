@@ -92,7 +92,12 @@ if (!$ticket) {
 $isPaid = $ticket['status'] === 'PAID';
 $isPending = $ticket['status'] === 'PENDING';
 
+// Calculate the fare breakdown for the selected seats.
+[$baseFare, $serviceFee, $tax] = fare_breakdown(
+    (float) $bus['fare_per_seat'],
+    count($selectedSeats)
 
+);
 $pageTitle = 'Ticket';
 $activeStep = 'ticket';
 

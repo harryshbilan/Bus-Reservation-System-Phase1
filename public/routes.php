@@ -15,7 +15,7 @@ if (!in_array($sort, ['departure', 'fare', 'duration'], true)) {
 }
 
 $buses = sort_schedules(
-    search_schedules($origin, $destination),
+    search_schedules($origin, $destination, $travelDate),
     $sort
 );
 

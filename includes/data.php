@@ -14,7 +14,7 @@ function get_schedules(): array
     }
 
    $stmt = $pdo->query("
-    SELECT 
+    SELECT
         s.schedule_id,
         b.bus_id,
         b.bus_number,
@@ -26,11 +26,12 @@ function get_schedules(): array
         s.departure_time,
         s.arrival_time,
         s.fare,
-        r.boarding_point
+        r.boarding_point,
+        s.travel_date
     FROM schedules s
-    JOIN buses b 
+    JOIN buses b
         ON s.bus_id = b.bus_id
-    JOIN routes r 
+    JOIN routes r
         ON s.route_id = r.route_id
 ");
 
@@ -52,6 +53,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_NUM);
     'arrival_time' => $r[9],
     'fare_per_seat' => $r[10],
     'boarding_point' => $r[11],
+    'travel_date' => $r[12],
     'duration_minutes' => (
     strtotime($r[9]) >= strtotime($r[8])
     ? (strtotime($r[9]) - strtotime($r[8])) / 60
@@ -68,19 +70,26 @@ function get_schedule(int $scheduleId): ?array
     return $all[$scheduleId] ?? null;
 }
 
-function search_schedules(string $origin, string $destination): array
-{
+function search_schedules(
+    string $origin,
+    string $destination,
+    string $travelDate
+): array {
     $origin = strtolower(trim($origin));
     $destination = strtolower(trim($destination));
+    $travelDate = trim($travelDate);
 
-    return array_filter(get_schedules(), function ($s) use ($origin, $destination) {
+    return array_filter(
+        get_schedules(),
+        function ($s) use ($origin, $destination, $travelDate) {
+            $routeOrigin = strtolower(trim($s['origin']));
+            $routeDestination = strtolower(trim($s['destination']));
 
-        $routeOrigin = strtolower(trim($s['origin']));
-        $routeDestination = strtolower(trim($s['destination']));
-
-        return str_contains($routeOrigin, $origin)
-            && str_contains($routeDestination, $destination);
-    });
+            return str_contains($routeOrigin, $origin)
+                && str_contains($routeDestination, $destination)
+                && $s['travel_date'] === $travelDate;
+        }
+    );
 }
 
 function sort_schedules(array $schedules, string $sort): array
