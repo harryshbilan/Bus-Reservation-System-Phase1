@@ -85,7 +85,15 @@ Comfortable, safe, and affordable bus travel connecting you to destinations acro
         </div>
       </div>
     </div>
-    <button type="submit" class="btn-primary">SEARCH BUS &rarr;</button>
+    <div class="btn-row">
+    <button type="submit" class="btn-primary">
+        SEARCH BUS &rarr;
+    </button>
+
+    <a href="browse.php" class="btn-ghost">
+        BROWSE AVAILABLE BUSES
+    </a>
+</div>
   </form>
 </div>
 
