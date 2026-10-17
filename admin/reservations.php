@@ -7,8 +7,50 @@ $admin = require_admin();
 $bookings = [];
 $error = null;
 
+
+$search = $_GET['search'] ?? '';
+$status = $_GET['status'] ?? '';
+
+$search = is_string($search) ? trim($search) : '';
+$status = is_string($status) ? $status : '';
+
+$statusOptions = [
+    '' => 'All statuses',
+    'PENDING' => 'Pending',
+    'PAID' => 'Paid',
+    'CANCELLED' => 'Cancelled',
+];
+
+if (!array_key_exists($status, $statusOptions)) {
+    $status = '';
+}
+
+$conditions = [];
+$params = [];
+
+if ($search !== '') {
+    $conditions[] = '(
+        LOCATE(?, r.ticket_number) > 0
+        OR LOCATE(?, pax.name) > 0
+        OR LOCATE(?, pax.email) > 0
+    )';
+
+    $params[] = $search;
+    $params[] = $search;
+    $params[] = $search;
+}
+
+if ($status !== '') {
+    $conditions[] = 'r.status = ?';
+    $params[] = $status;
+}
+
+$whereSql = $conditions
+    ? 'WHERE ' . implode(' AND ', $conditions)
+    : '';
+
 try {
-    $stmt = $pdo->query("
+    $stmt = $pdo->prepare("
         SELECT
             r.ticket_number,
             r.status,
@@ -51,6 +93,7 @@ try {
             FROM payments
             GROUP BY reservation_id
         ) pay ON pay.reservation_id = r.reservation_id
+        $whereSql
         GROUP BY
             r.ticket_number,
             r.passenger_id,
@@ -67,6 +110,7 @@ try {
         LIMIT 100
     ");
 
+    $stmt->execute($params);
     $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $exception) {
     error_log(
@@ -157,6 +201,55 @@ try {
             background: #ffe3df;
             color: #922d22;
         }
+
+        .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    margin: 24px 0;
+    padding: 20px;
+    background: white;
+    border: 1px solid #ded6cc;
+    border-radius: 8px;
+}
+
+    .filters .search-field {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+    .filters label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+    .filters input,
+    .filters select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    font: inherit;
+}
+
+    .filters button {
+    min-height: 44px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 4px;
+    background: #e8940a;
+    color: #1c1208;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .filters > a {
+    padding: 12px 0;
+}
     </style>
 </head>
 <body>
@@ -169,14 +262,44 @@ try {
 
     <h1>Reservations</h1>
     <p>
-        Showing up to 100 recent booking groups.
-        Amount due is unpaid; amount paid is recorded as received.
-    </p>
+    Showing up to 100 most recent matching booking groups.
+    Amount due is unpaid; amount paid is recorded as received.
+</p>
+
+<form method="get" action="reservations.php" class="filters">
+    <div class="search-field">
+        <label for="search">Find a reservation</label>
+        <input
+            type="search"
+            id="search"
+            name="search"
+            placeholder="Booking reference, passenger name or email"
+            value="<?= admin_h($search) ?>"
+        >
+    </div>
+
+    <div>
+        <label for="status">Booking status</label>
+        <select id="status" name="status">
+            <?php foreach ($statusOptions as $value => $label): ?>
+                <option
+                    value="<?= admin_h($value) ?>"
+                    <?= $status === $value ? 'selected' : '' ?>
+                >
+                    <?= admin_h($label) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <button type="submit">Apply filters</button>
+    <a href="reservations.php">Clear filters</a>
+</form>
 
     <?php if ($error): ?>
         <p class="error" role="alert"><?= admin_h($error) ?></p>
     <?php elseif (!$bookings): ?>
-        <p>No reservations found.</p>
+        <p>No reservations match your search and status filter.</p>
     <?php else: ?>
         <div class="table-container">
             <table>
