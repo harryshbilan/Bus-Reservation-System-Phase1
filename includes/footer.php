@@ -35,12 +35,13 @@
 
 
 <div>
-<h3>GUIDELINES</h3>
+    <h3>GUIDELINES</h3>
 
-<a>Discounts / Policies</a>
-<a>Terms and Conditions</a>
-<a>Refund Policy</a>
+    <a href="discounts.php">Discounts / Policies</a>
 
+    <a href="terms.php">Terms and Conditions</a>
+
+    <a href="refund.php">Refund Policy</a>
 </div>
 
 <div>
