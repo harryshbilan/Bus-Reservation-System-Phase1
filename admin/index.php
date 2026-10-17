@@ -73,7 +73,7 @@ $admin = require_admin();
             </p>
             <p>
                 <a href="reservations.php">Manage reservations</a>
-            </p>    
+            </p>
 
             <a href="../public/index.php">View passenger website</a>
         </div>
