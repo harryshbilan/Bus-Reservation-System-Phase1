@@ -25,10 +25,96 @@ $buses = array_values(array_filter($buses, function ($bus) use ($origin, $destin
         && strcasecmp(trim((string) ($bus['destination'] ?? '')), trim($destination)) === 0;
 }));
 
-foreach ($buses as &$bus) {
-    $bus['available_seats'] = available_seat_count((int) $bus['bus_id'], (int) $bus['total_seats'], $travelDate);
+// Count occupied seats separately for each scheduled departure.
+$seatStmt = $pdo->query("
+    SELECT schedule_id, COUNT(DISTINCT seat_number) AS occupied
+    FROM reservations
+    WHERE status IN ('PENDING', 'PAID')
+    GROUP BY schedule_id
+");
+
+$occupiedSeats = [];
+
+foreach ($seatStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $occupiedSeats[(int) $row['schedule_id']] = (int) $row['occupied'];
 }
-unset($bus);
+
+$now = (new DateTimeImmutable(
+    'now',
+    new DateTimeZone('Asia/Manila')
+))->format('Y-m-d H:i:s');
+
+$bookableSchedules = [];
+
+foreach (get_schedules() as $schedule) {
+    $departure = $schedule['travel_date']
+        . ' ' . $schedule['departure_time'];
+
+    // Do not recommend departures that have already left.
+    if ($departure <= $now) {
+        continue;
+    }
+
+    $scheduleId = (int) $schedule['schedule_id'];
+
+    $schedule['available_seats'] = max(
+        0,
+        (int) $schedule['total_seats']
+            - ($occupiedSeats[$scheduleId] ?? 0)
+    );
+
+    // Only show trips with enough seats for the requested group.
+    if ($schedule['available_seats'] < $passengers) {
+        continue;
+    }
+
+    $bookableSchedules[$scheduleId] = $schedule;
+}
+
+// Keep matching search results only when they are still bookable.
+$matchingBuses = [];
+
+foreach ($buses as $bus) {
+    $scheduleId = (int) $bus['schedule_id'];
+
+    if (isset($bookableSchedules[$scheduleId])) {
+        $matchingBuses[] = $bookableSchedules[$scheduleId];
+    }
+}
+
+$buses = $matchingBuses;
+$alternatives = [];
+
+if (!$buses) {
+    $alternatives = array_values($bookableSchedules);
+
+    // Prefer the requested date, then the requested origin.
+    // Within those groups, show the earliest departures first.
+    usort(
+        $alternatives,
+        function (array $a, array $b) use ($travelDate, $origin): int {
+            $rankA = [
+                $a['travel_date'] === $travelDate ? 0 : 1,
+                strcasecmp(trim($a['origin']), trim($origin)) === 0 ? 0 : 1,
+                $a['travel_date'],
+                $a['departure_time'],
+                (int) $a['schedule_id'],
+            ];
+
+            $rankB = [
+                $b['travel_date'] === $travelDate ? 0 : 1,
+                strcasecmp(trim($b['origin']), trim($origin)) === 0 ? 0 : 1,
+                $b['travel_date'],
+                $b['departure_time'],
+                (int) $b['schedule_id'],
+            ];
+
+            return $rankA <=> $rankB;
+        }
+    );
+
+    $alternatives = array_slice($alternatives, 0, 12);
+}
 
 $pageTitle = 'Available Buses';
 $activeStep = 'routes';
@@ -55,11 +141,123 @@ require __DIR__ . '/../includes/header.php';
   </div>
 </div>
 
-<?php if (count($buses) === 0): ?>
-  <div class="empty-box">
-    <div class="empty-title">NO BUSES FOUND</div>
-    <div class="empty-hint">Try: Manila, Cubao, PITX, or Cebu City as origin.</div>
-  </div>
+<?php if (!$buses): ?>
+    <div class="empty-box">
+        <div class="empty-title">
+            NO AVAILABLE BUSES AT THE MOMENT
+        </div>
+
+        <p class="empty-hint">
+            No upcoming departure with enough seats was found for
+            <?= h($origin) ?> → <?= h($destination) ?>
+            on <?= h(date('F j, Y', strtotime($travelDate))) ?>.
+        </p>
+    </div>
+
+    <?php if ($alternatives): ?>
+        <section class="alternative-trips">
+            <h3>HERE ARE OTHER AVAILABLE BUSES YOU CAN BOOK</h3>
+
+            <p>
+                These trips may use a different route or travel date.
+                Check the details before choosing.
+                Showing up to 12 options with enough seats for
+                <?= (int) $passengers ?>
+                passenger<?= $passengers > 1 ? 's' : '' ?>.
+            </p>
+
+            <div class="alternative-grid">
+                <?php foreach ($alternatives as $alternative): ?>
+                    <article class="alternative-card">
+                        <h4>
+                            <?= h($alternative['origin']) ?>
+                            →
+                            <?= h($alternative['destination']) ?>
+                        </h4>
+
+                        <p>
+                            Bus <?= h($alternative['bus_number']) ?>
+                            · <?= h($alternative['bus_type']) ?>
+                        </p>
+
+                        <dl>
+                            <div>
+                                <dt>Travel date</dt>
+                                <dd>
+                                    <?= h(date(
+                                        'D, M j, Y',
+                                        strtotime($alternative['travel_date'])
+                                    )) ?>
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt>Departure</dt>
+                                <dd>
+                                    <?= h(date(
+                                        'g:i A',
+                                        strtotime($alternative['departure_time'])
+                                    )) ?>
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt>Available seats</dt>
+                                <dd>
+                                    <?= (int) $alternative['available_seats'] ?>
+                                    of <?= (int) $alternative['total_seats'] ?>
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt>Base fare per seat</dt>
+                                <dd>
+                                    ₱<?= number_format(
+                                        (float) $alternative['fare_per_seat'],
+                                        2
+                                    ) ?>
+                                </dd>
+                            </div>
+                        </dl>
+
+                        <!-- Reuse the existing search flow so the booking
+                             receives the correct route and travel date. -->
+                        <form method="post" action="index.php">
+                            <input
+                                type="hidden"
+                                name="origin"
+                                value="<?= h($alternative['origin']) ?>"
+                            >
+                            <input
+                                type="hidden"
+                                name="destination"
+                                value="<?= h($alternative['destination']) ?>"
+                            >
+                            <input
+                                type="hidden"
+                                name="travel_date"
+                                value="<?= h($alternative['travel_date']) ?>"
+                            >
+                            <input
+                                type="hidden"
+                                name="passengers"
+                                value="<?= (int) $passengers ?>"
+                            >
+
+                            <button type="submit" class="btn-primary">
+                                VIEW THIS ROUTE →
+                            </button>
+                        </form>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php else: ?>
+        <p class="empty-hint">
+            There are currently no upcoming trips with enough seats
+            for your group. Please try again later.
+        </p>
+    <?php endif; ?>
 <?php endif; ?>
 
 <div class="bus-list">
