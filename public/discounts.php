@@ -72,7 +72,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="eyebrow">PASSENGER GUIDELINES</div>
         <h1>Discounts &amp; Policies</h1>
         <p>
-            BUSWAY aims to provide accessible,
+            BUSWAY Philippines Inc. aims to provide accessible,
             safe, and convenient bus travel. Review our passenger
             discounts, baggage allowance, and child travel rules
             before completing your reservation.
