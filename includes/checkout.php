@@ -1,6 +1,8 @@
 <?php
 if (!defined('BUSWAY_APP')) { http_response_code(403); exit('Forbidden'); }
 
+require_once __DIR__ . '/passenger_details.php';
+
 /** Create an unpaid counter reservation. Only verified payment confirmation may mark it PAID. */
 function create_counter_reservation(PDO $pdo, array $booking, string $method): array
 {
@@ -17,6 +19,12 @@ function create_counter_reservation(PDO $pdo, array $booking, string $method): a
     if (!filter_var($passenger['email'], FILTER_VALIDATE_EMAIL)) {
         throw new InvalidArgumentException('Please enter a valid passenger email address.');
     }
+    $detailErrors = passenger_detail_errors($passenger);
+    if ($detailErrors) {
+        throw new InvalidArgumentException('Please return to Passenger Information. ' . implode(' ', $detailErrors));
+    }
+    $age = ($passenger['age'] ?? '') === '' ? null : (int) $passenger['age'];
+    $gender = ($passenger['gender'] ?? '') === '' ? null : $passenger['gender'];
     $seats = $booking['selected_seats'] ?? [];
     if (!is_array($seats) || !$seats || count($seats) !== (int) ($booking['passengers'] ?? 0)) {
         throw new InvalidArgumentException('Please return to Seat Selection and select the requested number of seats.');
@@ -51,8 +59,8 @@ function create_counter_reservation(PDO $pdo, array $booking, string $method): a
             throw new InvalidArgumentException('A selected seat has just been reserved. Please choose another seat.');
         }
 
-        $stmt = $pdo->prepare('INSERT INTO passengers (name, email, phone) VALUES (?, ?, ?)');
-        $stmt->execute([$passenger['name'], $passenger['email'], $passenger['phone']]);
+        $stmt = $pdo->prepare('INSERT INTO passengers (name, email, phone, age, gender) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute([$passenger['name'], $passenger['email'], $passenger['phone'], $age, $gender]);
         $passengerId = (int) $pdo->lastInsertId();
         $ticket = 'BW-' . strtoupper(bin2hex(random_bytes(12)));
         $reservationIds = [];

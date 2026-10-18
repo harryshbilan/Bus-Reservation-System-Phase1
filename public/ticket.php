@@ -8,7 +8,7 @@ $reference = $_SESSION['booking']['ticket_number'];
 if (!is_string($reference)) { redirect('index.php'); }
 $stmt = $pdo->prepare("
     SELECT r.reservation_id, r.seat_number, r.status, r.passenger_id, r.schedule_id,
-           pax.name, pax.email, pax.phone, b.bus_number, b.bus_type,
+           pax.name, pax.email, pax.phone, pax.age, pax.gender, b.bus_number, b.bus_type,
            rt.origin, rt.destination, rt.boarding_point,
            s.travel_date, s.departure_time, s.arrival_time
     FROM reservations r
@@ -125,6 +125,8 @@ require __DIR__ . '/../includes/header.php';
                 <div><dt>Full name</dt><dd><?= h($ticket['name']) ?></dd></div>
                 <div><dt>Email</dt><dd><?= h($ticket['email']) ?></dd></div>
                 <div><dt>Phone</dt><dd><?= h($ticket['phone']) ?></dd></div>
+                    <div><dt>Age on travel date</dt><dd><?= h((string) ($ticket['age'] ?? '') !== '' ? (string) $ticket['age'] : 'Not provided') ?></dd></div>
+                    <div><dt>Gender</dt><dd><?= h(($ticket['gender'] ?? '') !== '' ? $ticket['gender'] : 'Not provided') ?></dd></div>
                 <div><dt>Passengers</dt><dd><?= count($seats) ?></dd></div>
                 <div><dt>Seats</dt><dd class="receipt-seats"><?php foreach ($seats as $seat): ?><span><?= h($seat) ?></span><?php endforeach; ?></dd></div>
             </dl>

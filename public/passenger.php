@@ -1,6 +1,7 @@
 <?php
 define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/passenger_details.php';
 require_booking_keys(['travel_date', 'schedule_id', 'selected_seats', 'passengers'], 'index.php');
 
 if (!empty($_SESSION['booking']['ticket_number'])) {
@@ -22,7 +23,7 @@ if (!is_array($selectedSeats) || !$selectedSeats || $passengers < 1
 
 $saved = $booking['passenger'] ?? [];
 $values = [];
-foreach (['name', 'email', 'phone'] as $field) {
+foreach (['name', 'email', 'phone', 'age', 'gender'] as $field) {
     $values[$field] = is_array($saved) && is_string($saved[$field] ?? null) ? $saved[$field] : '';
 }
 $errors = [];
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         || strlen($phoneDigits) < 7 || strlen($phoneDigits) > 15) {
         $errors['phone'] = 'Enter a valid phone number with 7–15 digits. Spaces, brackets, hyphens and a leading + are allowed.';
         }
+    $errors = array_merge($errors, passenger_detail_errors($values));
     if (!$errors) {
         $_SESSION['booking']['passenger'] = $values;
         header('Location: fare.php', true, 303);
@@ -73,9 +75,9 @@ require __DIR__ . '/../includes/header.php';
 .passenger-screen p { line-height: 1.6; }
 .passenger-field { margin: 24px 0; }
 .passenger-field label { display: block; font-weight: bold; margin-bottom: 9px; }
-.passenger-field input { display: block; box-sizing: border-box; width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid #9b8d79; border-radius: 8px; background: #fffdfa; color: #21180e; font: inherit; }
-.passenger-field input:focus { outline: 3px solid #f5d398; outline-offset: 2px; border-color: #855000; }
-.passenger-field input[aria-invalid="true"] { border-color: #a52c20; }
+.passenger-field input, .passenger-field select { display: block; box-sizing: border-box; width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid #9b8d79; border-radius: 8px; background: #fffdfa; color: #21180e; font: inherit; }
+.passenger-field input:focus, .passenger-field select:focus { outline: 3px solid #f5d398; outline-offset: 2px; border-color: #855000; }
+.passenger-field input[aria-invalid="true"], .passenger-field select[aria-invalid="true"] { border-color: #a52c20; }
 .passenger-screen .passenger-hint { display: block; font-size: 13px; line-height: 1.6; color: #62574a; margin: 7px 0 0; }
 .passenger-screen .passenger-error { color: #922d22; font-size: 14px; margin: 8px 0 0; }
 .passenger-alert { padding: 16px; margin-bottom: 22px; background: #ffe5df; border-radius: 8px; color: #922d22; }
@@ -112,7 +114,7 @@ require __DIR__ . '/../includes/header.php';
         <form method="post" class="passenger-form-card">
             <input type="hidden" name="csrf_token" value="<?= h($_SESSION['passenger_form_token']) ?>">
             <h3>Contact information</h3>
-            <p class="passenger-hint">All three fields are required.</p>
+            <p class="passenger-hint">Full name, email and phone are required. Age and gender are optional.</p>
 
             <div class="passenger-field">
                 <label for="passenger-name">Full name</label>
@@ -143,6 +145,28 @@ require __DIR__ . '/../includes/header.php';
                 <?php if (isset($errors['phone'])): ?><p id="passenger-phone-error" class="passenger-error"><?= h($errors['phone']) ?></p><?php endif; ?>
             </div>
 
+            <h3>About the primary passenger</h3>
+            <p class="passenger-hint">These details apply only to the primary passenger, not everyone in the group. Age does not automatically apply a fare discount.</p>
+            <div class="passenger-field">
+                <label for="passenger-age">Age on travel date (optional)</label>
+                <input id="passenger-age" name="age" type="number" min="0" max="120" step="1"
+                    value="<?= h($values['age']) ?>" placeholder="e.g. 28"
+                    aria-invalid="<?= isset($errors['age']) ? 'true' : 'false' ?>"
+                    <?= isset($errors['age']) ? 'aria-describedby="passenger-age-error"' : '' ?>>
+                <?php if (isset($errors['age'])): ?><p id="passenger-age-error" class="passenger-error"><?= h($errors['age']) ?></p><?php endif; ?>
+            </div>
+            <div class="passenger-field">
+                <label for="passenger-gender">Gender (optional)</label>
+                <select id="passenger-gender" name="gender"
+                    aria-invalid="<?= isset($errors['gender']) ? 'true' : 'false' ?>"
+                    <?= isset($errors['gender']) ? 'aria-describedby="passenger-gender-error"' : '' ?>>
+                    <option value="">Select gender</option>
+                    <?php foreach (['Female', 'Male', 'Non-binary', 'Prefer not to say'] as $option): ?>
+                        <option value="<?= h($option) ?>" <?= $values['gender'] === $option ? 'selected' : '' ?>><?= h($option) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (isset($errors['gender'])): ?><p id="passenger-gender-error" class="passenger-error"><?= h($errors['gender']) ?></p><?php endif; ?>
+            </div>
             <button type="submit" class="passenger-submit">Continue to fare summary →</button>
             <p class="passenger-hint">You can review the fare before completing your reservation.</p>
             <a href="seat.php" class="passenger-back">← Back to seat selection</a>

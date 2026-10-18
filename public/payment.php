@@ -184,6 +184,8 @@ require __DIR__ . '/../includes/header.php';
                     <div><dt>Name</dt><dd><?= h($passenger['name']) ?></dd></div>
                     <div><dt>Email</dt><dd><?= h($passenger['email']) ?></dd></div>
                     <div><dt>Phone</dt><dd><?= h($passenger['phone']) ?></dd></div>
+                    <div><dt>Age on travel date</dt><dd><?= h((string) ($passenger['age'] ?? '') !== '' ? (string) $passenger['age'] : 'Not provided') ?></dd></div>
+                    <div><dt>Gender</dt><dd><?= h(($passenger['gender'] ?? '') !== '' ? $passenger['gender'] : 'Not provided') ?></dd></div>
                 </dl>
             </section>
 
