@@ -1,13 +1,14 @@
 <?php
 define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
-require_booking_keys(['travel_date'], 'index.php');
+require_booking_keys(['travel_date', 'passengers'], 'index.php');
 
 $booking = $_SESSION['booking'];
 $origin = $booking['origin'] ?? '';
 $destination = $booking['destination'] ?? '';
 $travelDate = $booking['travel_date'];
 $passengers = (int) $booking['passengers'];
+if ($passengers < 1 || $passengers > 40) { header('Location: index.php'); exit; }
 
 $sort = $_GET['sort'] ?? 'departure';
 if (!in_array($sort, ['departure', 'fare', 'duration'], true)) {
@@ -118,235 +119,138 @@ if (!$buses) {
 
 $pageTitle = 'Available Buses';
 $activeStep = 'routes';
+$displayTrips = $buses ?: $alternatives;
+$zone = new DateTimeZone('Asia/Manila');
 require __DIR__ . '/../includes/header.php';
 ?>
+<style>
+.results-page{max-width:1120px;margin:36px auto 56px;padding:0 20px;color:#21190f}
+.results-page *{box-sizing:border-box}
+.results-page .rp-top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.results-page h1{font-size:clamp(28px,4vw,40px);line-height:1.2;margin:8px 0 12px}
+.results-page .rp-muted{color:#6b6259;font-size:14px;line-height:1.6}
+.results-page .rp-label{color:#8c5905;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
+.results-page .rp-actions{display:flex;gap:10px;flex-wrap:wrap}
+.results-page .rp-link{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;color:#704604;background:white;border:1px solid #d8ccba;border-radius:9px;padding:11px 16px;font-weight:600;font-size:14px}
+.results-page .rp-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:24px 0 16px}
+.results-page .rp-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
+.results-page .rp-sort a{padding:8px 12px;background:#fff;border:1px solid #ded6ca;border-radius:8px;color:#554839;text-decoration:none}
+.results-page .rp-sort a[aria-current="true"]{background:#fff0ce;border-color:#e79805;color:#704604;font-weight:700}
+.results-page .rp-list{display:grid;gap:18px}
+.results-page .rp-card{background:#fff;border:1px solid #e1d7c9;border-radius:18px;overflow:hidden}
+.results-page .rp-main{display:grid;grid-template-columns:minmax(150px,1fr) minmax(310px,2fr) minmax(160px,1fr);gap:26px;align-items:center;padding:26px}
+.results-page .rp-card h2{font-size:22px;margin:10px 0;overflow-wrap:anywhere}
+.results-page .rp-type{display:inline-block;border-radius:6px;background:#fff3da;color:#805000;padding:5px 10px;font-size:12px;font-weight:700}
+.results-page .rp-journey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.results-page .rp-journey>div:first-child{grid-column:1;grid-row:1}
+.results-page .rp-journey>div:last-child{grid-column:2;grid-row:1}
+.results-page .rp-journey strong{display:block;font-size:24px;white-space:nowrap}
+.results-page .rp-journey span{display:block;font-size:14px;margin:5px 0;line-height:1.5}
+.results-page .rp-duration{grid-column:1/-1;grid-row:2;justify-self:center;margin-top:8px;padding:8px 16px;border:1px solid #edd7ad;border-radius:999px;background:#fff4dd;color:#704604;font-size:14px;font-weight:600;text-align:center}
 
-<div class="scoped-timetable">
-<div class="bus-row-inner mb-6" style="align-items:flex-start;">
-  <div>
-    <div class="eyebrow">AVAILABLE BUSES</div>
-    <h2 class="section-title">
-      <?= h(strtoupper($origin)) ?>
-      <?php if ($destination !== ''): ?><span class="accent" style="margin:0 12px;">&rarr;</span><?= h(strtoupper($destination)) ?><?php endif; ?>
-    </h2>
-    <div style="color:var(--muted);margin-top:6px;font-size:14px;">
-      <?= h(date('l, F j', strtotime($travelDate))) ?> &middot; <?= $passengers ?> passenger<?= $passengers > 1 ? 's' : '' ?>
+.results-page .rp-price{text-align:right}
+.results-page .rp-price strong{font-size:28px;display:block}
+.results-page .rp-primary{display:block;width:100%;margin-top:12px;padding:13px 16px;background:#ed9700;border:1px solid #d28300;border-radius:9px;color:#21190f;font-size:14px;text-align:center;text-decoration:none;cursor:pointer;font-family:inherit;font-weight:700}
+.results-page .rp-bottom{padding:16px 26px;background:#fdfbf7;border-top:1px solid #eee7dc;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.results-page .rp-amenities{display:flex;gap:7px;flex-wrap:wrap}
+.results-page .rp-amenities span{font-size:12px;background:white;border:1px solid #e3dacd;border-radius:6px;padding:5px 9px}
+.results-page .rp-seats{font-size:13px;color:#286044;background:#eaf5ed;border-radius:7px;padding:7px 10px}
+.results-page .rp-notice{padding:24px;background:#fff4dc;border:1px solid #ecd5a4;border-radius:14px;line-height:1.6}
+.results-page .rp-notice h2{font-size:22px;margin:0 0 8px}
+.results-page .rp-notice p{margin:0}
+.results-page .rp-footnote{margin-top:20px}
+.results-page a:focus-visible,.results-page button:focus-visible{outline:3px solid #754500;outline-offset:3px}
+@media(max-width:900px){.results-page .rp-main{grid-template-columns:1fr 2fr}.results-page .rp-price{grid-column:1/-1;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:20px}.results-page .rp-price form{min-width:180px}.results-page .rp-price>a{width:auto;min-width:180px}.results-page .rp-primary{margin-top:0}}
+@media(max-width:600px){.results-page{padding:0 16px;margin-top:24px}.results-page .rp-main{display:flex;flex-direction:column;align-items:stretch;padding:20px;gap:20px}.results-page .rp-journey{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.results-page .rp-journey>div:first-child{grid-column:1;grid-row:1}
+.results-page .rp-journey>div:last-child{grid-column:2;grid-row:1}
+.results-page .rp-journey strong{font-size:20px}.results-page .rp-price{display:block;border-top:1px solid #eee7dc;padding-top:16px}.results-page .rp-primary{margin-top:12px}.results-page .rp-price>a{width:100%}.results-page .rp-bottom{padding:16px 20px}}
+.results-page .rp-journey > div:first-child,
+.results-page .rp-journey > div:last-child {
+    text-align: center;
+    min-width: 0;
+}
+</style>
+<section class="results-page" aria-labelledby="results-title">
+  <div class="rp-top">
+    <div>
+      <div class="rp-label">Available buses</div>
+      <h1 id="results-title"><?= h($origin) ?> → <?= h($destination) ?></h1>
+      <div class="rp-muted"><?= h(date('l, F j, Y', strtotime($travelDate))) ?> · <?= $passengers ?> passenger<?= $passengers === 1 ? '' : 's' ?></div>
+    </div>
+    <div class="rp-actions">
+      <a class="rp-link" href="index.php">← Modify search</a>
+      <a class="rp-link" href="browse.php">Browse other dates</a>
     </div>
   </div>
-  <div class="sort-row">
-    <span class="sort-label">SORT:</span>
-    <?php foreach (['departure' => 'DEPARTURE', 'fare' => 'FARE', 'duration' => 'DURATION'] as $key => $label): ?>
-      <a class="sort-btn <?= $sort === $key ? 'active' : '' ?>" href="routes.php?sort=<?= $key ?>"><?= $label ?></a>
-    <?php endforeach; ?>
-  </div>
-</div>
 
-<?php if (!$buses): ?>
-    <div class="empty-box">
-        <div class="empty-title">
-            NO AVAILABLE BUSES AT THE MOMENT
-        </div>
-
-        <p class="empty-hint">
-            No upcoming departure with enough seats was found for
-            <?= h($origin) ?> → <?= h($destination) ?>
-            on <?= h(date('F j, Y', strtotime($travelDate))) ?>.
-        </p>
+  <?php if (!$buses): ?>
+    <div class="rp-notice" role="status">
+      <h2>No available buses at the moment</h2>
+      <p>No upcoming departure has enough seats for your search.
+      <?= $alternatives ? 'Here are other available buses you can book. These may have a different route or date—check the details before continuing.' : 'Try another route or browse other dates to plan your trip.' ?></p>
     </div>
+  <?php endif; ?>
 
-    <?php if ($alternatives): ?>
-        <section class="alternative-trips">
-            <h3>HERE ARE OTHER AVAILABLE BUSES YOU CAN BOOK</h3>
-
-            <p>
-                These trips may use a different route or travel date.
-                Check the details before choosing.
-                Showing up to 12 options with enough seats for
-                <?= (int) $passengers ?>
-                passenger<?= $passengers > 1 ? 's' : '' ?>.
-            </p>
-
-            <div class="alternative-grid">
-                <?php foreach ($alternatives as $alternative): ?>
-                    <article class="alternative-card">
-                        <h4>
-                            <?= h($alternative['origin']) ?>
-                            →
-                            <?= h($alternative['destination']) ?>
-                        </h4>
-
-                        <p>
-                            Bus <?= h($alternative['bus_number']) ?>
-                            · <?= h($alternative['bus_type']) ?>
-                        </p>
-
-                        <dl>
-                            <div>
-                                <dt>Travel date</dt>
-                                <dd>
-                                    <?= h(date(
-                                        'D, M j, Y',
-                                        strtotime($alternative['travel_date'])
-                                    )) ?>
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt>Departure</dt>
-                                <dd>
-                                    <?= h(date(
-                                        'g:i A',
-                                        strtotime($alternative['departure_time'])
-                                    )) ?>
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt>Available seats</dt>
-                                <dd>
-                                    <?= (int) $alternative['available_seats'] ?>
-                                    of <?= (int) $alternative['total_seats'] ?>
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt>Base fare per seat</dt>
-                                <dd>
-                                    ₱<?= number_format(
-                                        (float) $alternative['fare_per_seat'],
-                                        2
-                                    ) ?>
-                                </dd>
-                            </div>
-                        </dl>
-
-                        <!-- Reuse the existing search flow so the booking
-                             receives the correct route and travel date. -->
-                        <form method="post" action="index.php">
-                            <input
-                                type="hidden"
-                                name="origin"
-                                value="<?= h($alternative['origin']) ?>"
-                            >
-                            <input
-                                type="hidden"
-                                name="destination"
-                                value="<?= h($alternative['destination']) ?>"
-                            >
-                            <input
-                                type="hidden"
-                                name="travel_date"
-                                value="<?= h($alternative['travel_date']) ?>"
-                            >
-                            <input
-                                type="hidden"
-                                name="passengers"
-                                value="<?= (int) $passengers ?>"
-                            >
-
-                            <button type="submit" class="btn-primary">
-                                VIEW THIS ROUTE →
-                            </button>
-                        </form>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-    <?php else: ?>
-        <p class="empty-hint">
-            There are currently no upcoming trips with enough seats
-            for your group. Please try again later.
-        </p>
-    <?php endif; ?>
-<?php endif; ?>
-
-<div class="bus-list">
-
-<?php foreach ($buses as $bus): 
-$notEnough = $bus['available_seats'] < $passengers;
-?>
-
-<div class="bus-card">
-
-    <div class="bus-header">
-
-        <div>
-            <div class="operator">
-                <?= h($bus['bus_type']) ?>
-            </div>
-
-            <div class="bus-number">
-                <?= h($bus['bus_number']) ?>
-            </div>
-
-            <span class="<?= badge_class($bus['bus_type']) ?>">
-                <?= strtoupper($bus['bus_type']) ?>
-            </span>
-
-        </div>
-
-        <div class="route-time">
-
-            <div>
-                <?= date("h:i A", strtotime($bus['departure_time'])) ?>
-                <small><?= h($bus['origin']) ?></small>
-            </div>
-
-            <div class="duration">
-              <?= floor($bus['duration_minutes'] / 60) ?>h 
-              <?= $bus['duration_minutes'] % 60 ?>m
-            </div>
-
-            <div>
-                <?= date("h:i A", strtotime($bus['arrival_time'])) ?>
-                <small><?= h($bus['destination']) ?></small>
-            </div>
-
-        </div>
-
-        <div class="fare-area">
-
-            <div class="fare">
-                <?= peso((int)$bus['fare_per_seat']) ?>
-            </div>
-
-            <small>per seat</small>
-            <a 
-            class="select-btn <?= $notEnough ? 'disabled':'' ?>"
-            href="<?= $notEnough ? '#' : 'bus.php?schedule_id='.(int)$bus['schedule_id'] ?>">
-          
-            <?= $notEnough ? 'FULL':'SELECT →' ?>
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="bus-footer">
-
-        <div class="amenities">
-
-        <?php foreach(explode(',', $bus['amenities']) as $a): ?>
-
-            <span>
-                <?= h($a) ?>
-            </span>
-
+  <div class="rp-toolbar">
+    <strong><?= count($displayTrips) ?> <?= $buses ? 'matching' : 'alternative' ?> trip<?= count($displayTrips) === 1 ? '' : 's' ?><?= !$buses && $alternatives ? ' (up to 12 shown)' : '' ?></strong>
+    <?php if ($buses): ?>
+      <nav class="rp-sort" aria-label="Sort trips">
+        <span>Sort by</span>
+        <?php foreach (['departure'=>'Departure', 'fare'=>'Lowest fare', 'duration'=>'Shortest trip'] as $key=>$label): ?>
+          <a href="routes.php?sort=<?= $key ?>" aria-current="<?= $sort === $key ? 'true' : 'false' ?>"><?= $label ?></a>
         <?php endforeach; ?>
+      </nav>
+    <?php endif; ?>
+  </div>
+
+  <div class="rp-list">
+  <?php foreach ($displayTrips as $bus):
+      $departure = new DateTimeImmutable($bus['travel_date'].' '.$bus['departure_time'], $zone);
+      $arrival = new DateTimeImmutable($bus['travel_date'].' '.$bus['arrival_time'], $zone);
+      if ($arrival < $departure) { $arrival = $arrival->modify('+1 day'); }
+      $minutes = (int) (($arrival->getTimestamp() - $departure->getTimestamp()) / 60);
+      $hours = intdiv($minutes, 60);
+      $remainingMinutes = $minutes % 60;
+      $durationParts = [];
+      if ($hours > 0) { $durationParts[] = $hours . ($hours === 1 ? ' hour' : ' hours'); }
+      if ($remainingMinutes > 0 || $hours === 0) { $durationParts[] = $remainingMinutes . ($remainingMinutes === 1 ? ' minute' : ' minutes'); }
+      $durationLabel = implode(' ', $durationParts);
+      $amenities = array_filter(array_map('trim', explode(',', (string) $bus['amenities'])));
+  ?>
+    <article class="rp-card">
+      <div class="rp-main">
+        <div>
+          <span class="rp-type"><?= h($bus['bus_type']) ?></span>
+          <h2>Bus <?= h($bus['bus_number']) ?></h2>
+          <div class="rp-muted">Boarding point<br><?= h($bus['boarding_point'] ?: $bus['origin']) ?></div>
         </div>
-
-        <div class="seats">
-            <?= (int)$bus['available_seats'] ?> seats available
+        <div class="rp-journey">
+          <div><strong><?= h($departure->format('g:i A')) ?></strong><span><?= h($bus['origin']) ?></span><span class="rp-muted"><?= h($departure->format('D, M j, Y')) ?></span></div>
+          <div class="rp-duration">Travel time: <?= h($durationLabel) ?></div>
+          <div><strong><?= h($arrival->format('g:i A')) ?></strong><span><?= h($bus['destination']) ?></span><span class="rp-muted"><?= h($arrival->format('D, M j, Y')) ?></span></div>
         </div>
-
-    </div>
-</div>
-
-<?php endforeach; ?>
-</div>
-         
-<a class="modify-search-btn" href="index.php">&larr;
-     Modify Search</a>
-</div>
-
+        <div class="rp-price">
+          <div><strong>₱<?= number_format((float) $bus['fare_per_seat'], 2) ?></strong><span class="rp-muted">Base fare / seat</span></div>
+          <?php if ($buses): ?>
+            <a class="rp-primary" href="bus.php?schedule_id=<?= (int) $bus['schedule_id'] ?>">View bus →</a>
+          <?php else: ?>
+            <form method="post" action="index.php">
+              <input type="hidden" name="origin" value="<?= h($bus['origin']) ?>">
+              <input type="hidden" name="destination" value="<?= h($bus['destination']) ?>">
+              <input type="hidden" name="travel_date" value="<?= h($bus['travel_date']) ?>">
+              <input type="hidden" name="passengers" value="<?= $passengers ?>">
+              <button class="rp-primary" type="submit">View this route →</button>
+            </form>
+          <?php endif; ?>
+        </div>
+      </div>
+      <div class="rp-bottom">
+        <div class="rp-amenities"><?php foreach ($amenities as $amenity): ?><span><?= h($amenity) ?></span><?php endforeach; ?></div>
+        <span class="rp-seats"><?= (int) $bus['available_seats'] ?> of <?= (int) $bus['total_seats'] ?> seats available</span>
+      </div>
+    </article>
+  <?php endforeach; ?>
+  </div>
+  <p class="rp-muted rp-footnote">Times are in Philippine time. Service fees and tax are shown in your fare summary. Seat availability is checked again when you finish your reservation.</p>
+</section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>
