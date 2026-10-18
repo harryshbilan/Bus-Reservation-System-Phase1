@@ -1,82 +1,66 @@
 <?php
 define('BUSWAY_ADMIN', true);
 require __DIR__ . '/bootstrap.php';
-
-// Only signed-in, active admins can view this page.
 $admin = require_admin();
+require __DIR__ . '/ticket_monitor.php';
+$error = null;
+$totals = [];
+try {
+    $totals = ticket_monitor_totals($pdo);
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    $error = 'Monitoring totals could not be loaded.';
+}
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard | BUSWAY</title>
-
-    <style>
-        body {
-            margin: 0;
-            background: #f7f3ee;
-            color: #1c1208;
-            font-family: Arial, sans-serif;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            padding: 20px 32px;
-            background: white;
-            border-bottom: 4px solid #e8940a;
-        }
-        main {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 24px;
-        }
-        .card {
-            padding: 28px;
-            background: white;
-            border-radius: 8px;
-        }
-        button {
-            padding: 12px 20px;
-            background: #e8940a;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        a { color: #684000; }
-    </style>
-</head>
-<body>
-    <header>
-        <strong>BUSWAY Admin</strong>
-
-        <form method="post" action="logout.php">
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="<?= admin_h(admin_csrf_token()) ?>"
-            >
-            <button type="submit">Sign out</button>
-        </form>
-    </header>
-
-    <main>
-        <div class="card">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Dashboard | BUSWAY Admin</title>
+        <link rel="stylesheet" href="../assets/css/monitor.css" />
+    </head>
+    <body>
+        <header>
+            <strong>BUSWAY Admin</strong>
+            <form method="post" action="logout.php">
+                <input type="hidden" name="csrf_token" value="<?= admin_h(admin_csrf_token()) ?>" />
+                <button>Sign out</button>
+            </form>
+        </header>
+        <main>
             <h1>Welcome, <?= admin_h($admin['display_name']) ?>!</h1>
-            <p>You are signed in to the admin area.</p>
-            <p>
-                Booking management and schedule management
-                will be added here next.
+            <p class="muted">
+                Your booking activity at a glance. Totals cover all dates and count booking
+                references, not individual seats.
+            </p>
+            <?php if($error): ?>
+            <p class="error"><?= admin_h($error) ?></p>
+            <?php else: monitor_cards($totals); endif; ?>
+            <div class="two-column">
+                <section class="panel">
+                    <h2>Tickets & payments</h2>
+                    <p>Search every ticket, view its details and review pending cash payments.</p>
+                    <a class="button" href="tickets.php">Open ticket monitor →</a>
+                    <p><a href="reservations.php">Existing reservation management</a></p>
+                </section>
+                <section class="panel">
+                    <h2>Fleet & departures</h2>
+                    <p>
+                        See registered buses and the routes, terminals and times stored in BUSWAY.
+                    </p>
+                    <a class="button" href="fleet.php">View fleet →</a>
+                </section>
+            </div>
+            <p class="muted">
+                Cancelled booking values are historical amounts, not refund totals. Recorded
+                payments on cancelled bookings remain visible in ticket details.
             </p>
             <p>
-                <a href="reservations.php">Manage reservations</a>
+                <a href="index.php">Refresh totals</a>
+                ·
+                <a href="../public/index.php">View passenger website</a>
             </p>
-
-            <a href="../public/index.php">View passenger website</a>
-        </div>
-    </main>
-</body>
+        </main>
+    </body>
 </html>
