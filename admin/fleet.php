@@ -30,21 +30,47 @@ try {
         <link rel="stylesheet" href="../assets/css/monitor.css" />
     </head>
     <body>
-        <header>
-            <strong>BUSWAY Admin</strong>
-            <nav>
-                <a href="index.php">Dashboard</a>
-                <a href="tickets.php">Ticket monitor</a>
-            </nav>
-        </header>
-        <main>
+        <header class="admin-topbar">
+    <a class="admin-brand" href="index.php">
+        <span class="admin-brand-icon" aria-hidden="true">B</span>
+        <span class="admin-brand-text">
+            <strong>BUSWAY</strong>
+            <small>Admin workspace</small>
+        </span>
+    </a>
+
+    <nav class="admin-navigation" aria-label="Admin navigation">
+        <a href="index.php">Dashboard</a>
+        <a href="tickets.php">Tickets</a>
+        <a href="fleet.php" aria-current="page">Fleet</a>
+        <a class="admin-public-link" href="../public/index.php">
+            Passenger website <span aria-hidden="true">↗</span>
+        </a>
+    </nav>
+</header>
+        <main class="fleet-page">
+    <div class="fleet-heading">
+        <div>
+            <p class="fleet-eyebrow">FLEET OVERVIEW</p>
             <h1>Fleet & departures</h1>
+            <p class="muted">
+                Explore your buses, seating capacity and departure schedules.
+            </p>
+        </div>
+
+        <?php if (!$error): ?>
+            <div class="fleet-count">
+                <strong><?= count($buses) ?></strong>
+                <span>Registered buses</span>
+            </div>
+        <?php endif; ?>
+    </div>
             <p class="notice">
                 These are BUSWAY's stored records. DEMO buses and terminals are sample data, not
                 verified operator services.
             </p>
-            <section class="panel">
-                <h2>Official operator and terminal references</h2>
+           <details class="fleet-references">
+        <summary>Official operator & terminal references</summary>
                 <p>
                     Use published operator details when preparing new fleet records. These links do
                     not verify the sample departures listed below.
@@ -78,7 +104,7 @@ try {
                         </a>
                     </li>
                 </ul>
-            </section>
+            </details>
             <?php if($error): ?>
             <p class="error"><?= admin_h($error) ?></p>
             <?php else: ?>
@@ -98,14 +124,22 @@ try {
                             <td><?= admin_h($b['bus_number']) ?></td>
                             <td><?= admin_h($b['bus_type']) ?></td>
                             <td><?= (int)$b['total_seats'] ?></td>
-                            <td><a href="fleet.php?bus=<?= (int)$b['bus_id'] ?>">View departures</a></td>
+                            <td>
+    <a
+        class="fleet-view"
+        href="fleet.php?bus=<?= (int)$b['bus_id'] ?>#fleet-departures"
+        aria-label="<?= admin_h('View departures for bus ' . $b['bus_number']) ?>"
+    >
+        View departures <span aria-hidden="true">→</span>
+    </a>
+    </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
             <?php if($id): ?>
-            <h2>Departures for selected bus</h2>
+            <h2 id="fleet-departures">Departures for selected bus</h2>
             <div class="table-wrap">
                 <table>
                     <thead>

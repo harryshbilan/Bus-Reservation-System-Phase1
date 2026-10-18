@@ -407,3 +407,151 @@ button:focus-visible {
         display: none;
     }
 }
+
+/* Fleet page */
+.fleet-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.fleet-eyebrow {
+    margin: 0 0 10px;
+    color: #946000;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.fleet-heading h1 {
+    margin: 0;
+    font-size: clamp(28px, 3vw, 40px);
+    letter-spacing: -1px;
+}
+
+.fleet-heading .muted {
+    margin: 12px 0 0;
+    line-height: 1.6;
+}
+
+.fleet-count {
+    display: grid;
+    gap: 6px;
+    min-width: 165px;
+    padding: 20px 24px;
+    background: #fff;
+    border: 1px solid #e5d8c7;
+    border-radius: 18px;
+}
+
+.fleet-count strong {
+    color: #865000;
+    font-size: 32px;
+}
+
+.fleet-count span {
+    color: #756856;
+    font-size: 13px;
+}
+
+.fleet-page .notice {
+    padding: 16px 20px;
+    border-left: 4px solid #e8940a;
+    border-radius: 12px;
+    line-height: 1.6;
+}
+
+.fleet-references {
+    margin: 20px 0 26px;
+    padding: 18px 22px;
+    background: #fff;
+    border: 1px solid #e5d8c7;
+    border-radius: 14px;
+}
+
+.fleet-references summary {
+    color: #65503a;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fleet-references summary:hover {
+    color: #995b00;
+}
+
+.fleet-references summary:focus-visible {
+    outline: 3px solid #a66600;
+    outline-offset: 5px;
+}
+
+.fleet-references p,
+.fleet-references li {
+    line-height: 1.7;
+}
+
+.fleet-page .table-wrap {
+    border-radius: 18px;
+    box-shadow: 0 6px 22px rgba(36, 27, 16, 0.04);
+}
+
+.fleet-page th {
+    padding: 18px 20px;
+    background: #fff5df;
+    color: #73502b;
+    font-size: 13px;
+}
+
+.fleet-page td {
+    padding: 18px 20px;
+    vertical-align: middle;
+}
+
+.fleet-page tbody tr:hover {
+    background: #fffbf3;
+}
+
+.fleet-page td:first-child {
+    font-weight: 600;
+}
+
+.fleet-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid #ead5af;
+    border-radius: 10px;
+    background: #fff7e7;
+    color: #805000;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.fleet-view:hover {
+    background: #e8940a;
+    border-color: #e8940a;
+    color: #241b10;
+}
+
+#fleet-departures {
+    margin-top: 32px;
+    scroll-margin-top: 24px;
+}
+
+@media (max-width: 600px) {
+    .fleet-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .fleet-count {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+}
