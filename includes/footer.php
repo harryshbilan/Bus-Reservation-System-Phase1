@@ -46,9 +46,9 @@
         <div>
             <h3>SUPPORT</h3>
 
-            <a href="contact.php">Contact Us</a>
-            <a href="faqs.php">FAQs</a>
-            <a href="lost-found.php">Lost &amp; Found</a>
+            <a href="support.php#contact">Contact Us</a>
+            <a href="support.php#faqs">FAQs</a>
+            <a href="support.php#lost-found">Lost &amp; Found</a>
         </div>
 
     </div>
@@ -63,4 +63,3 @@
 
 </body>
 </html>
-
