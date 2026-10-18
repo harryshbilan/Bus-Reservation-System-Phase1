@@ -15,12 +15,12 @@
 
         <!-- SERVICES COLUMN -->
         <div>
-            <h3>SERVICES</h3>
+    <h3>SERVICES</h3>
 
-            <a href="index.php#journey-details">Bus Booking</a>
-            <a href="charter.php">Bus Charter</a>
-            <a href="group-reservations.php">Group Reservations</a>
-            <a href="routes.php">Route Schedules</a>
+    <a href="index.php#journey-details">Bus Booking</a>
+    <a href="group-travel.php#charter">Bus Charter</a>
+    <a href="group-travel.php#groups">Group Reservations</a>
+    <a href="browse.php">Route Schedules</a>
         </div>
 
         <!-- ABOUT COLUMN -->
