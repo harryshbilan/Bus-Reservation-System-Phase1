@@ -349,7 +349,7 @@ try {
                             <small>
                                 <?= admin_h($booking['travel_date']) ?>
                                 at
-                                <?= admin_h($booking['departure_time']) ?>
+                                <?= admin_h(date('g:i A', strtotime($booking['departure_time']))) ?>
                             </small>
                         </td>
 
