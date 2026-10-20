@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BUSWAY_ADMIN')) {
     http_response_code(403);
     exit('Forbidden');
@@ -76,7 +77,7 @@ function require_admin(): array
     }
 
     $stmt = $pdo->prepare("
-        SELECT admin_id, username, display_name
+        SELECT admin_id, username, display_name, role
         FROM admin_users
         WHERE admin_id = ?
           AND is_active = 1
@@ -94,4 +95,39 @@ function require_admin(): array
     $_SESSION['last_activity'] = time();
 
     return $admin;
+}
+
+// Admin-only pages call this instead of require_admin(). Staff get a 403, not the page.
+function require_role_admin(): array
+{
+    $user = require_admin();
+
+    if ($user['role'] !== 'admin') {
+        http_response_code(403);
+        require_once __DIR__ . '/layout.php';
+        admin_page_start('Admins only', '', $user);
+        echo '<div class="ad-head"><div><span class="ad-kicker">Access denied</span><h1>Admins only</h1>'
+            . '<p>This page is for administrators. Ask an admin if you need something here.</p></div></div>'
+            . '<p><a class="button" href="index.php">Back to dashboard</a></p>';
+        admin_page_end();
+        exit;
+    }
+
+    return $user;
+}
+
+function is_admin_role(array $user): bool
+{
+    return ($user['role'] ?? '') === 'admin';
+}
+
+// Record an admin-area action. Logging must never break the action itself.
+function admin_log(PDO $pdo, ?int $adminId, string $action, ?string $ticket = null, string $details = ''): void
+{
+    try {
+        $pdo->prepare('INSERT INTO admin_activity (admin_id, action, ticket_number, details) VALUES (?, ?, ?, ?)')
+            ->execute([$adminId, $action, $ticket, mb_substr($details, 0, 255)]);
+    } catch (PDOException $e) {
+        error_log('BUSWAY activity log failed: ' . $e->getMessage());
+    }
 }

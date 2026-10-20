@@ -1,4 +1,5 @@
 <?php
+
 define('BUSWAY_ADMIN', true);
 require __DIR__ . '/bootstrap.php';
 

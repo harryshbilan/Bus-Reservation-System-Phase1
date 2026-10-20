@@ -1,16 +1,21 @@
 <?php
 define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
-require_booking_keys(['travel_date', 'passengers'], 'index.php');
+require_booking_keys(['travel_date', 'passengers'], 'book.php');
 
 $booking = $_SESSION['booking'];
 $origin = $booking['origin'] ?? '';
 $destination = $booking['destination'] ?? '';
 $travelDate = $booking['travel_date'];
 $passengers = (int) $booking['passengers'];
-if ($passengers < 1 || $passengers > 40) { header('Location: index.php'); exit; }
+
+if ($passengers < 1 || $passengers > 40) {
+    header('Location: book.php');
+    exit;
+}
 
 $sort = $_GET['sort'] ?? 'departure';
+
 if (!in_array($sort, ['departure', 'fare', 'duration'], true)) {
     $sort = 'departure';
 }
@@ -117,140 +122,197 @@ if (!$buses) {
     $alternatives = array_slice($alternatives, 0, 12);
 }
 
+$amenityList = static fn (array $bus): array => array_values(array_filter(array_map('trim', explode(',', (string) $bus['amenities']))));
+
+// Filter options come from the buses actually on this route.
+$typeOptions = array_values(array_unique(array_column($buses, 'bus_type')));
+sort($typeOptions);
+$amenityOptions = $buses ? array_values(array_unique(array_merge(...array_map($amenityList, $buses)))) : [];
+sort($amenityOptions);
+$fares = array_map('floatval', array_column($buses, 'fare_per_seat'));
+$fareFloor = $fares ? (int) floor(min($fares)) : 0;
+$fareCeiling = $fares ? (int) ceil(max($fares)) : 0;
+
+$filterType = is_string($_GET['type'] ?? null) && in_array($_GET['type'], $typeOptions, true) ? $_GET['type'] : '';
+$filterAmenity = is_string($_GET['amenity'] ?? null) && in_array($_GET['amenity'], $amenityOptions, true) ? $_GET['amenity'] : '';
+$filterMaxFare = filter_var($_GET['max_fare'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => $fareFloor, 'max_range' => $fareCeiling]]) ?: $fareCeiling;
+$filtersOn = $filterType !== '' || $filterAmenity !== '' || $filterMaxFare < $fareCeiling;
+
+$routeTrips = array_values(array_filter($buses, function (array $bus) use ($filterType, $filterAmenity, $filterMaxFare, $amenityList): bool {
+    return ($filterType === '' || $bus['bus_type'] === $filterType)
+        && ($filterAmenity === '' || in_array($filterAmenity, $amenityList($bus), true))
+        && (float) $bus['fare_per_seat'] <= $filterMaxFare;
+}));
+
+$sortLink = static function (string $key) use ($filterType, $filterAmenity, $filterMaxFare, $fareCeiling): string {
+    $query = ['sort' => $key];
+
+    if ($filterType !== '') {
+        $query['type'] = $filterType;
+    }
+
+    if ($filterAmenity !== '') {
+        $query['amenity'] = $filterAmenity;
+    }
+
+    if ($filterMaxFare < $fareCeiling) {
+        $query['max_fare'] = $filterMaxFare;
+    }
+
+    return 'routes.php?' . http_build_query($query);
+};
+
 $pageTitle = 'Available Buses';
 $activeStep = 'routes';
-$displayTrips = $buses ?: $alternatives;
+$displayTrips = $buses ? $routeTrips : $alternatives;
 $zone = new DateTimeZone('Asia/Manila');
+$pageStyles = ['routes.css'];
 require __DIR__ . '/../includes/header.php';
 ?>
-<style>
-.results-page{max-width:1120px;margin:36px auto 56px;padding:0 20px;color:#21190f}
-.results-page *{box-sizing:border-box}
-.results-page .rp-top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}
-.results-page h1{font-size:clamp(28px,4vw,40px);line-height:1.2;margin:8px 0 12px}
-.results-page .rp-muted{color:#6b6259;font-size:14px;line-height:1.6}
-.results-page .rp-label{color:#8c5905;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
-.results-page .rp-actions{display:flex;gap:10px;flex-wrap:wrap}
-.results-page .rp-link{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;color:#704604;background:white;border:1px solid #d8ccba;border-radius:9px;padding:11px 16px;font-weight:600;font-size:14px}
-.results-page .rp-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:24px 0 16px}
-.results-page .rp-sort{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
-.results-page .rp-sort a{padding:8px 12px;background:#fff;border:1px solid #ded6ca;border-radius:8px;color:#554839;text-decoration:none}
-.results-page .rp-sort a[aria-current="true"]{background:#fff0ce;border-color:#e79805;color:#704604;font-weight:700}
-.results-page .rp-list{display:grid;gap:18px}
-.results-page .rp-card{background:#fff;border:1px solid #e1d7c9;border-radius:18px;overflow:hidden}
-.results-page .rp-main{display:grid;grid-template-columns:minmax(150px,1fr) minmax(310px,2fr) minmax(160px,1fr);gap:26px;align-items:center;padding:26px}
-.results-page .rp-card h2{font-size:22px;margin:10px 0;overflow-wrap:anywhere}
-.results-page .rp-type{display:inline-block;border-radius:6px;background:#fff3da;color:#805000;padding:5px 10px;font-size:12px;font-weight:700}
-.results-page .rp-journey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
-.results-page .rp-journey>div:first-child{grid-column:1;grid-row:1}
-.results-page .rp-journey>div:last-child{grid-column:2;grid-row:1}
-.results-page .rp-journey strong{display:block;font-size:24px;white-space:nowrap}
-.results-page .rp-journey span{display:block;font-size:14px;margin:5px 0;line-height:1.5}
-.results-page .rp-duration{grid-column:1/-1;grid-row:2;justify-self:center;margin-top:8px;padding:8px 16px;border:1px solid #edd7ad;border-radius:999px;background:#fff4dd;color:#704604;font-size:14px;font-weight:600;text-align:center}
-
-.results-page .rp-price{text-align:right}
-.results-page .rp-price strong{font-size:28px;display:block}
-.results-page .rp-primary{display:block;width:100%;margin-top:12px;padding:13px 16px;background:#ed9700;border:1px solid #d28300;border-radius:9px;color:#21190f;font-size:14px;text-align:center;text-decoration:none;cursor:pointer;font-family:inherit;font-weight:700}
-.results-page .rp-bottom{padding:16px 26px;background:#fdfbf7;border-top:1px solid #eee7dc;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
-.results-page .rp-amenities{display:flex;gap:7px;flex-wrap:wrap}
-.results-page .rp-amenities span{font-size:12px;background:white;border:1px solid #e3dacd;border-radius:6px;padding:5px 9px}
-.results-page .rp-seats{font-size:13px;color:#286044;background:#eaf5ed;border-radius:7px;padding:7px 10px}
-.results-page .rp-notice{padding:24px;background:#fff4dc;border:1px solid #ecd5a4;border-radius:14px;line-height:1.6}
-.results-page .rp-notice h2{font-size:22px;margin:0 0 8px}
-.results-page .rp-notice p{margin:0}
-.results-page .rp-footnote{margin-top:20px}
-.results-page a:focus-visible,.results-page button:focus-visible{outline:3px solid #754500;outline-offset:3px}
-@media(max-width:900px){.results-page .rp-main{grid-template-columns:1fr 2fr}.results-page .rp-price{grid-column:1/-1;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:20px}.results-page .rp-price form{min-width:180px}.results-page .rp-price>a{width:auto;min-width:180px}.results-page .rp-primary{margin-top:0}}
-@media(max-width:600px){.results-page{padding:0 16px;margin-top:24px}.results-page .rp-main{display:flex;flex-direction:column;align-items:stretch;padding:20px;gap:20px}.results-page .rp-journey{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.results-page .rp-journey>div:first-child{grid-column:1;grid-row:1}
-.results-page .rp-journey>div:last-child{grid-column:2;grid-row:1}
-.results-page .rp-journey strong{font-size:20px}.results-page .rp-price{display:block;border-top:1px solid #eee7dc;padding-top:16px}.results-page .rp-primary{margin-top:12px}.results-page .rp-price>a{width:100%}.results-page .rp-bottom{padding:16px 20px}}
-.results-page .rp-journey > div:first-child,
-.results-page .rp-journey > div:last-child {
-    text-align: center;
-    min-width: 0;
-}
-</style>
-<section class="results-page" aria-labelledby="results-title">
-  <div class="rp-top">
+<section class="rt-page" aria-labelledby="results-title">
+  <div class="rt-top">
     <div>
-      <div class="rp-label">Available buses</div>
-      <h1 id="results-title"><?= h($origin) ?> → <?= h($destination) ?></h1>
-      <div class="rp-muted"><?= h(date('l, F j, Y', strtotime($travelDate))) ?> · <?= $passengers ?> passenger<?= $passengers === 1 ? '' : 's' ?></div>
+      <span class="bw-kicker">Available buses</span>
+      <h1 id="results-title" class="bw-display"><?= h($origin) ?> <span class="rt-arrow" aria-label="to">→</span> <?= h($destination) ?></h1>
+      <p class="rt-sub"><?= h(date('l, F j, Y', strtotime($travelDate))) ?> · <?= $passengers ?> passenger<?= $passengers === 1 ? '' : 's' ?> · <a href="book.php">Modify search</a></p>
     </div>
-    <div class="rp-actions">
-      <a class="rp-link" href="index.php">← Modify search</a>
-      <a class="rp-link" href="browse.php">Browse other dates</a>
-    </div>
-  </div>
-
-  <?php if (!$buses): ?>
-    <div class="rp-notice" role="status">
-      <h2>No available buses at the moment</h2>
-      <p>No upcoming departure has enough seats for your search.
-      <?= $alternatives ? 'Here are other available buses you can book. These may have a different route or date—check the details before continuing.' : 'Try another route or browse other dates to plan your trip.' ?></p>
-    </div>
-  <?php endif; ?>
-
-  <div class="rp-toolbar">
-    <strong><?= count($displayTrips) ?> <?= $buses ? 'matching' : 'alternative' ?> trip<?= count($displayTrips) === 1 ? '' : 's' ?><?= !$buses && $alternatives ? ' (up to 12 shown)' : '' ?></strong>
     <?php if ($buses): ?>
-      <nav class="rp-sort" aria-label="Sort trips">
-        <span>Sort by</span>
-        <?php foreach (['departure'=>'Departure', 'fare'=>'Lowest fare', 'duration'=>'Shortest trip'] as $key=>$label): ?>
-          <a href="routes.php?sort=<?= $key ?>" aria-current="<?= $sort === $key ? 'true' : 'false' ?>"><?= $label ?></a>
+      <nav class="rt-sort" aria-label="Sort trips">
+        <span>Sort:</span>
+        <?php foreach (['departure' => 'Departure', 'fare' => 'Fare', 'duration' => 'Duration'] as $key => $label): ?>
+          <a href="<?= h($sortLink($key)) ?>"<?= $sort === $key ? ' aria-current="true"' : '' ?>><?= $label ?></a>
         <?php endforeach; ?>
       </nav>
     <?php endif; ?>
   </div>
 
-  <div class="rp-list">
+  <?php if ($buses): ?>
+    <form class="rt-filters" method="get" action="routes.php" id="rt-filters">
+      <input type="hidden" name="sort" value="<?= h($sort) ?>">
+      <fieldset>
+        <legend>Bus type</legend>
+        <div class="rt-pills">
+          <label><input type="radio" name="type" value=""<?= $filterType === '' ? ' checked' : '' ?>><span>All</span></label>
+          <?php foreach ($typeOptions as $type): ?>
+            <label><input type="radio" name="type" value="<?= h($type) ?>"<?= $filterType === $type ? ' checked' : '' ?>><span><?= h($type) ?></span></label>
+          <?php endforeach; ?>
+        </div>
+      </fieldset>
+      <?php if ($fareCeiling > $fareFloor): ?>
+        <div class="rt-filter">
+          <label for="rt-max-fare">Max fare: <output id="rt-fare-out" for="rt-max-fare"><?= $filterMaxFare >= $fareCeiling ? 'Any' : '₱' . number_format($filterMaxFare) ?></output></label>
+          <input type="range" id="rt-max-fare" name="max_fare" min="<?= $fareFloor ?>" max="<?= $fareCeiling ?>" step="1" value="<?= $filterMaxFare ?>">
+        </div>
+      <?php endif; ?>
+      <?php if ($amenityOptions): ?>
+        <div class="rt-filter">
+          <label for="rt-amenity">Amenity</label>
+          <select id="rt-amenity" name="amenity">
+            <option value="">All</option>
+            <?php foreach ($amenityOptions as $amenity): ?>
+              <option value="<?= h($amenity) ?>"<?= $filterAmenity === $amenity ? ' selected' : '' ?>><?= h($amenity) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+      <?php endif; ?>
+      <div class="rt-filter-actions">
+        <button type="submit" class="bw-btn-ghost rt-apply">Apply</button>
+        <a class="bw-btn-ghost" href="<?= h('routes.php?sort=' . $sort) ?>">Reset filters</a>
+      </div>
+    </form>
+  <?php else: ?>
+    <div class="rt-notice" role="status">
+      <h2 class="bw-display">No buses on this route right now</h2>
+      <p>Nothing on your route has enough seats for your group.
+      <?= $alternatives ? 'Here are other buses you can book. They may leave from a different city or on a different date, so check the details.' : 'Try another route, or <a href="browse.php">browse other dates</a>.' ?></p>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($buses && !$routeTrips): ?>
+    <div class="rt-empty">
+      <h2 class="bw-display">No buses match these filters</h2>
+      <p><a href="<?= h('routes.php?sort=' . $sort) ?>">Reset the filters</a> to see all <?= count($buses) ?> trips.</p>
+    </div>
+  <?php endif; ?>
+
+  <div class="rt-list">
   <?php foreach ($displayTrips as $bus):
-      $departure = new DateTimeImmutable($bus['travel_date'].' '.$bus['departure_time'], $zone);
-      $arrival = new DateTimeImmutable($bus['travel_date'].' '.$bus['arrival_time'], $zone);
-      if ($arrival < $departure) { $arrival = $arrival->modify('+1 day'); }
+      $departure = new DateTimeImmutable($bus['travel_date'] . ' ' . $bus['departure_time'], $zone);
+      $arrival = new DateTimeImmutable($bus['travel_date'] . ' ' . $bus['arrival_time'], $zone);
+
+      if ($arrival < $departure) {
+          $arrival = $arrival->modify('+1 day');
+      }
       $minutes = (int) (($arrival->getTimestamp() - $departure->getTimestamp()) / 60);
-      $hours = intdiv($minutes, 60);
-      $remainingMinutes = $minutes % 60;
-      $durationParts = [];
-      if ($hours > 0) { $durationParts[] = $hours . ($hours === 1 ? ' hour' : ' hours'); }
-      if ($remainingMinutes > 0 || $hours === 0) { $durationParts[] = $remainingMinutes . ($remainingMinutes === 1 ? ' minute' : ' minutes'); }
-      $durationLabel = implode(' ', $durationParts);
-      $amenities = array_filter(array_map('trim', explode(',', (string) $bus['amenities'])));
-  ?>
-    <article class="rp-card">
-      <div class="rp-main">
-        <div>
-          <span class="rp-type"><?= h($bus['bus_type']) ?></span>
-          <h2>Bus <?= h($bus['bus_number']) ?></h2>
-          <div class="rp-muted">Boarding point<br><?= h($bus['boarding_point'] ?: $bus['origin']) ?></div>
+      $nextDay = $arrival->format('Y-m-d') !== $departure->format('Y-m-d');
+      $seatsLeft = (int) $bus['available_seats'];
+      $type = strtolower((string) $bus['bus_type']);
+      ?>
+    <article class="rt-card">
+      <div class="rt-bus">
+        <span class="rt-bus-label"><?= h($bus['operator'] ?: 'Bus no.') ?></span>
+        <h2 class="bw-display"><?= h($bus['bus_number']) ?></h2>
+        <span class="rt-type <?= in_array($type, ['express', 'premium'], true) ? $type : '' ?>"><?= h($bus['bus_type']) ?></span>
+      </div>
+      <div class="rt-journey">
+        <div class="rt-stop">
+          <strong class="bw-display"><?= h($departure->format('g:i')) ?><small><?= h($departure->format('A')) ?></small></strong>
+          <span><?= h($bus['origin']) ?></span>
         </div>
-        <div class="rp-journey">
-          <div><strong><?= h($departure->format('g:i A')) ?></strong><span><?= h($bus['origin']) ?></span><span class="rp-muted"><?= h($departure->format('D, M j, Y')) ?></span></div>
-          <div class="rp-duration">Travel time: <?= h($durationLabel) ?></div>
-          <div><strong><?= h($arrival->format('g:i A')) ?></strong><span><?= h($bus['destination']) ?></span><span class="rp-muted"><?= h($arrival->format('D, M j, Y')) ?></span></div>
+        <div class="rt-duration">
+          <span><?= h(format_duration($minutes)) ?></span>
+          <i aria-hidden="true"></i>
         </div>
-        <div class="rp-price">
-          <div><strong>₱<?= number_format((float) $bus['fare_per_seat'], 2) ?></strong><span class="rp-muted">Base fare / seat</span></div>
-          <?php if ($buses): ?>
-            <a class="rp-primary" href="bus.php?schedule_id=<?= (int) $bus['schedule_id'] ?>">View bus →</a>
-          <?php else: ?>
-            <form method="post" action="index.php">
-              <input type="hidden" name="origin" value="<?= h($bus['origin']) ?>">
-              <input type="hidden" name="destination" value="<?= h($bus['destination']) ?>">
-              <input type="hidden" name="travel_date" value="<?= h($bus['travel_date']) ?>">
-              <input type="hidden" name="passengers" value="<?= $passengers ?>">
-              <button class="rp-primary" type="submit">View this route →</button>
-            </form>
-          <?php endif; ?>
+        <div class="rt-stop">
+          <strong class="bw-display"><?= h($arrival->format('g:i')) ?><small><?= h($arrival->format('A')) ?></small><?php if ($nextDay): ?><sup title="Arrives the next day">+1</sup><?php endif; ?></strong>
+          <span><?= h($bus['destination']) ?></span>
         </div>
       </div>
-      <div class="rp-bottom">
-        <div class="rp-amenities"><?php foreach ($amenities as $amenity): ?><span><?= h($amenity) ?></span><?php endforeach; ?></div>
-        <span class="rp-seats"><?= (int) $bus['available_seats'] ?> of <?= (int) $bus['total_seats'] ?> seats available</span>
+      <div class="rt-extras">
+        <?php if ($amenities = $amenityList($bus)): ?>
+          <div class="rt-amenities"><?php foreach ($amenities as $amenity): ?><span><?= h($amenity) ?></span><?php endforeach; ?></div>
+        <?php endif; ?>
+        <span class="rt-seats<?= $seatsLeft < 10 ? ' low' : '' ?>"><?= $seatsLeft ?> seat<?= $seatsLeft === 1 ? '' : 's' ?> left</span>
+        <?php if (!$buses): ?><span class="rt-when"><?= h($departure->format('D, M j')) ?></span><?php endif; ?>
       </div>
+      <div class="rt-price">
+        <strong class="bw-display">₱<?= number_format((float) $bus['fare_per_seat'], 0) ?></strong>
+        <span>per seat</span>
+      </div>
+      <?php if ($buses): ?>
+        <a class="bw-btn rt-select" href="bus.php?schedule_id=<?= (int) $bus['schedule_id'] ?>" aria-label="Select bus <?= h($bus['bus_number']) ?> leaving <?= h($departure->format('g:i A')) ?>">Select →</a>
+      <?php else: ?>
+        <form method="post" action="book.php">
+          <input type="hidden" name="origin" value="<?= h($bus['origin']) ?>">
+          <input type="hidden" name="destination" value="<?= h($bus['destination']) ?>">
+          <input type="hidden" name="travel_date" value="<?= h($bus['travel_date']) ?>">
+          <input type="hidden" name="passengers" value="<?= $passengers ?>">
+          <button class="bw-btn rt-select" type="submit">View route →</button>
+        </form>
+      <?php endif; ?>
     </article>
   <?php endforeach; ?>
   </div>
-  <p class="rp-muted rp-footnote">Times are in Philippine time. Service fees and tax are shown in your fare summary. Seat availability is checked again when you finish your reservation.</p>
+
+  <p class="rt-footnote">Times are Philippine time. Service fee and tax show on the fare summary. Seats are checked again when you reserve.</p>
+  <a class="rt-back" href="book.php">← Modify search</a>
 </section>
+
+<?php if ($buses): ?>
+<script>
+// Apply filters as soon as they change; the Apply button stays for no-JS.
+(() => {
+  const form = document.getElementById('rt-filters');
+  const range = document.getElementById('rt-max-fare');
+  const out = document.getElementById('rt-fare-out');
+  form.querySelector('.rt-apply').hidden = true;
+  form.addEventListener('change', () => form.submit());
+  if (range) {
+    range.addEventListener('input', () => {
+      out.textContent = range.value === range.max ? 'Any' : '₱' + Number(range.value).toLocaleString();
+    });
+  }
+})();
+</script>
+<?php endif; ?>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

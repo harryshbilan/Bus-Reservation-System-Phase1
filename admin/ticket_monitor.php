@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BUSWAY_ADMIN')) {
     http_response_code(403);
     exit();
@@ -18,7 +19,8 @@ function ticket_monitor_sql(): string
         MIN(s.travel_date) AS travel_date, MIN(s.departure_time) AS departure_time,
         SUM(COALESCE(pay.amount_due,0)) AS amount_due,
         SUM(COALESCE(pay.amount_paid,0)) AS amount_paid,
-        SUM(COALESCE(pay.amount_recorded,0)) AS amount_recorded
+        SUM(COALESCE(pay.amount_recorded,0)) AS amount_recorded,
+        GROUP_CONCAT(DISTINCT pay.methods SEPARATOR ', ') AS payment_methods
       FROM reservations r
       JOIN passengers pax ON pax.passenger_id=r.passenger_id
       JOIN schedules s ON s.schedule_id=r.schedule_id
@@ -28,7 +30,8 @@ function ticket_monitor_sql(): string
         SELECT reservation_id,
           SUM(CASE WHEN status='PENDING' THEN amount ELSE 0 END) AS amount_due,
           SUM(CASE WHEN status='PAID' THEN amount ELSE 0 END) AS amount_paid,
-          SUM(amount) AS amount_recorded
+          SUM(amount) AS amount_recorded,
+          GROUP_CONCAT(DISTINCT payment_method) AS methods
         FROM payments GROUP BY reservation_id
       ) pay ON pay.reservation_id=r.reservation_id
       GROUP BY r.ticket_number";
@@ -42,9 +45,10 @@ function ticket_monitor_totals(PDO $pdo): array
             ticket_monitor_sql() .
             ') groups_by_ticket GROUP BY status'
     );
+
     return $q->fetchAll(PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 }
-function monitor_cards(array $totals): void
+function monitor_cards(array $totals, bool $showMoney = true): void
 {
     $all = array_sum(array_column($totals, 'tickets'));
     $cards = [
@@ -59,20 +63,17 @@ function monitor_cards(array $totals): void
             'PAID',
             'Paid',
             $totals['PAID']['tickets'] ?? 0,
-            '₱' .
-            number_format((float) ($totals['PAID']['paid'] ?? 0), 2) .
-            ' recorded on paid bookings'
+            $showMoney ? '₱' . number_format((float) ($totals['PAID']['paid'] ?? 0), 2) . ' recorded on paid bookings' : 'Fully paid bookings'
         ],
         [
             'CANCELLED',
             'Cancelled',
             $totals['CANCELLED']['tickets'] ?? 0,
-            '₱' .
-            number_format((float) ($totals['CANCELLED']['recorded'] ?? 0), 2) .
-            ' original recorded value'
+            $showMoney ? '₱' . number_format((float) ($totals['CANCELLED']['recorded'] ?? 0), 2) . ' original recorded value' : 'Cancelled bookings'
         ]
     ];
     echo '<div class="monitor-cards">';
+
     foreach ($cards as [$status, $label, $count, $note]) {
         echo '<a class="monitor-card" href="tickets.php?status=' .
             rawurlencode($status) .
@@ -85,6 +86,7 @@ function monitor_cards(array $totals): void
             '</small></a>';
     }
     echo '</div>';
+
     if (isset($totals['REVIEW'])) {
         echo '<p class="notice">' .
             (int) $totals['REVIEW']['tickets'] .

@@ -1,0 +1,143 @@
+/* cancellation.php (also uses the ticket styles in checkout.css) */
+.cx-head .bw-kicker {
+    color: var(--bw-danger);
+}
+.cx-head h1 {
+    font-size: clamp(42px, 7vw, 64px);
+}
+.cx-head h1 em {
+    font-style: normal;
+    color: var(--bw-danger);
+}
+.cx-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+.cx-intro {
+    margin: -6px 0 20px;
+}
+.cx-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+.cx-found {
+    border: 2px solid var(--bw-danger);
+}
+.cx-found-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--bw-line);
+}
+.cx-found-top .st-card-title {
+    display: block;
+    margin-bottom: 4px;
+}
+.cx-ref {
+    font-size: clamp(24px, 4vw, 34px);
+    overflow-wrap: anywhere;
+}
+.cx-active {
+    padding: 5px 14px;
+    border: 1px solid var(--bw-danger);
+    background: #fff1f1;
+    color: var(--bw-danger);
+    font-family: var(--bw-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.cx-fee {
+    margin: 16px 0 6px;
+    padding: 14px 16px;
+    border: 1px solid var(--bw-line);
+    background: var(--bw-bg);
+    color: var(--bw-muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.cx-fee strong {
+    color: var(--bw-danger);
+}
+.cx-fee .cx-refund {
+    color: #1d5fa8;
+}
+.bw-btn.cx-danger {
+    background: var(--bw-danger);
+}
+.bw-btn.cx-danger:hover {
+    background: #922b21;
+}
+.cx-back {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--bw-muted);
+    font-size: 14px;
+}
+.cx-policy {
+    position: sticky;
+    top: 24px;
+    margin: 0;
+}
+.cx-policy ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 18px;
+}
+.cx-policy li {
+    padding-left: 14px;
+    border-left: 3px solid var(--bw-amber);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--bw-muted);
+}
+.cx-policy li strong {
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--bw-display);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bw-ink);
+}
+.cx-policy a {
+    color: var(--bw-amber-dark);
+}
+.cx-done {
+    margin: 0 auto;
+}
+.cx-strip {
+    background: #fff1f1;
+    color: var(--bw-danger);
+    border-bottom: 1px solid var(--bw-danger);
+}
+.cx-full {
+    width: 100%;
+}
+@media (max-width: 860px) {
+    .cx-layout {
+        grid-template-columns: 1fr;
+    }
+    .cx-policy {
+        position: static;
+    }
+}
+@media (max-width: 560px) {
+    .cx-fields {
+        grid-template-columns: 1fr;
+    }
+}
+.cx-done .tk-grid {
+    padding-top: 0;
+    border-top: 0;
+}

@@ -1,0 +1,134 @@
+/* browse.php */
+.browse-page {
+    max-width: 1400px;
+    margin: 24px auto;
+}
+.browse-page h1 {
+    margin: 16px 0;
+}
+.browse-page p {
+    line-height: 1.6;
+}
+.browse-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 24px 0;
+}
+.browse-tabs a {
+    padding: 12px 18px;
+    border: 1px solid #d9cbb7;
+    border-radius: 6px;
+    color: #543600;
+    background: white;
+    text-decoration: none;
+}
+.browse-tabs a[aria-current='page'] {
+    background: #e8940a;
+    color: #171008;
+    border-color: #e8940a;
+    font-weight: bold;
+}
+.browse-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: end;
+    padding: 20px;
+    background: white;
+    border: 1px solid #ded6cc;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+.browse-filters label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+.browse-filters > div {
+    flex: 1 1 160px;
+    min-width: 0;
+}
+.browse-filters input,
+.browse-filters select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    font: inherit;
+    background: white;
+    color: #1c1208;
+}
+.browse-page button {
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 5px;
+    background: #e8940a;
+    color: #1c1208;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+.browse-table-wrap {
+    overflow-x: auto;
+    background: white;
+    border: 1px solid #ded6cc;
+    border-radius: 8px;
+}
+.browse-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+.browse-table th,
+.browse-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+.browse-table thead {
+    background: #fff3dc;
+}
+.browse-table .browse-date th {
+    background: #f6f1e9;
+    font-size: 16px;
+}
+.browse-table small {
+    display: block;
+    margin-top: 6px;
+    color: #655c52;
+}
+.browse-seats {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #dff3e4;
+    color: #1d6030;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.browse-error {
+    padding: 16px;
+    background: #ffe3df;
+    color: #922d22;
+}
+.browse-empty {
+    padding: 32px;
+    background: white;
+    border: 1px solid #ded6cc;
+    border-radius: 8px;
+    text-align: center;
+}
+.browse-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    margin: 24px 0;
+}
+.browse-page a:focus-visible,
+.browse-page button:focus-visible {
+    outline: 3px solid #684000;
+    outline-offset: 3px;
+}

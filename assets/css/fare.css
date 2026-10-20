@@ -1,0 +1,91 @@
+/* fare.php */
+.fr-card {
+    padding: 0;
+    overflow: hidden;
+}
+.fr-trip {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--bw-line);
+}
+.fr-route {
+    font-size: 26px;
+}
+.fr-meta {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--bw-muted);
+}
+.fr-body {
+    padding: 24px 28px;
+}
+.fr-seats {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-family: var(--bw-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bw-muted);
+}
+.fr-seats a {
+    font-family: var(--bw-body);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--bw-amber-dark);
+}
+.fr-lines {
+    margin: 0;
+    display: grid;
+    gap: 14px;
+}
+.fr-lines div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    color: var(--bw-muted);
+    font-size: 15px;
+}
+.fr-lines dd {
+    margin: 0;
+    font-family: var(--bw-display);
+    font-size: 21px;
+    font-weight: 700;
+}
+.fr-lines .main {
+    color: var(--bw-ink);
+}
+.fr-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid var(--bw-line);
+}
+.fr-total span {
+    font-family: var(--bw-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bw-muted);
+}
+.fr-total strong {
+    font-size: clamp(40px, 7vw, 54px);
+    color: var(--bw-amber);
+    line-height: 1;
+}
+.fr-wide {
+    grid-column: 1 / -1;
+}
+.fr-lines dt a {
+    margin-left: 6px;
+    font-size: 13px;
+    color: var(--bw-amber-dark);
+}

@@ -22,13 +22,16 @@ $periods = [
     'date' => 'Choose a Date',
 ];
 $period = browse_text($_GET, 'period', 'month');
+
 if (!isset($periods[$period])) {
     $period = 'month';
 }
 $chosenDate = browse_text($_GET, 'date', $today);
 $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $chosenDate, $zone);
+
 if (!$parsedDate || $parsedDate->format('Y-m-d') !== $chosenDate || $chosenDate < $today) {
     $chosenDate = $today;
+
     if ($period === 'date') {
         $error = 'Please choose today or a later valid date.';
     }
@@ -36,6 +39,7 @@ if (!$parsedDate || $parsedDate->format('Y-m-d') !== $chosenDate || $chosenDate 
 
 $start = $today;
 $end = $today;
+
 switch ($period) {
     case 'tomorrow':
         $start = $end = $now->modify('+1 day')->format('Y-m-d');
@@ -53,8 +57,11 @@ switch ($period) {
 
 $origin = browse_text($_GET, 'origin');
 $destination = browse_text($_GET, 'destination');
-$passengers = filter_var($_GET['passengers'] ?? 1, FILTER_VALIDATE_INT,
-    ['options' => ['min_range' => 1, 'max_range' => 40]]) ?: 1;
+$passengers = filter_var(
+    $_GET['passengers'] ?? 1,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1, 'max_range' => 40]]
+) ?: 1;
 
 if (empty($_SESSION['browse_token'])) {
     $_SESSION['browse_token'] = bin2hex(random_bytes(32));
@@ -79,15 +86,22 @@ $tripSql = "
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = browse_text($_POST, 'csrf_token');
+
     if (!hash_equals($_SESSION['browse_token'], $token)) {
         http_response_code(403);
         exit('This form has expired. Reload the page and try again.');
     }
 
-    $scheduleId = filter_var($_POST['schedule_id'] ?? null, FILTER_VALIDATE_INT,
-        ['options' => ['min_range' => 1]]);
-    $partySize = filter_var($_POST['passengers'] ?? null, FILTER_VALIDATE_INT,
-        ['options' => ['min_range' => 1, 'max_range' => 40]]);
+    $scheduleId = filter_var(
+        $_POST['schedule_id'] ?? null,
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+    $partySize = filter_var(
+        $_POST['passengers'] ?? null,
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1, 'max_range' => 40]]
+    );
 
     if (!$scheduleId || !$partySize) {
         $error = 'Please choose a valid trip and passenger count.';
@@ -141,8 +155,11 @@ try {
 $total = count($trips);
 $pageSize = 25;
 $pages = max(1, (int) ceil($total / $pageSize));
-$page = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT,
-    ['options' => ['min_range' => 1]]) ?: 1;
+$page = filter_var(
+    $_GET['page'] ?? 1,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+) ?: 1;
 $page = min($page, $pages);
 $visibleTrips = array_slice($trips, ($page - 1) * $pageSize, $pageSize);
 $query = [
@@ -151,34 +168,9 @@ $query = [
 ];
 $pageTitle = 'Browse Available Buses';
 $activeStep = null;
+$pageStyles = ['browse.css'];
 require __DIR__ . '/../includes/header.php';
 ?>
-
-<style>
-.browse-page { max-width: 1400px; margin: 24px auto; }
-.browse-page h1 { margin: 16px 0; }
-.browse-page p { line-height: 1.6; }
-.browse-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
-.browse-tabs a { padding: 12px 18px; border: 1px solid #d9cbb7; border-radius: 6px; color: #543600; background: white; text-decoration: none; }
-.browse-tabs a[aria-current="page"] { background: #e8940a; color: #171008; border-color: #e8940a; font-weight: bold; }
-.browse-filters { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; padding: 20px; background: white; border: 1px solid #ded6cc; border-radius: 8px; margin-bottom: 24px; }
-.browse-filters label { display: block; margin-bottom: 8px; font-weight: bold; }
-.browse-filters > div { flex: 1 1 160px; min-width: 0; }
-.browse-filters input, .browse-filters select { width: 100%; min-height: 44px; padding: 10px; border: 1px solid #aaa; border-radius: 4px; font: inherit; background: white; color: #1c1208; }
-.browse-page button { padding: 12px 18px; border: 0; border-radius: 5px; background: #e8940a; color: #1c1208; font: inherit; font-weight: bold; cursor: pointer; }
-.browse-table-wrap { overflow-x: auto; background: white; border: 1px solid #ded6cc; border-radius: 8px; }
-.browse-table { width: 100%; border-collapse: collapse; min-width: 850px; }
-.browse-table th, .browse-table td { padding: 16px; text-align: left; border-bottom: 1px solid #eee; vertical-align: top; }
-.browse-table thead { background: #fff3dc; }
-.browse-table .browse-date th { background: #f6f1e9; font-size: 16px; }
-.browse-table small { display: block; margin-top: 6px; color: #655c52; }
-.browse-seats { display: inline-block; padding: 6px 10px; background: #dff3e4; color: #1d6030; border-radius: 4px; white-space: nowrap; }
-.browse-error { padding: 16px; background: #ffe3df; color: #922d22; }
-.browse-empty { padding: 32px; background: white; border: 1px solid #ded6cc; border-radius: 8px; text-align: center; }
-.browse-pagination { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin: 24px 0; }
-.browse-page a:focus-visible, .browse-page button:focus-visible { outline: 3px solid #684000; outline-offset: 3px; }
-</style>
-
 
 <section class="browse-page">
     <a href="index.php">← Back to home</a>

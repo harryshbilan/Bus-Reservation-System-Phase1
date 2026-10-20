@@ -1,0 +1,479 @@
+/* Checkout pages: payment.php, pay-online.php, ticket.php */
+
+/* ---- Payment (payment.php) ---- */
+.pm-wide {
+    grid-column: 1 / -1;
+}
+.pm-amount {
+    padding-top: 12px;
+    border-top: 1px solid var(--bw-line);
+    font-size: 17px !important;
+}
+.pm-amount dd {
+    font-family: var(--bw-display);
+    font-size: 26px;
+}
+.pm-breakdown {
+    margin: 8px 0 0;
+    text-align: right;
+}
+
+.pm-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 0 20px;
+    padding: 0;
+    border: 1px solid var(--bw-line);
+}
+.pm-tabs label {
+    cursor: pointer;
+}
+.pm-tabs label + label {
+    border-left: 1px solid var(--bw-line);
+}
+.pm-tabs input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.pm-tabs span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    padding: 14px 10px;
+    background: var(--bw-bg);
+    color: var(--bw-muted);
+    font-family: var(--bw-display);
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+.pm-tabs span img {
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.pm-tabs label:hover span {
+    color: var(--bw-ink);
+}
+.pm-tabs input:checked + span {
+    background: var(--bw-amber);
+    color: #fff;
+}
+.pm-tabs input:focus-visible + span {
+    outline: 3px solid #8a5200;
+    outline-offset: -3px;
+}
+
+.pm-panel {
+    display: none;
+    border-left: 4px solid var(--bw-amber);
+}
+.pm-panel strong {
+    font-family: var(--bw-display);
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--bw-amber-dark);
+}
+.pm-panel p {
+    margin: 6px 0 0;
+    color: var(--bw-muted);
+    line-height: 1.6;
+    font-size: 15px;
+}
+#counter-payment-form:has(input[value='Card']:checked) .pm-panel[data-for='Card'],
+#counter-payment-form:has(input[value='GCash']:checked) .pm-panel[data-for='GCash'],
+#counter-payment-form:has(input[value='Cash']:checked) .pm-panel[data-for='Cash'] {
+    display: block;
+}
+#counter-reserve-button:disabled {
+    background: var(--bw-line);
+    color: var(--bw-muted);
+    cursor: wait;
+}
+
+@media (max-width: 520px) {
+    .pm-tabs span {
+        flex-direction: column;
+        gap: 6px;
+        font-size: 14px;
+    }
+}
+
+/* ---- Pay online (pay-online.php) ---- */
+.pay-online {
+    max-width: 600px;
+}
+.pay-card {
+    border-top: 5px solid var(--bw-amber);
+}
+.pay-card > p:first-child {
+    margin-top: 0;
+    color: var(--bw-muted);
+    line-height: 1.6;
+}
+.pay-sandbox {
+    margin: 14px 0 18px;
+    padding: 12px 14px;
+    border: 1px solid #c3d4f5;
+    background: #eef4ff;
+    color: #25406e;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.pay-hold {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: var(--bw-muted);
+}
+.pay-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding: 16px 18px;
+    background: var(--bw-amber-soft);
+    border: 1px solid #f0d9b0;
+}
+.pay-amount span {
+    color: #6b4a14;
+    font-size: 14px;
+}
+.pay-amount strong {
+    font-family: var(--bw-display);
+    font-size: 34px;
+    color: var(--bw-amber-dark);
+}
+.pay-online .st-field {
+    margin-bottom: 16px;
+}
+.pay-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+.pay-submit {
+    width: 100%;
+    margin-top: 6px;
+}
+.pay-submit:disabled {
+    background: var(--bw-line);
+    color: var(--bw-muted);
+    cursor: wait;
+}
+.pay-secure {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--bw-muted);
+}
+.pay-alt {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--bw-line);
+    font-size: 14px;
+    color: var(--bw-muted);
+}
+.pay-alt button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--bw-amber-dark);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+@media (max-width: 480px) {
+    .pay-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---- Ticket (ticket.php) ---- */
+.tk-banner {
+    margin-bottom: 28px;
+    padding: 40px 32px;
+    background: var(--bw-surface);
+    border: 2px solid var(--bw-amber);
+    text-align: center;
+}
+.tk-banner.pending {
+    border-color: #d9a43a;
+}
+.tk-banner.cancelled {
+    border-color: var(--bw-danger);
+}
+.tk-icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    background: var(--bw-amber);
+    color: var(--bw-ink);
+    font-size: 30px;
+    font-weight: 800;
+}
+.tk-banner.pending .tk-icon {
+    background: #f3c77a;
+}
+.tk-banner.cancelled .tk-icon {
+    background: var(--bw-danger);
+    color: #fff;
+}
+.tk-state {
+    display: block;
+    margin-bottom: 8px;
+    font-family: var(--bw-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bw-amber-dark);
+}
+.tk-banner.cancelled .tk-state {
+    color: var(--bw-danger);
+}
+.tk-banner h1 {
+    margin: 0 0 10px;
+    font-size: clamp(32px, 5vw, 46px);
+}
+.tk-banner p {
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--bw-muted);
+    line-height: 1.6;
+}
+
+.tk-ticket {
+    margin-bottom: 24px;
+    overflow: hidden;
+    background: var(--bw-surface);
+    border: 1px solid var(--bw-line);
+}
+.tk-strip {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 28px;
+    background: var(--bw-amber);
+    color: #fff;
+    font-family: var(--bw-display);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.tk-strip span:last-child {
+    overflow-wrap: anywhere;
+}
+.tk-body {
+    padding: 28px;
+}
+.tk-label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--bw-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bw-muted);
+}
+.tk-journey {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 26px;
+}
+.tk-journey > div:last-child {
+    text-align: right;
+}
+.tk-journey strong {
+    display: block;
+    font-size: 30px;
+    line-height: 1;
+    text-transform: none;
+}
+.tk-journey em {
+    display: block;
+    margin-top: 6px;
+    font-size: 24px;
+    font-style: normal;
+    color: var(--bw-amber-dark);
+    text-transform: none;
+}
+.tk-mid {
+    text-align: center;
+    font-size: 28px;
+    color: var(--bw-ghost);
+}
+.tk-mid small {
+    display: block;
+    font-size: 12px;
+    color: var(--bw-muted);
+}
+
+.tk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px 20px;
+    margin: 0 0 22px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--bw-line);
+}
+.tk-grid dt {
+    margin-bottom: 4px;
+    font-family: var(--bw-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bw-muted);
+}
+.tk-grid dd {
+    margin: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.tk-wide {
+    grid-column: span 3;
+}
+
+.tk-ref {
+    margin-bottom: 2px;
+    padding: 18px 20px;
+    background: var(--bw-bg);
+    border: 1px dashed var(--bw-line);
+}
+.tk-ref strong {
+    display: block;
+    font-family: var(--bw-display);
+    font-size: clamp(22px, 4vw, 30px);
+    letter-spacing: 0.06em;
+    color: var(--bw-amber-dark);
+    overflow-wrap: anywhere;
+}
+.tk-pay {
+    padding: 16px 20px;
+    background: var(--bw-bg);
+    border: 1px solid var(--bw-line);
+}
+.tk-pay dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 28px;
+    margin: 0;
+}
+.tk-pay dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+}
+.tk-pay dt {
+    color: var(--bw-muted);
+}
+.tk-pay dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+.tk-pay dd.hl {
+    color: var(--bw-amber-dark);
+}
+.tk-pay dd.due {
+    color: var(--bw-danger);
+}
+.tk-pay .st-note {
+    margin: 12px 0 0;
+}
+
+.tk-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.tk-actions .bw-btn,
+.tk-actions .bw-btn-ghost {
+    width: 100%;
+}
+.tk-cancel:hover {
+    color: var(--bw-danger);
+    border-color: var(--bw-danger);
+}
+
+@media (max-width: 600px) {
+    .tk-banner {
+        padding: 28px 18px;
+    }
+    .tk-body {
+        padding: 20px;
+    }
+    .tk-journey strong {
+        font-size: 24px;
+    }
+    .tk-journey em {
+        font-size: 19px;
+    }
+    .tk-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .tk-wide {
+        grid-column: span 2;
+    }
+    .tk-pay dl {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    @page {
+        margin: 12mm;
+    }
+    .bw-header,
+    .bw-progress,
+    .bw-footer,
+    .tk-actions {
+        display: none !important;
+    }
+    body,
+    .page-container {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .st-page {
+        padding: 0;
+        max-width: none;
+    }
+    .tk-banner {
+        padding: 12px;
+        margin-bottom: 12px;
+        border-width: 1px;
+    }
+    .tk-icon {
+        display: none;
+    }
+    .tk-strip {
+        background: none !important;
+        color: #000;
+        border-bottom: 2px solid #000;
+    }
+    .tk-ticket,
+    .tk-ref,
+    .tk-pay {
+        break-inside: avoid;
+    }
+}

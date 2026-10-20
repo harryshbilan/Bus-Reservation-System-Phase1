@@ -60,235 +60,135 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle = 'Cancel Reservation';
 $activeStep = null;
+$pageStyles = ['checkout.css', 'cancel.css'];
 
 require __DIR__ . '/../includes/header.php';
 ?>
-
-<div class="max-w-2xl" style="margin-left:auto;margin-right:auto;">
-
+<?php
+$niceDate = static fn (?string $date): string => $date ? date('M j, Y', strtotime($date)) : '—';
+$niceTime = static fn (?string $time): string => $time ? date('g:i A', strtotime($time)) : '—';
+?>
+<section class="st-page cx-page">
   <?php if ($cancelled): ?>
-
-    <!-- =========================================
-         CANCELLATION COMPLETE (Image 5)
-    ========================================== -->
-    <div class="confirm-banner danger">
-      <div class="confirm-icon danger">&#10003;</div>
-      <div class="confirm-eyebrow danger">RESERVATION CANCELLED</div>
-      <h1 class="confirm-title">Your cancellation is complete.</h1>
-      <p class="confirm-sub">Your refund will be processed according to the payment method used.</p>
-    </div>
-
-    <div class="ticket-card">
-      <div class="ticket-head danger">
-        <span>CANCELLATION RECEIPT</span>
-        <span><?= h($cancelled['ticket_number'] ?? '') ?></span>
+    <div class="st-narrow cx-done">
+      <div class="tk-banner cancelled">
+        <span class="tk-icon" aria-hidden="true">✕</span>
+        <span class="tk-state">Reservation cancelled</span>
+        <h1 class="bw-display">Booking voided</h1>
+        <p>Your seats have been released. Any refund goes back through the way you paid.</p>
       </div>
-
-      <div class="ticket-body">
-        <div class="ticket-detail-grid">
-          <div>
-            <div class="tdl">PASSENGER</div>
-            <div class="tdv"><?= h($cancelled['name'] ?? 'N/A') ?></div>
-          </div>
-          <div>
-            <div class="tdl">TRAVEL DATE</div>
-            <div class="tdv"><?= h($cancelled['travel_date'] ?? '') ?></div>
-          </div>
-          <div>
-            <div class="tdl">ORIGINAL FARE</div>
-            <div class="tdv"><?= peso((float) ($cancelled['total_fare'] ?? 0)) ?></div>
-          </div>
-          <div>
-            <div class="tdl">CANCELLATION FEE</div>
-            <div class="tdv danger"><?= peso((float) ($cancelled['cancellation_fee'] ?? 0)) ?></div>
-          </div>
-          <div>
-            <div class="tdl">REFUND AMOUNT</div>
-            <div class="tdv"><?= peso((float) ($cancelled['refund_amount'] ?? 0)) ?></div>
-          </div>
-          <div>
-            <div class="tdl">CANCELLATION REASON</div>
-            <div class="tdv"><?= h($cancelled['cancel_reason'] ?? '') ?></div>
-          </div>
-          <div>
-            <div class="tdl">STATUS</div>
-            <div class="tdv danger">CANCELLED</div>
+      <article class="tk-ticket">
+        <header class="tk-strip cx-strip"><span>Cancellation receipt</span><span>Ref <?= h($cancelled['ticket_number'] ?? '') ?></span></header>
+        <div class="tk-body">
+          <dl class="tk-grid">
+            <div><dt>Passenger</dt><dd><?= h($cancelled['name'] ?? '—') ?></dd></div>
+            <div><dt>Route</dt><dd><?= h($cancelled['route'] ?? '—') ?></dd></div>
+            <div><dt>Travel date</dt><dd><?= h($niceDate($cancelled['travel_date'] ?? null)) ?></dd></div>
+            <div class="tk-wide"><dt>Reason</dt><dd><?= h($cancelled['cancel_reason'] ?? '') ?></dd></div>
+          </dl>
+          <div class="tk-pay">
+            <span class="tk-label">Refund breakdown</span>
+            <dl>
+              <div><dt>Amount paid</dt><dd><?= peso((float) ($cancelled['total_fare'] ?? 0)) ?></dd></div>
+              <div><dt>Cancellation fee (10%)</dt><dd class="due"><?= peso((float) ($cancelled['cancellation_fee'] ?? 0)) ?></dd></div>
+              <div><dt>Refund amount</dt><dd class="hl"><?= peso((float) ($cancelled['refund_amount'] ?? 0)) ?></dd></div>
+              <div><dt>Refund timeline</dt><dd>1–2 business days</dd></div>
+            </dl>
+            <?php if ((float) ($cancelled['total_fare'] ?? 0) <= 0): ?>
+              <p class="st-note">Nothing was paid on this booking yet, so there's nothing to refund.</p>
+            <?php endif; ?>
           </div>
         </div>
-
-        <div style="margin-top:24px;">
-          <a class="btn-primary" href="index.php">BOOK ANOTHER TRIP</a>
-        </div>
-      </div>
-    </div>
-
-  <?php elseif ($step === 'policy' && $_SERVER['REQUEST_METHOD'] !== 'POST'): ?>
-
-    <!-- =========================================
-         STEP 1: CANCELLATION POLICY (Image 2)
-    ========================================== -->
-    <div class="cancellation-wrapper">
-      <div class="cancellation-container">
-        <header class="policy-header">
-          <span class="sub-title">BEFORE YOU CANCEL</span>
-          <h1 class="main-title">CANCELLATION POLICY</h1>
-          <p class="description">Please review these important conditions before locating and voiding your reservation.</p>
-        </header>
-
-        <div class="policy-grid">
-          <div class="policy-card">
-            <span class="card-num">01</span>
-            <h3>2-Hour Rule</h3>
-            <p>Cancellations must be completed at least 2 hours before the scheduled departure.</p>
-          </div>
-          <div class="policy-card">
-            <span class="card-num">02</span>
-            <h3>10% Cancellation Fee</h3>
-            <p>A 10% fee is deducted from the total amount paid before your refund is issued.</p>
-          </div>
-          <div class="policy-card">
-            <span class="card-num">03</span>
-            <h3>Refund Window</h3>
-            <p>Approved refunds are returned to the original payment method within 1–2 business days.</p>
-          </div>
-        </div>
-
-        <div class="info-alert">
-          <div class="alert-icon">!</div>
-          <div class="alert-content">
-            <strong>Have your booking information ready</strong>
-            <p>You will need your booking reference, passenger name, mobile number, and registered email address to verify the reservation.</p>
-          </div>
-        </div>
-
-        <div class="policy-actions">
-          <a href="index.php" class="btn-secondary">&larr; BACK TO HOME</a>
-          <a href="cancellation.php?step=form" class="btn-primary">I UNDERSTAND — CONTINUE TO CANCELLATION</a>
-        </div>
-      </div>
+      </article>
+      <a class="bw-btn cx-full" href="book.php">Book a new trip →</a>
     </div>
 
   <?php else: ?>
-
-    <!-- =========================================
-         PAGE HEADER FOR LOOKUP / DETAILS
-    ========================================== -->
-    <div class="section-head">
-      <div class="eyebrow accent">MANAGE YOUR TRIP</div>
-      <h1 class="section-title">CANCEL RESERVATION</h1>
-      <p class="confirm-sub">Find your reservation and review the cancellation details before confirming.</p>
+    <div class="st-head cx-head">
+      <span class="bw-kicker">Cancel reservation</span>
+      <h1 class="bw-display">Find /<br><em>void your booking</em></h1>
+      <p>Enter your booking reference and the email you booked with.</p>
     </div>
 
-    <!-- ERROR MESSAGE -->
-    <?php if ($error): ?>
-      <div class="error-box">
-        <div>
-          <div class="etitle">CANCELLATION NOT AVAILABLE</div>
-          <div class="emsg"><?= h($error) ?></div>
-        </div>
-      </div>
-    <?php endif; ?>
+    <div class="cx-layout">
+      <div>
+        <?php if ($error): ?>
+          <div class="st-alert" role="alert"><?= h($error) ?></div>
+        <?php endif; ?>
 
-    <!-- RESERVATION FOUND (Image 4) -->
-    <?php if ($reservation && $action !== 'cancel'): ?>
-      <?php
-        $totalFare = (float)$reservation['total_fare'];
-        [$fee, $refund] = cancellation_breakdown($totalFare);
-      ?>
-
-      <div class="ticket-card">
-        <div class="ticket-head">
-          <span>RESERVATION FOUND</span>
-          <span><?= h($reservation['ticket_number'] ?? '') ?></span>
-        </div>
-
-        <div class="ticket-body">
-          <div class="ticket-detail-grid">
-            <div>
-              <div class="tdl">PASSENGER</div>
-              <div class="tdv"><?= h($reservation['name']) ?></div>
-            </div>
-            <div>
-              <div class="tdl">TRAVEL DATE</div>
-              <div class="tdv"><?= h($reservation['travel_date'] ?? '') ?></div>
-            </div>
-            <?php if (!empty($reservation['route'])): ?>
+        <?php if ($reservation && $action !== 'cancel'):
+            $totalFare = (float) $reservation['total_fare'];
+            [$fee, $refund] = cancellation_breakdown($totalFare);
+            ?>
+          <div class="st-card cx-found">
+            <div class="cx-found-top">
               <div>
-                <div class="tdl">ROUTE</div>
-                <div class="tdv"><?= h($reservation['route']) ?></div>
+                <span class="st-card-title">Reservation found</span>
+                <div class="bw-display cx-ref"><?= h($reservation['ticket_number'] ?? '') ?></div>
               </div>
-            <?php endif; ?>
-            <?php if (!empty($reservation['departure_time'])): ?>
-              <div>
-                <div class="tdl">DEPARTURE</div>
-                <div class="tdv"><?= h($reservation['departure_time']) ?></div>
-              </div>
-            <?php endif; ?>
-            <div>
-              <div class="tdl">TOTAL FARE</div>
-              <div class="tdv"><?= peso($totalFare) ?></div>
+              <span class="cx-active">Active</span>
             </div>
+            <dl class="st-rows">
+              <div><dt>Route</dt><dd><?= h($reservation['route'] ?? '—') ?></dd></div>
+              <div><dt>Passenger</dt><dd><?= h($reservation['name']) ?></dd></div>
+              <div><dt>Travel date</dt><dd><?= h($niceDate($reservation['travel_date'] ?? null)) ?></dd></div>
+              <div><dt>Departure</dt><dd><?= h($niceTime($reservation['departure_time'] ?? null)) ?></dd></div>
+              <div><dt>Bus</dt><dd><?= h($reservation['bus_number'] ?? '—') ?></dd></div>
+              <div><dt>Amount paid</dt><dd class="hl"><?= peso($totalFare) ?></dd></div>
+            </dl>
           </div>
 
-          <div style="margin-top:28px;">
-            <div class="card-title" style="margin-bottom:10px;">CANCELLATION REASON</div>
-            <p class="confirm-sub" style="margin-bottom:14px;">Please select a reason for cancelling your reservation.</p>
-
-            <form method="post" action="cancellation.php">
-              <input type="hidden" name="ticket_number" value="<?= h($ticketNumber) ?>">
-              <input type="hidden" name="email" value="<?= h($email) ?>">
-              <input type="hidden" name="action" value="cancel">
-
-              <select class="input" id="cancel_reason" name="cancel_reason" required>
+          <form method="post" action="cancellation.php" class="st-card">
+            <input type="hidden" name="ticket_number" value="<?= h($ticketNumber) ?>">
+            <input type="hidden" name="email" value="<?= h($email) ?>">
+            <input type="hidden" name="action" value="cancel">
+            <div class="st-field">
+              <label for="cancel_reason">Cancellation reason</label>
+              <select id="cancel_reason" name="cancel_reason" required>
                 <option value="">Select a reason</option>
-                <option value="Change of plans">Change of plans</option>
-                <option value="Travel date changed">Travel date changed</option>
-                <option value="Found another trip">Found another trip</option>
-                <option value="Personal reasons">Personal reasons</option>
-                <option value="Other">Other</option>
+                <?php foreach (['Change of plans', 'Travel date changed', 'Found another trip', 'Medical emergency', 'Personal reasons', 'Other'] as $reason): ?>
+                  <option value="<?= h($reason) ?>"><?= h($reason) ?></option>
+                <?php endforeach; ?>
               </select>
+            </div>
+            <p class="cx-fee">A <strong>10% cancellation fee (<?= peso($fee) ?>)</strong> is deducted. Estimated refund: <strong class="cx-refund"><?= peso($refund) ?></strong> within 1–2 business days.</p>
+            <div class="st-actions">
+              <a class="bw-btn-ghost" href="cancellation.php">← Search again</a>
+              <button class="bw-btn cx-danger" type="submit">Confirm cancellation</button>
+            </div>
+          </form>
 
-              <div class="refund-note" style="margin-top:20px;">
-                Cancellation fee: <strong><?= peso($fee) ?></strong><br>
-                Estimated refund: <strong><?= peso($refund) ?></strong><br><br>
-                A 10% cancellation fee will be deducted from the original fare. The remaining 90% will be refunded.
+        <?php else: ?>
+          <form method="post" action="cancellation.php" class="st-card">
+            <h2 class="st-card-title">Booking lookup</h2>
+            <p class="st-note cx-intro">Your reference is on your ticket and in your confirmation email. It starts with <strong>BW-</strong>.</p>
+            <div class="cx-fields">
+              <div class="st-field">
+                <label for="ticket_number">Booking reference</label>
+                <input id="ticket_number" name="ticket_number" type="text" value="<?= h($ticketNumber) ?>" placeholder="BW-XXXXXXXX" autocomplete="off" required>
               </div>
-
-              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:24px;">
-                <a class="btn-secondary" href="cancellation.php?step=form">SEARCH AGAIN</a>
-                <button class="btn-primary" type="submit">CONFIRM CANCELLATION</button>
+              <div class="st-field">
+                <label for="email">Booking email</label>
+                <input id="email" name="email" type="email" value="<?= h($email) ?>" placeholder="you@example.com" autocomplete="email" required>
               </div>
-            </form>
-          </div>
-        </div>
+            </div>
+            <input type="hidden" name="action" value="lookup">
+            <button class="bw-btn" type="submit">Find booking →</button>
+          </form>
+        <?php endif; ?>
+        <a class="cx-back" href="index.php">← Back to home</a>
       </div>
 
-    <!-- STEP 2: FIND RESERVATION (Image 3) -->
-    <?php else: ?>
-      <div class="card">
-        <div class="card-title">FIND YOUR RESERVATION</div>
-        <p class="confirm-sub" style="margin-bottom:24px;">Enter the ticket number and email address used during booking.</p>
-
-        <form method="post" action="cancellation.php">
-          <div class="grid-2 mb-6">
-            <div>
-              <label class="label" for="ticket_number">TICKET NUMBER</label>
-              <input class="input" id="ticket_number" name="ticket_number" type="text" value="<?= h($ticketNumber) ?>" placeholder="e.g. BR-123456" required>
-            </div>
-            <div>
-              <label class="label" for="email">BOOKING EMAIL</label>
-              <input class="input" id="email" name="email" type="email" value="<?= h($email) ?>" placeholder="you@example.com" required>
-            </div>
-          </div>
-
-          <input type="hidden" name="action" value="lookup">
-          <button class="btn-primary" type="submit">FIND RESERVATION</button>
-        </form>
-      </div>
-    <?php endif; ?>
-
+      <aside class="st-card cx-policy" aria-labelledby="cx-policy-title">
+        <h2 id="cx-policy-title" class="st-card-title">Cancellation policy</h2>
+        <ul>
+          <li><strong>2-hour rule</strong>Cancel at least 2 hours before your bus leaves.</li>
+          <li><strong>10% fee</strong>Taken off every refund. It can't be waived.</li>
+          <li><strong>Refund window</strong>Back to your original payment method within 1–2 business days.</li>
+          <li><strong>Need help?</strong><a href="support.php#contact">Contact support</a> and we'll sort it out with you.</li>
+        </ul>
+      </aside>
+    </div>
   <?php endif; ?>
-
-</div>
-
+</section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

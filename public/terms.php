@@ -3,54 +3,9 @@ define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
 
 $pageTitle = 'Terms & Conditions | BUSWAY';
+$pageStyles = ['terms.css'];
 require __DIR__ . '/../includes/header.php';
 ?>
-
-<style>
-.policy-page {
-    max-width: 1000px;
-    margin: 40px auto 70px;
-    padding: 0 24px;
-    color: #f5f5f5;
-}
-.policy-hero {
-    padding: 35px;
-    border-radius: 14px;
-    background: #150e09;
-    border-left: 5px solid #ff9d00;
-    margin-bottom: 30px;
-}
-.policy-hero .eyebrow {
-    color: #ff9d00;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-.policy-hero h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    margin: 12px 0;
-}
-.policy-card {
-    background: #1a1410;
-    border: 1px solid #393029;
-    border-radius: 12px;
-    padding: 26px;
-    margin-bottom: 22px;
-}
-.policy-card h2 { color: #ff9d00; margin-top: 0; }
-.policy-card h3 { color: #fff; margin-top: 24px; }
-.policy-card p, .policy-card li {
-    color: #ded8d2;
-    line-height: 1.85;
-}
-.policy-card li { margin-bottom: 9px; }
-.policy-note {
-    padding: 14px 18px;
-    background: #251a10;
-    border-left: 3px solid #ff9d00;
-    line-height: 1.8;
-    color: #eee;
-}
-</style>
 
 <div class="policy-page">
 

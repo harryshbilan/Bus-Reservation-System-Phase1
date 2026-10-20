@@ -1,3 +1,4 @@
+/* Slide-in menu (native <dialog>, opened by navigation.js) */
 .bw-drawer:not([open]) {
     display: none;
 }
@@ -6,26 +7,27 @@
     position: fixed;
     inset: 0 0 0 auto;
     margin: 0;
-    width: min(400px, 100%);
+    width: min(340px, 100%);
     max-width: 100%;
     height: 100dvh;
     max-height: 100dvh;
     padding: 0;
     border: 0;
     background: #fff;
-    color: #21180e;
-    box-shadow: -12px 0 40px #0002;
+    color: #1c1208;
+    box-shadow: -8px 0 32px rgb(0 0 0 / 15%);
     overflow: hidden;
+    font-family: 'Outfit', system-ui, sans-serif;
 }
 
 .bw-drawer[open] {
     display: flex;
     flex-direction: column;
-    animation: bw-enter .18s ease-out;
+    animation: bw-enter 0.2s ease-out;
 }
 
 .bw-drawer::backdrop {
-    background: rgb(20 14 6 / 55%);
+    background: rgb(28 18 8 / 45%);
 }
 
 .bw-drawer * {
@@ -36,28 +38,37 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 22px 24px;
-    border-bottom: 2px solid #e99500;
+    padding: 18px 24px;
+    border-bottom: 2px solid #e8940a;
     flex-shrink: 0;
 }
 
 .bw-drawer-heading h2 {
     margin: 0;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .bw-drawer-heading button {
-    width: 44px;
-    height: 44px;
-    border: 1px solid #ded6ca;
-    border-radius: 8px;
-    background: white;
-    color: #584c3a;
-    font-size: 30px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    background: none;
+    color: #6b6157;
+    font-size: 22px;
     cursor: pointer;
 }
 
+.bw-drawer-heading button:hover {
+    color: #1c1208;
+}
+
 .bw-drawer-scroll {
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     overscroll-behavior: contain;
     flex: 1;
@@ -65,6 +76,8 @@
 
 .bw-drawer nav {
     display: block;
+    padding: 8px 0;
+    flex: 1;
 }
 
 .bw-drawer nav a,
@@ -72,65 +85,101 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 20px 24px;
+    padding: 16px 24px;
     text-decoration: none;
     color: inherit;
-    border-bottom: 1px solid #eee7dd;
+    border-bottom: 1px solid #f0ece4;
+    transition: background 0.15s;
 }
 
-.bw-drawer nav a:hover {
-    background: #fff5e3;
+.bw-drawer nav a:hover,
+.bw-drawer nav a[aria-current='page'] {
+    background: #fff8ee;
 }
 
 .bw-drawer strong {
     display: block;
-    font-size: 16px;
-    line-height: 1.5;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    text-transform: uppercase;
 }
 
 .bw-drawer small {
     display: block;
     font-size: 13px;
-    line-height: 1.6;
-    color: #716453;
-    margin-top: 3px;
+    line-height: 1.5;
+    color: #6b6157;
+    margin-top: 2px;
 }
 
 .bw-icon {
     display: grid;
     place-items: center;
-    flex: 0 0 36px;
-    height: 36px;
-    background: #fff0ce;
-    border-radius: 8px;
-    color: #885500;
-    font: 700 23px Arial, sans-serif;
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #fff3dc;
+    color: #a36200;
+}
+
+.bw-chevron {
+    margin-left: auto;
+    color: #c9c0b6;
+    font-size: 22px;
 }
 
 .bw-staff {
-    padding: 24px 16px 8px;
+    padding: 14px 16px;
+    border-top: 2px solid #f0ece4;
 }
 
 .bw-staff a {
     border: 0;
-    border-radius: 12px;
-    background: #21180e;
-    color: #ffb329;
-    padding: 18px 16px;
+    border-radius: 6px;
+    background: #1c1208;
+    color: #e8940a;
+    padding: 14px 16px;
+}
+
+.bw-staff .bw-icon {
+    background: rgb(232 148 10 / 15%);
+    color: #e8940a;
+}
+
+.bw-staff strong {
+    font-size: 18px;
 }
 
 .bw-staff small {
-    color: #e1c8a6;
+    color: #a89e94;
 }
 
 .bw-staff a:hover {
-    background: #382816;
+    background: #2e2010;
 }
 
 .bw-drawer-brand {
-    padding: 8px 24px 20px;
-    font-size: 12px;
-    color: #716453;
+    margin: 0;
+    padding: 18px 24px 22px;
+    border-top: 1px solid #f0ece4;
+    background: #f7f3ee;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6b6157;
+}
+
+.bw-drawer-brand strong {
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    color: #6b6157;
+}
+
+.bw-noscript {
+    padding: 10px 24px;
+    background: #fff;
 }
 
 .bw-drawer a:focus-visible,

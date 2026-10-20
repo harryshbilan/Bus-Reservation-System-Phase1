@@ -1,4 +1,5 @@
 <?php
+
 if (PHP_SAPI !== 'cli') {
     http_response_code(403);
     exit('Forbidden');
@@ -39,8 +40,8 @@ try {
 
     $stmt = $pdo->prepare("
         INSERT INTO admin_users
-            (username, password_hash, display_name)
-        VALUES (?, ?, ?)
+            (username, password_hash, display_name, role)
+        VALUES (?, ?, ?, 'admin')
     ");
 
     $stmt->execute([

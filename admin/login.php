@@ -82,6 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $pdo->commit();
 
+            if ($admin && !$signedIn) {
+                admin_log($pdo, (int) $admin['admin_id'], 'sign_in_failed', null, !(int) $admin['is_active'] ? 'Disabled account' : ((int) $admin['is_locked'] ? 'Attempt while locked' : 'Wrong password'));
+            }
+
             if ($signedIn) {
                 // Replace the session ID after successful authentication.
                 session_regenerate_id(true);
@@ -91,6 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'last_activity' => time(),
                     'csrf_token' => bin2hex(random_bytes(32))
                 ];
+
+                admin_log($pdo, (int) $admin['admin_id'], 'signed_in');
 
                 header('Location: index.php');
                 exit;
@@ -111,94 +117,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Login | BUSWAY</title>
-
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 24px;
-            background: #f7f3ee;
-            color: #1c1208;
-            font-family: Arial, sans-serif;
-        }
-        main {
-            width: 100%;
-            max-width: 420px;
-            padding: 32px;
-            background: white;
-            border-top: 5px solid #e8940a;
-            border-radius: 8px;
-            box-shadow: 0 8px 30px #00000012;
-        }
-        h1 { margin-top: 0; }
-        label { display: block; margin: 20px 0 8px; }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #aaa;
-            border-radius: 4px;
-            font: inherit;
-        }
-        button {
-            width: 100%;
-            margin-top: 24px;
-            padding: 14px;
-            border: 0;
-            border-radius: 4px;
-            background: #e8940a;
-            color: #1c1208;
-            font: inherit;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .error { padding: 12px; background: #fff0ee; color: #9b211b; }
-        a { color: #684000; }
-    </style>
+    <title>Staff sign in | BUSWAY Admin</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Outfit:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="../assets/css/monitor.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
-<main>
-    <h1>BUSWAY Admin</h1>
-    <p>Sign in to manage bookings and schedules.</p>
+<main class="ad-login">
+    <div class="ad-login-card">
+        <span class="admin-logo" style="display: block"><img src="../assets/images/logo.jpg" alt="" width="72" height="72"></span>
+        <h1>BUSWAY Admin</h1>
+        <p>Staff sign in to manage bookings and payments.</p>
 
-    <?php if ($error): ?>
-        <p class="error" role="alert"><?= admin_h($error) ?></p>
-    <?php endif; ?>
+        <?php if ($error): ?>
+            <p class="error" role="alert"><?= admin_h($error) ?></p>
+        <?php endif; ?>
 
-    <form method="post">
-        <input
-            type="hidden"
-            name="csrf_token"
-            value="<?= admin_h(admin_csrf_token()) ?>"
-        >
-
-        <label for="username">Username</label>
-        <input
-            id="username"
-            name="username"
-            value="<?= admin_h($username) ?>"
-            maxlength="50"
-            autocomplete="username"
-            required
-        >
-
-        <label for="password">Password</label>
-        <input
-            type="password"
-            id="password"
-            name="password"
-            maxlength="72"
-            autocomplete="current-password"
-            required
-        >
-
-        <button type="submit">Sign in</button>
-    </form>
-
-    <p><a href="../public/index.php">← Back to BUSWAY</a></p>
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="<?= admin_h(admin_csrf_token()) ?>">
+            <label for="username">Username</label>
+            <input id="username" name="username" value="<?= admin_h($username) ?>" maxlength="50" autocomplete="username" required autofocus>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" maxlength="72" autocomplete="current-password" required>
+            <button type="submit">Sign in</button>
+        </form>
+        <p class="muted" style="font-size: 13px; text-align: center; margin: 14px 0 0">Five wrong tries locks the account for 15 minutes.</p>
+        <a class="ad-back" href="../public/index.php">← Back to BUSWAY</a>
+    </div>
 </main>
 </body>
 </html>

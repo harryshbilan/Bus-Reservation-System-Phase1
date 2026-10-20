@@ -208,12 +208,6 @@ th {
     color: #922d22;
 }
 
-.two-column {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
 dl > div {
     display: flex;
     justify-content: space-between;
@@ -237,10 +231,6 @@ button:focus-visible {
 @media (max-width: 800px) {
     .monitor-cards {
         grid-template-columns: 1fr 1fr;
-    }
-
-    .two-column {
-        grid-template-columns: 1fr;
     }
 
     main {
@@ -275,7 +265,6 @@ button:focus-visible {
     }
 }
 
-
 /* Admin header */
 .admin-topbar {
     display: flex;
@@ -294,19 +283,6 @@ button:focus-visible {
     gap: 12px;
     color: #241b10;
     text-decoration: none;
-}
-
-.admin-brand-icon {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    background: #e8940a;
-    color: #241b10;
-    font-size: 25px;
-    font-weight: 800;
-    box-shadow: 0 4px 10px rgba(232, 148, 10, 0.2);
 }
 
 .admin-brand-text {
@@ -344,7 +320,9 @@ button:focus-visible {
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
-    transition: background-color 160ms ease, color 160ms ease;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease;
 }
 
 .admin-navigation a:hover {
@@ -352,7 +330,7 @@ button:focus-visible {
     color: #794600;
 }
 
-.admin-navigation a[aria-current="page"] {
+.admin-navigation a[aria-current='page'] {
     background: #fff0cf;
     border-color: #e8940a;
     color: #794600;
@@ -409,52 +387,6 @@ button:focus-visible {
 }
 
 /* Fleet page */
-.fleet-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 24px;
-}
-
-.fleet-eyebrow {
-    margin: 0 0 10px;
-    color: #946000;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-.fleet-heading h1 {
-    margin: 0;
-    font-size: clamp(28px, 3vw, 40px);
-    letter-spacing: -1px;
-}
-
-.fleet-heading .muted {
-    margin: 12px 0 0;
-    line-height: 1.6;
-}
-
-.fleet-count {
-    display: grid;
-    gap: 6px;
-    min-width: 165px;
-    padding: 20px 24px;
-    background: #fff;
-    border: 1px solid #e5d8c7;
-    border-radius: 18px;
-}
-
-.fleet-count strong {
-    color: #865000;
-    font-size: 32px;
-}
-
-.fleet-count span {
-    color: #756856;
-    font-size: 13px;
-}
 
 .fleet-page .notice {
     padding: 16px 20px;
@@ -540,18 +472,4 @@ button:focus-visible {
 #fleet-departures {
     margin-top: 32px;
     scroll-margin-top: 24px;
-}
-
-@media (max-width: 600px) {
-    .fleet-heading {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .fleet-count {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 16px 20px;
-    }
 }

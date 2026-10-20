@@ -4,67 +4,9 @@ define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
 
 $pageTitle = 'Discounts & Policies | BUSWAY';
+$pageStyles = ['discounts.css'];
 require __DIR__ . '/../includes/header.php';
 ?>
-
-<style>
-.policy-page {
-    max-width: 1000px;
-    margin: 40px auto 70px;
-    padding: 0 24px;
-    color: #f5f5f5;
-}
-.policy-hero {
-    padding: 35px;
-    border-radius: 14px;
-    background: #150e09;
-    border-left: 5px solid #ff9d00;
-    margin-bottom: 30px;
-}
-.policy-hero .eyebrow {
-    color: #ff9d00;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-.policy-hero h1 {
-    margin: 12px 0;
-    font-size: clamp(28px, 5vw, 42px);
-}
-.policy-hero p, .policy-card p {
-    line-height: 1.8;
-    color: #d4d0cc;
-}
-.policy-card {
-    background: #1a1410;
-    border: 1px solid #393029;
-    border-radius: 12px;
-    padding: 26px;
-    margin-bottom: 22px;
-}
-.policy-card h2 {
-    color: #ff9d00;
-    margin-top: 0;
-}
-.policy-card h3 {
-    margin-top: 24px;
-    color: #fff;
-}
-.policy-card li {
-    color: #ded8d2;
-    line-height: 1.8;
-    margin-bottom: 9px;
-}
-.policy-note {
-    border-left: 3px solid #ff9d00;
-    padding: 12px 16px;
-    background: #251a10;
-    line-height: 1.7;
-}
-.policy-updated {
-    color: #aaa;
-    font-size: 13px;
-}
-</style>
 
 <div class="policy-page">
 
@@ -150,7 +92,7 @@ require __DIR__ . '/../includes/header.php';
         </p>
     </section>
 
-    <section class="policy-card">
+    <section class="policy-card" id="baggage">
         <h2>2. Baggage Allowance &amp; Cargo Rules</h2>
 
         <h3>Free Hand Luggage</h3>
@@ -165,6 +107,13 @@ require __DIR__ . '/../includes/header.php';
             Each passenger may bring one checked bag weighing up
             to 15 kg in the bus luggage compartment, subject to
             the operator's baggage handling rules.
+        </p>
+
+        <h3>Extra Checked Bags</h3>
+        <p>
+            Need more room? Add extra checked bags of up to 20 kg each
+            for ₱120 per bag on the Passenger Info step when you book,
+            up to 3 extra bags per passenger.
         </p>
 
         <h3>Excess and Oversized Baggage</h3>

@@ -1,0 +1,532 @@
+/* Admin theme, loaded after monitor.css: same fonts and colours as the passenger site. */
+:root {
+    --ad-ink: #1c1208;
+    --ad-muted: #6b6157;
+    --ad-line: #e1d5c4;
+    --ad-amber: #e8940a;
+    --ad-amber-dark: #a36200;
+    --ad-soft: #fff8ee;
+    --ad-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+}
+
+body {
+    font:
+        15px/1.5 'Outfit',
+        system-ui,
+        sans-serif;
+    color: var(--ad-ink);
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--ad-display);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.05;
+}
+h1 {
+    margin: 0 0 6px;
+    font-size: clamp(32px, 4vw, 42px);
+    text-transform: uppercase;
+}
+h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+}
+h3 {
+    font-size: 19px;
+}
+
+main {
+    margin: 32px auto 56px;
+}
+
+button,
+.button {
+    font: 700 15px var(--ad-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    background: var(--ad-amber);
+    color: #fff;
+    transition: background 0.15s;
+}
+button:hover,
+.button:hover {
+    background: #c07508;
+}
+.button.ghost {
+    background: #fff;
+    color: var(--ad-muted);
+    border: 1px solid var(--ad-line);
+}
+.button.ghost:hover {
+    color: var(--ad-amber-dark);
+    border-color: var(--ad-amber);
+}
+.button.danger,
+button.danger {
+    background: #c0392b;
+}
+.button.danger:hover,
+button.danger:hover {
+    background: #922b21;
+}
+input,
+select {
+    border-radius: 4px;
+    font:
+        15px 'Outfit',
+        sans-serif;
+}
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--ad-amber);
+    box-shadow: 0 0 0 3px rgb(232 148 10 / 18%);
+}
+label {
+    font-weight: 600;
+}
+
+/* ---------- header ---------- */
+.admin-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 12px 28px;
+    gap: 20px;
+}
+.admin-logo {
+    width: 46px;
+    height: 46px;
+    overflow: hidden;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.admin-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.45);
+}
+.admin-brand-text strong {
+    font-family: var(--ad-display);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+.admin-topbar .admin-navigation {
+    flex: 1;
+    justify-content: center;
+}
+.admin-navigation a {
+    font-family: var(--ad-display);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    min-height: 40px;
+}
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.admin-user form {
+    margin: 0;
+}
+.admin-public-link {
+    color: var(--ad-muted);
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.admin-public-link:hover {
+    color: var(--ad-amber-dark);
+}
+.admin-user-name {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--ad-soft);
+    color: #6b4a14;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.admin-signout {
+    padding: 9px 14px;
+    background: var(--ad-ink);
+    font-size: 14px;
+}
+.admin-signout:hover {
+    background: #3a2a15;
+}
+@media (max-width: 1050px) {
+    .admin-topbar {
+        flex-wrap: wrap;
+    }
+    .admin-topbar .admin-navigation {
+        order: 3;
+        flex-basis: 100%;
+        justify-content: flex-start;
+    }
+}
+@media (max-width: 700px) {
+    .admin-topbar {
+        position: static;
+    }
+    .admin-user {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* ---------- page heading ---------- */
+.ad-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+.ad-kicker {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ad-amber-dark);
+    font: 700 13px var(--ad-display);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+.ad-head p {
+    margin: 4px 0 0;
+    color: var(--ad-muted);
+}
+.ad-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ---------- stat cards ---------- */
+.monitor-card {
+    border-radius: 8px;
+    transition:
+        border-color 0.15s,
+        transform 0.15s;
+}
+.monitor-card:hover {
+    border-color: var(--ad-amber);
+    transform: translateY(-2px);
+}
+.monitor-card span {
+    font: 700 14px var(--ad-display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ad-muted);
+}
+.monitor-card strong {
+    font: 800 44px var(--ad-display);
+    margin: 6px 0;
+}
+
+/* ---------- panels, tables, statuses ---------- */
+.panel,
+.filters,
+.table-wrap {
+    border-radius: 8px;
+}
+.panel h2 {
+    margin-top: 0;
+}
+th {
+    font: 700 14px var(--ad-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #73502b;
+    background: var(--ad-soft);
+}
+tbody tr:hover {
+    background: #fffbf3;
+}
+.status {
+    font: 700 12px var(--ad-display);
+    letter-spacing: 0.08em;
+    border-radius: 3px;
+    padding: 4px 9px;
+}
+.REVIEW {
+    background: #ece4ff;
+    color: #4b2c91;
+}
+.notice {
+    border-left: 4px solid var(--ad-amber);
+    border-radius: 4px;
+    line-height: 1.6;
+}
+.notice.success {
+    background: #e3f3e7;
+    border-left-color: #2e7d32;
+    color: #1d5a24;
+}
+.error {
+    border-left: 4px solid #c0392b;
+    border-radius: 4px;
+}
+.method {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid var(--ad-line);
+    border-radius: 3px;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ad-muted);
+}
+.ad-ref {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- dashboard ---------- */
+.ad-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+.ad-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.ad-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0e8dc;
+}
+.ad-list li:last-child {
+    border-bottom: 0;
+}
+.ad-list .ad-sub {
+    display: block;
+    font-size: 13px;
+    color: var(--ad-muted);
+}
+.ad-empty {
+    color: var(--ad-muted);
+    margin: 6px 0 0;
+}
+.ad-bar {
+    width: 110px;
+    height: 8px;
+    border-radius: 4px;
+    background: #f0e8dc;
+    overflow: hidden;
+}
+.ad-bar i {
+    display: block;
+    height: 100%;
+    background: var(--ad-amber);
+}
+.ad-bar.full i {
+    background: #c0392b;
+}
+.ad-money {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.ad-money div {
+    padding: 14px;
+    border-radius: 6px;
+    background: var(--ad-soft);
+}
+.ad-money span {
+    display: block;
+    font-size: 13px;
+    color: var(--ad-muted);
+}
+.ad-money strong {
+    display: block;
+    margin-top: 4px;
+    font: 800 24px var(--ad-display);
+}
+.ad-quick {
+    display: grid;
+    gap: 10px;
+}
+.ad-quick a {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border: 1px solid var(--ad-line);
+    border-radius: 6px;
+    color: var(--ad-ink);
+    text-decoration: none;
+    font-weight: 600;
+}
+.ad-quick a:hover {
+    border-color: var(--ad-amber);
+    background: var(--ad-soft);
+}
+.ad-quick small {
+    margin: 2px 0 0;
+    font-weight: 400;
+}
+@media (max-width: 900px) {
+    .ad-grid {
+        grid-template-columns: 1fr;
+    }
+    .ad-money {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- detail pages ---------- */
+.ad-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 20px;
+    align-items: start;
+}
+.ad-detail .panel {
+    margin: 0 0 20px;
+}
+.ad-detail dl {
+    margin: 0;
+}
+@media (max-width: 900px) {
+    .ad-detail {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- login ---------- */
+.ad-login {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+.ad-login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 32px;
+    background: #fff;
+    border-top: 5px solid var(--ad-amber);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgb(0 0 0 / 8%);
+}
+.ad-login-card .admin-logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 14px;
+}
+.ad-login-card h1 {
+    text-align: center;
+}
+.ad-login-card > p {
+    text-align: center;
+    color: var(--ad-muted);
+    margin: 0 0 18px;
+}
+.ad-login-card label {
+    margin: 18px 0 6px;
+}
+.ad-login-card input {
+    width: 100%;
+}
+.ad-login-card button {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    font-size: 17px;
+}
+.ad-login-card .ad-back {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    font-size: 14px;
+}
+.ad-login {
+    max-width: none;
+}
+
+/* ---------- staff & discounts ---------- */
+.ad-inline {
+    display: inline;
+    margin: 0;
+}
+.ad-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+.ad-row-actions .button {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+.ad-reset summary {
+    list-style: none;
+    cursor: pointer;
+}
+.ad-reset summary::-webkit-details-marker {
+    display: none;
+}
+.ad-reset[open] form {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid var(--ad-line);
+    border-radius: 6px;
+    background: var(--ad-soft);
+}
+.ad-reset form input {
+    width: 100%;
+    margin-bottom: 8px;
+}
+.ad-form label {
+    margin: 14px 0 6px;
+}
+.ad-form input,
+.ad-form select {
+    width: 100%;
+}
+.ad-form button {
+    width: 100%;
+    margin-top: 18px;
+}
+td select {
+    padding: 7px 8px;
+}
+
+/* Seven admin links fit on one row on laptop screens */
+.admin-topbar .admin-navigation {
+    flex-wrap: nowrap;
+    gap: 2px;
+}
+.admin-navigation a {
+    padding: 8px 11px;
+    font-size: 16px;
+    white-space: nowrap;
+}
+@media (max-width: 1220px) {
+    .admin-topbar {
+        flex-wrap: wrap;
+    }
+    .admin-topbar .admin-navigation {
+        order: 3;
+        flex-basis: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+}

@@ -53,7 +53,6 @@ try {
     natcasesort($destinations);
 
     $routePairs = array_values($routePairs);
-
 } catch (Throwable $e) {
     // The informational sections can still display if the database
     // is temporarily unavailable.
@@ -93,7 +92,7 @@ require __DIR__ . '/../includes/header.php';
                     Discover Our Story →
                 </a>
 
-                <a href="index.php#journey-details"
+                <a href="book.php"
                    class="about-btn about-btn-outline">
                     Book a Trip
                 </a>
@@ -193,7 +192,7 @@ require __DIR__ . '/../includes/header.php';
                     manage their reservations.
                 </p>
 
-                <a href="index.php#journey-details"
+                <a href="book.php"
                    class="about-text-link">
                     Plan your next trip →
                 </a>
@@ -364,7 +363,7 @@ require __DIR__ . '/../includes/header.php';
                 'phone' => 'Contact number to be confirmed.'
             ]
         ];
-        ?>
+?>
 
         <div class="about-terminal-grid">
 
@@ -474,7 +473,7 @@ require __DIR__ . '/../includes/header.php';
                         Add valid routes and schedules to your existing
                         database to populate this finder.
                     </p>
-                    <a href="index.php#journey-details"
+                    <a href="book.php"
                        class="about-text-link">
                         Visit the booking page →
                     </a>
@@ -482,7 +481,7 @@ require __DIR__ . '/../includes/header.php';
 
             <?php else: ?>
 
-                <form action="index.php"
+                <form action="book.php"
                       method="post"
                       class="about-route-form">
 
@@ -758,45 +757,45 @@ require __DIR__ . '/../includes/header.php';
 
 
         <?php
-        $jobs = [
-            [
-                'number' => '01',
-                'title' => 'Bus Drivers',
-                'description' => 'Support safe driving, responsible passenger transport, and scheduled departures.',
-                'skills' => 'Valid qualifications, defensive driving, safety awareness'
-            ],
-            [
-                'number' => '02',
-                'title' => 'Maintenance Technicians',
-                'description' => 'Help inspect, maintain, and repair vehicles to support safe operations.',
-                'skills' => 'Mechanical knowledge, troubleshooting, attention to detail'
-            ],
-            [
-                'number' => '03',
-                'title' => 'Terminal Staff',
-                'description' => 'Assist passengers with boarding information, schedules, and ticketing procedures.',
-                'skills' => 'Communication, organization, customer service'
-            ],
-            [
-                'number' => '04',
-                'title' => 'Customer Support',
-                'description' => 'Help answer passenger questions about bookings, reservations, and travel policies.',
-                'skills' => 'Clear communication, patience, problem-solving'
-            ],
-            [
-                'number' => '05',
-                'title' => 'IT Personnel',
-                'description' => 'Support website maintenance, reservation technology, and technical troubleshooting.',
-                'skills' => 'Technical knowledge, testing, troubleshooting'
-            ],
-            [
-                'number' => '06',
-                'title' => 'Operations Personnel',
-                'description' => 'Assist with scheduling, service coordination, records, and daily operations.',
-                'skills' => 'Planning, coordination, data accuracy'
-            ]
-        ];
-        ?>
+$jobs = [
+    [
+        'number' => '01',
+        'title' => 'Bus Drivers',
+        'description' => 'Support safe driving, responsible passenger transport, and scheduled departures.',
+        'skills' => 'Valid qualifications, defensive driving, safety awareness'
+    ],
+    [
+        'number' => '02',
+        'title' => 'Maintenance Technicians',
+        'description' => 'Help inspect, maintain, and repair vehicles to support safe operations.',
+        'skills' => 'Mechanical knowledge, troubleshooting, attention to detail'
+    ],
+    [
+        'number' => '03',
+        'title' => 'Terminal Staff',
+        'description' => 'Assist passengers with boarding information, schedules, and ticketing procedures.',
+        'skills' => 'Communication, organization, customer service'
+    ],
+    [
+        'number' => '04',
+        'title' => 'Customer Support',
+        'description' => 'Help answer passenger questions about bookings, reservations, and travel policies.',
+        'skills' => 'Clear communication, patience, problem-solving'
+    ],
+    [
+        'number' => '05',
+        'title' => 'IT Personnel',
+        'description' => 'Support website maintenance, reservation technology, and technical troubleshooting.',
+        'skills' => 'Technical knowledge, testing, troubleshooting'
+    ],
+    [
+        'number' => '06',
+        'title' => 'Operations Personnel',
+        'description' => 'Assist with scheduling, service coordination, records, and daily operations.',
+        'skills' => 'Planning, coordination, data accuracy'
+    ]
+];
+?>
 
         <div class="about-jobs-grid">
 
@@ -916,7 +915,7 @@ require __DIR__ . '/../includes/header.php';
             and begin your booking with BUSWAY.
         </p>
 
-        <a href="index.php#journey-details"
+        <a href="book.php"
            class="about-btn about-btn-primary">
             Start Booking →
         </a>

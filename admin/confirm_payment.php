@@ -1,6 +1,7 @@
 <?php
 define('BUSWAY_ADMIN', true);
 require __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/layout.php';
 
 $admin = require_admin();
 $error = null;
@@ -186,6 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo->commit();
 
+        admin_log($pdo, (int) $admin['admin_id'], 'cash_confirmed', $ticket, 'Cash received: PHP ' . number_format($current['total_cents'] / 100, 2));
+
         $_SESSION['payment_confirmation_success'] = $ticket;
 
         header(
@@ -244,101 +247,56 @@ if ($success) {
         }
     }
 }
+
+admin_page_start('Confirm cash payment', 'tickets', $admin);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Confirm Cash Payment | BUSWAY Admin</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background: #f7f3ee;
-            color: #1c1208;
-            font-family: Arial, sans-serif;
-        }
-        main {
-            max-width: 720px;
-            margin: 40px auto;
-            padding: 28px;
-            background: white;
-            border-top: 5px solid #e8940a;
-            border-radius: 8px;
-        }
-        a { color: #684000; }
-        p { line-height: 1.6; overflow-wrap: anywhere; }
-        .error { padding: 16px; background: #ffe3df; color: #922d22; }
-        .success { padding: 16px; background: #dff3e4; color: #1d6030; }
-        .amount { font-size: 26px; font-weight: bold; }
-        label { display: block; margin: 24px 0; line-height: 1.6; }
-        button {
-            padding: 14px 20px;
-            border: 0;
-            border-radius: 5px;
-            background: #e8940a;
-            color: #1c1208;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-<main>
-    <a href="reservations.php">← Back to reservations</a>
-    <h1>Confirm cash payment</h1>
+<p><a href="ticket.php?ticket=<?= rawurlencode($ticket) ?>">← Back to ticket</a></p>
+<div class="ad-head">
+    <div>
+        <span class="ad-kicker">Counter payment</span>
+        <h1>Confirm cash payment</h1>
+        <p>Only confirm once the full amount is in your hands. This marks the booking paid.</p>
+    </div>
+</div>
 
-    <?php if ($success): ?>
-        <p class="success" role="status">
-            Cash payment recorded successfully.
-            Booking <?= admin_h($ticket) ?> is now PAID.
-        </p>
-    <?php else: ?>
-        <?php if ($error): ?>
-            <p class="error" role="alert"><?= admin_h($error) ?></p>
-        <?php endif; ?>
-
-        <?php if ($review): ?>
-            <p><strong>Reference:</strong> <?= admin_h($ticket) ?></p>
-            <p><strong>Passenger:</strong> <?= admin_h($details['name']) ?></p>
-            <p>
-                <strong>Trip:</strong>
-                <?= admin_h($details['origin']) ?> →
-                <?= admin_h($details['destination']) ?><br>
-                Bus <?= admin_h($details['bus_number']) ?> ·
-                <?= admin_h($details['travel_date']) ?> at
-                <?= admin_h($details['departure_time']) ?>
-            </p>
-            <p>
-                <strong>Seats:</strong>
-                <?= admin_h(implode(
-                    ', ',
-                    array_column($review['reservations'], 'seat_number')
-                )) ?>
-            </p>
-            <p class="amount">
-                Cash to collect:
-                ₱<?= number_format($review['total_cents'] / 100, 2) ?>
-            </p>
-
-            <form method="post">
-                <input type="hidden" name="csrf_token"
-                       value="<?= admin_h(admin_csrf_token()) ?>">
-                <input type="hidden" name="fingerprint"
-                       value="<?= admin_h($review['fingerprint']) ?>">
-
-                <label>
-                    <input type="checkbox" name="cash_received"
-                           value="yes" required>
-                    I have received the full cash amount shown above.
-                </label>
-
-                <button type="submit">Confirm cash received</button>
-            </form>
-        <?php endif; ?>
+<?php if ($success): ?>
+    <p class="notice success" role="status">Cash recorded. Booking <span class="ad-ref"><?= admin_h($ticket) ?></span> is now PAID.</p>
+    <p class="ad-actions">
+        <a class="button" href="ticket.php?ticket=<?= rawurlencode($ticket) ?>">View ticket</a>
+        <a class="button ghost" href="tickets.php?status=PENDING">Next pending ticket</a>
+    </p>
+<?php else: ?>
+    <?php if ($error): ?>
+        <p class="error" role="alert"><?= admin_h($error) ?></p>
     <?php endif; ?>
-</main>
-</body>
-</html>
+
+    <?php if ($review): ?>
+        <div class="ad-detail">
+            <section class="panel">
+                <h2>Booking</h2>
+                <dl>
+                    <div><dt>Reference</dt><dd class="ad-ref"><?= admin_h($ticket) ?></dd></div>
+                    <div><dt>Passenger</dt><dd><?= admin_h($details['name']) ?></dd></div>
+                    <div><dt>Trip</dt><dd><?= admin_h($details['origin']) ?> → <?= admin_h($details['destination']) ?></dd></div>
+                    <div><dt>Bus</dt><dd><?= admin_h($details['bus_number']) ?></dd></div>
+                    <div><dt>Departure</dt><dd><?= admin_h(admin_when($details['travel_date'], $details['departure_time'])) ?></dd></div>
+                    <div><dt>Seats</dt><dd><?= admin_h(implode(', ', array_column($review['reservations'], 'seat_number'))) ?></dd></div>
+                </dl>
+            </section>
+            <section class="panel">
+                <h2>Cash to collect</h2>
+                <p style="font: 800 44px var(--ad-display); margin: 8px 0 18px; color: var(--ad-amber-dark)">₱<?= number_format($review['total_cents'] / 100, 2) ?></p>
+                <form method="post">
+                    <input type="hidden" name="csrf_token" value="<?= admin_h(admin_csrf_token()) ?>">
+                    <input type="hidden" name="fingerprint" value="<?= admin_h($review['fingerprint']) ?>">
+                    <label style="display: flex; gap: 10px; align-items: flex-start; font-weight: 500">
+                        <input type="checkbox" name="cash_received" value="yes" required style="margin-top: 4px">
+                        I have received the full cash amount shown above.
+                    </label>
+                    <button type="submit" style="width: 100%; margin-top: 14px">Confirm cash received</button>
+                </form>
+            </section>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+<?php admin_page_end(); ?>

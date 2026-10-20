@@ -1,5 +1,9 @@
 <?php
-if (!defined('BUSWAY_APP')) { http_response_code(403); exit('Forbidden'); }
+
+if (!defined('BUSWAY_APP')) {
+    http_response_code(403);
+    exit('Forbidden');
+}
 
 require_once __DIR__ . '/database.php';
 
@@ -13,7 +17,7 @@ function get_schedules(): array
         return $schedules;
     }
 
-   $stmt = $pdo->query("
+    $stmt = $pdo->query("
     SELECT
         s.schedule_id,
         b.bus_id,
@@ -27,20 +31,24 @@ function get_schedules(): array
         s.arrival_time,
         s.fare,
         r.boarding_point,
-        s.travel_date
+        s.travel_date,
+        COALESCE(o.operator_name, '')
     FROM schedules s
     JOIN buses b
         ON s.bus_id = b.bus_id
+    LEFT JOIN bus_operators o
+        ON o.operator_id = b.operator_id
     JOIN routes r
         ON s.route_id = r.route_id
 ");
 
-$rows = $stmt->fetchAll(PDO::FETCH_NUM);
+    $rows = $stmt->fetchAll(PDO::FETCH_NUM);
 
     $schedules = [];
+
     foreach ($rows as $r) {
         $id = (int) $r[0];
-     $schedules[$id] = [
+        $schedules[$id] = [
     'schedule_id' => $r[0],
     'bus_id' => $r[1],
     'bus_number' => $r[2],
@@ -54,19 +62,22 @@ $rows = $stmt->fetchAll(PDO::FETCH_NUM);
     'fare_per_seat' => $r[10],
     'boarding_point' => $r[11],
     'travel_date' => $r[12],
+    'operator' => $r[13],
     'duration_minutes' => (
-    strtotime($r[9]) >= strtotime($r[8])
+        strtotime($r[9]) >= strtotime($r[8])
     ? (strtotime($r[9]) - strtotime($r[8])) / 60
     : ((strtotime($r[9]) + 86400) - strtotime($r[8])) / 60
-),
+    ),
 ];
     }
+
     return $schedules;
 }
 
 function get_schedule(int $scheduleId): ?array
 {
     $all = get_schedules();
+
     return $all[$scheduleId] ?? null;
 }
 
@@ -95,10 +106,11 @@ function search_schedules(
 function sort_schedules(array $schedules, string $sort): array
 {
     $key = match ($sort) {
-        'fare'     => 'fare_per_seat',
+        'fare' => 'fare_per_seat',
         'duration' => 'duration_minutes',
-        default    => 'departure_time',
+        default => 'departure_time',
     };
-    usort($schedules, fn($a, $b) => $a[$key] <=> $b[$key]);
+    usort($schedules, fn ($a, $b) => $a[$key] <=> $b[$key]);
+
     return $schedules;
 }

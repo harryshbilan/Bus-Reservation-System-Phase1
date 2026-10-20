@@ -1,0 +1,48 @@
+/* bus.php */
+.bs-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--bw-line);
+}
+.bs-num {
+    margin-bottom: 8px;
+    font-size: clamp(40px, 7vw, 52px);
+    text-transform: none;
+}
+.bs-fare {
+    text-align: right;
+}
+.bs-fare strong {
+    display: block;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--bw-amber);
+}
+.bs-fare span {
+    font-size: 13px;
+    color: var(--bw-muted);
+}
+.bs-wide {
+    grid-column: 1 / -1;
+}
+.bs-estimate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--bw-amber-soft);
+    border-color: #f0d9b0;
+}
+.bs-estimate span {
+    color: #6b4a14;
+    font-size: 15px;
+}
+.bs-estimate strong {
+    font-size: 32px;
+}
