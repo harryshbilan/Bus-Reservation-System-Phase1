@@ -26,7 +26,7 @@ The first account made with `scripts/admin_create.php` is an **admin**. Admins a
 3. Create an admin login from the project folder:
    `echo {"username":"admin","display_name":"Admin","password":"choose-a-password"} | php scripts/admin_create.php`
 
-4. Open `http://localhost/Bus-Reservation-System-Phase1/public/index.php`.
+4. Open `http://localhost/Bus-Reservation-System/public/index.php`.
    Staff sign in at `/admin/login.php`.
 
 Database settings live in `includes/database.php` (default: `root`, no password, `busway_db`).

@@ -286,6 +286,7 @@ admin_page_start('Confirm cash payment', 'tickets', $admin);
             <section class="panel">
                 <h2>Cash to collect</h2>
                 <p style="font: 800 44px var(--ad-display); margin: 8px 0 18px; color: var(--ad-amber-dark)">₱<?= number_format($review['total_cents'] / 100, 2) ?></p>
+                <p class="notice">Student, senior citizen or PWD? <a href="discount.php?ticket=<?= rawurlencode($ticket) ?>">Apply their discount</a> before collecting cash.</p>
                 <form method="post">
                     <input type="hidden" name="csrf_token" value="<?= admin_h(admin_csrf_token()) ?>">
                     <input type="hidden" name="fingerprint" value="<?= admin_h($review['fingerprint']) ?>">

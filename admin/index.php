@@ -81,7 +81,7 @@ admin_page_start('Dashboard', 'dashboard', $admin);
                             <li>
                                 <span>
                                     <a class="ad-ref" href="ticket.php?ticket=<?= rawurlencode($t['ticket_number']) ?>"><?= admin_h($t['ticket_number']) ?></a>
-                                    <span class="ad-sub"><?= admin_h($t['passenger_name']) ?> · <?= admin_h($t['route']) ?> · <?= admin_h(admin_when($t['travel_date'], $t['departure_time'])) ?></span>
+                                    <span class="ad-sub"><?= admin_h($t['passenger_name']) ?> · <?= admin_h($t['route']) ?> · <?= admin_h(admin_when($t['travel_date'], $t['departure_time'])) ?> · <a href="discount.php?ticket=<?= rawurlencode($t['ticket_number']) ?>">Discount</a></span>
                                 </span>
                                 <a class="button" href="confirm_payment.php?ticket=<?= rawurlencode($t['ticket_number']) ?>">₱<?= number_format((float) $t['amount_due'], 2) ?></a>
                             </li>

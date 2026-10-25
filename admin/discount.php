@@ -185,6 +185,8 @@ admin_page_start('Discount ' . $ticket, 'tickets', $admin);
 </div>
 
 <?php if ($flash): ?><p class="notice success" role="status"><?= admin_h($flash) ?></p><?php endif; ?>
+<?php $cashDue = array_filter($seats, fn ($s) => $s['status'] === 'PENDING' && $s['payment_status'] === 'PENDING' && $s['payment_method'] === 'Cash'); ?>
+<?php if ($cashDue): ?><p><a class="button" href="confirm_payment.php?ticket=<?= rawurlencode($ticket) ?>">Continue to collect cash →</a></p><?php endif; ?>
 <?php if ($errors): ?><div class="error" role="alert"><?php foreach (array_unique($errors) as $e): ?><div><?= admin_h($e) ?></div><?php endforeach; ?></div><?php endif; ?>
 
 <?php if (!$booking): ?>

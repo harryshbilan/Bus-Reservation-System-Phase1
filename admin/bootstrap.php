@@ -13,7 +13,8 @@ session_name('BUSWAY_ADMIN_SESSION');
 
 session_set_cookie_params([
     'lifetime' => 0,
-    'path' => '/Bus-Reservation-System-Phase1/admin/',
+    // Derive from the request so it works whatever the project folder is named.
+    'path' => rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/') . '/',
     'secure' => !empty($_SERVER['HTTPS'])
         && $_SERVER['HTTPS'] !== 'off',
     'httponly' => true,

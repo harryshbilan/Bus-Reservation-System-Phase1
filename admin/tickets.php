@@ -130,6 +130,9 @@ admin_page_start('Tickets', 'tickets', $admin);
                             <?php elseif ($row['status'] === 'PENDING'): ?>
                                 <small>Waiting for online payment</small>
                             <?php endif; ?>
+                            <?php if ($row['status'] === 'PENDING'): ?>
+                                <small><a href="discount.php?ticket=<?= rawurlencode($row['ticket_number']) ?>">Apply discount →</a></small>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
