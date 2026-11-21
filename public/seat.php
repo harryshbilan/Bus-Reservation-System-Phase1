@@ -107,10 +107,10 @@ require __DIR__ . '/../includes/header.php';
     <input type="hidden" name="csrf_token" value="<?= h($_SESSION['seat_form_token']) ?>">
     <div class="sx-layout">
       <div>
-        <div class="sx-key" aria-label="Seat legend">
-          <span class="booked"><i aria-hidden="true"></i>Booked</span>
-          <span><i aria-hidden="true"></i>Available</span>
-          <span class="chosen"><i aria-hidden="true"></i>Selected</span>
+        <div class="sx-key" role="group" aria-label="Seat legend">
+  <span><i class="sw-available" aria-hidden="true"></i>Available</span>
+  <span><i class="sw-booked" aria-hidden="true">✕</i>Booked</span>
+  <span><i class="sw-selected" aria-hidden="true">✓</i>Selected</span>
         </div>
         <fieldset class="st-card sx-map">
           <legend class="st-card-title">Seat layout · Bus <?= h($bus['bus_number']) ?></legend>

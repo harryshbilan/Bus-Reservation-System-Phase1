@@ -129,10 +129,13 @@
     font-size: 20px;
     text-align: center;
     -moz-appearance: textfield;
+    appearance: textfield;
+
 }
 .bk-stepper input::-webkit-inner-spin-button,
 .bk-stepper input::-webkit-outer-spin-button {
     -webkit-appearance: none;
+    appearance: none;
     margin: 0;
 }
 .bk-stepper span {
@@ -321,3 +324,7 @@
     color: var(--bw-amber);
     opacity: 0.9;
 }
+.bk-locate { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 10px; padding: 10px 14px; border: 1px solid var(--bw-line); background: var(--bw-surface); color: var(--bw-amber-dark); font: 700 15px var(--bw-body); cursor: pointer; }
+.bk-locate:hover { border-color: var(--bw-amber); }
+.bk-locate:disabled { opacity: .6; cursor: wait; }
+#bk-locate-status { display: block; min-height: 1.2em; margin-top: 6px; color: var(--bw-muted); }

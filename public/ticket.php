@@ -1,6 +1,7 @@
 <?php
 define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/map.php';
 require_booking_keys(['ticket_number'], 'index.php');
 header('Cache-Control: no-store');
 // Read only the reference held in this passenger's session.
@@ -152,7 +153,7 @@ require __DIR__ . '/../includes/header.php';
       </div>
     </div>
   </article>
-
+    <?php render_boarding_map(boarding_coordinates($pdo, (int) $ticket['schedule_id']), $ticket['boarding_point']); ?>
   <div class="tk-actions">
     <button type="button" class="bw-btn" onclick="window.print()">Print <?= $status === 'PAID' ? 'e-ticket' : 'reservation' ?></button>
     <a class="bw-btn-ghost" href="book.php">Book another trip</a>

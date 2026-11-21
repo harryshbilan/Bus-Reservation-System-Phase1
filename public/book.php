@@ -45,6 +45,13 @@ $passengers = $passengers === false ? 1 : $passengers;
 
 $routes = upcoming_routes($pdo, $now);
 $cities = route_cities($pdo);
+$terminals = [];
+try {
+    $rows = $pdo->query('SELECT origin, AVG(boarding_lat) AS lat, AVG(boarding_lng) AS lng FROM routes WHERE boarding_lat IS NOT NULL AND boarding_lng IS NOT NULL GROUP BY origin')->fetchAll(PDO::FETCH_ASSOC);
+    $terminals = array_map(static fn (array $t): array => ['origin' => $t['origin'], 'lat' => (float) $t['lat'], 'lng' => (float) $t['lng']], $rows);
+} catch (PDOException $e) {
+    // locations.sql not imported yet: the button simply won't show
+}
 
 $weekEnd = $now->modify('+7 days')->format('Y-m-d H:i:s');
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM schedules WHERE TIMESTAMP(travel_date, departure_time) BETWEEN ? AND ?");
@@ -97,6 +104,13 @@ require __DIR__ . '/../includes/header.php';
         <div class="bk-field">
           <label for="origin">Origin</label>
           <input id="origin" name="origin" list="bk-cities" maxlength="100" placeholder="City of departure" required value="<?= h($origin) ?>" autocomplete="off">
+          <?php if ($terminals): ?>
+            <button type="button" class="bk-locate" id="bk-locate">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              Use my location
+            </button>
+            <small id="bk-locate-status" role="status" aria-live="polite"></small>
+          <?php endif; ?>
         </div>
         <div class="bk-field">
           <label for="destination">Destination</label>
@@ -165,4 +179,44 @@ document.querySelectorAll('.bk-stepper [data-step]').forEach(button => {
   });
 });
 </script>
+<?php if ($terminals): ?>
+<script>
+(() => {
+  const terminals = <?= json_encode($terminals, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+  const km = (a, b, c, d) => {
+    const r = x => x * Math.PI / 180;
+    const s = Math.sin(r(c - a) / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(r(d - b) / 2) ** 2;
+    return 12742 * Math.asin(Math.sqrt(s));
+  };
+  const button = document.getElementById('bk-locate');
+  const status = document.getElementById('bk-locate-status');
+  const say = text => { status.textContent = text; };
+  button.addEventListener('click', () => {
+    if (!('geolocation' in navigator)) { say('This device can’t share its location. Type your origin instead.'); return; }
+    button.disabled = true;
+    say('Finding the nearest terminal…');
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        button.disabled = false;
+        const { latitude, longitude } = pos.coords;
+        const nearest = terminals
+          .map(t => ({ ...t, d: km(latitude, longitude, t.lat, t.lng) }))
+          .sort((a, b) => a.d - b.d)[0];
+        if (nearest.d > 150) { say(`The nearest terminal is ${nearest.origin}, ${Math.round(nearest.d)} km away. Pick your origin from the list.`); return; }
+        document.getElementById('origin').value = nearest.origin;
+        say(`Origin set to ${nearest.origin}, about ${nearest.d.toFixed(1)} km away. Not right? Just type another city.`);
+        document.getElementById('destination').focus();
+      },
+      err => {
+        button.disabled = false;
+        say(err.code === err.PERMISSION_DENIED ? 'Location permission is off, so type your origin instead. You can allow it in your browser’s site settings.'
+          : err.code === err.TIMEOUT ? 'That took too long. Try again or type your origin.'
+          : 'We couldn’t find your location. Type your origin instead.');
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+    );
+  });
+})();
+</script>
+<?php endif; ?>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

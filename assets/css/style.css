@@ -494,7 +494,7 @@ html {
 .btn-primary {
     flex: 2;
     text-align: center;
-    background-color: #c0392b; /* Change to #e69c24 if you want orange button */
+    background-color: #e69c24; /* Change to #e69c24 if you want orange button */
     color: #fff;
     padding: 0.9rem;
     text-decoration: none;
