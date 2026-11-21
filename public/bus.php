@@ -1,6 +1,7 @@
 <?php
 define('BUSWAY_APP', true);
 require __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/map.php';
 require_booking_keys(['travel_date', 'passengers'], 'index.php');
 
 if (!empty($_SESSION['booking']['ticket_number'])) {
@@ -90,6 +91,7 @@ require __DIR__ . '/../includes/header.php';
     <strong class="bw-display">₱<?= number_format($total, 2) ?></strong>
   </div>
 
+    <?php render_boarding_map(boarding_coordinates($pdo, $scheduleId), $bus['boarding_point'] ?: $bus['origin']); ?>
   <div class="st-actions">
     <a class="bw-btn-ghost" href="routes.php">← Back</a>
     <a class="bw-btn" href="seat.php">Choose your seats →</a>

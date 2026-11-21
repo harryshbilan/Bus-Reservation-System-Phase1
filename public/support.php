@@ -139,4 +139,5 @@ require __DIR__ . '/../includes/header.php';
         report. Please contact terminal or operator staff directly.
     </p>
 </article>
-
+</section>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

@@ -201,3 +201,19 @@
         font-size: 12px;
     }
 }
+:root { --seat-green: #1f7a45; --seat-green-dark: #17613a; }
+
+.sx-key i {
+    display: inline-grid; place-items: center;
+    width: 26px; height: 26px;
+    border: 2px solid var(--bw-muted); border-radius: 4px;
+    background: #fff; font-style: normal; font-size: 14px; font-weight: 800; line-height: 1;
+}
+.sx-key .sw-booked   { background: var(--bw-line); border-color: var(--bw-ghost); color: var(--bw-muted); }
+.sx-key .sw-selected { background: var(--seat-green); border-color: var(--seat-green-dark); color: #fff; }
+
+.sx-seat span { height: 44px; border: 2px solid var(--bw-muted); }
+.sx-seat:hover span { border-color: var(--seat-green); }
+.sx-seat input:checked + span { background: var(--seat-green); border-color: var(--seat-green-dark); color: #fff; }
+.sx-seat input:checked + span::before { content: '✓ '; }
+.sx-seat input:disabled + span { background: var(--bw-line); border-color: var(--bw-ghost); color: var(--bw-muted); text-decoration: line-through; }

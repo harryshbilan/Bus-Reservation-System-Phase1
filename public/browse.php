@@ -276,4 +276,5 @@ require __DIR__ . '/../includes/header.php';
             </nav>
         <?php endif; ?>
     <?php endif; ?>
+    <?php require __DIR__ . '/../includes/footer.php'; ?>
 </section>
