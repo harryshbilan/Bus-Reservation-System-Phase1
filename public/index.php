@@ -37,12 +37,41 @@ foreach (['hero.webm', 'hero.mp4'] as $file) {
 $lineColors = ['#c0392b', '#1a6fa8', '#2e7d32', '#0077b6', '#e8940a', '#6a0572'];
 
 $pageTitle = 'BUSWAY | Bus tickets across the Philippines';
-$pageStyles = ['home.css'];
+$indexSections = [
+    [
+        'id' => 'explore',
+        'title' => 'Explore BUSWAY',
+        'expanded' => true,
+        'items' => [
+            ['label' => 'Search destinations', 'href' => '#hero-search'],
+            ['label' => 'Popular destinations', 'href' => '#where-title'],
+            ['label' => 'Fares & savings', 'href' => '#deals-title'],
+            ['label' => 'Bus transit lines', 'href' => '#lines-title'],
+            ['label' => 'Why ride with BUSWAY?', 'href' => '#why-title'],
+        ],
+    ],
+    [
+        'id' => 'services',
+        'title' => 'Passenger services',
+        'expanded' => true,
+        'items' => [
+            ['label' => 'Book a trip', 'href' => 'book.php'],
+            ['label' => 'Browse all schedules', 'href' => 'browse.php'],
+            ['label' => 'Student, senior & PWD discounts', 'href' => 'discounts.php'],
+            ['label' => 'Manage or cancel a booking', 'href' => 'cancellation.php'],
+        ],
+    ],
+];
+
+$pageTitle = 'BUSWAY | Bus tickets across the Philippines';
+$pageStyles = ['home.css', 'side-index.css'];
 require __DIR__ . '/../includes/header.php';
 ?>
+<div class="bw-index-layout">
+<?php require __DIR__ . '/../includes/side_index.php'; ?>
 <div class="hm">
 
-  <section class="hm-hero">
+  <section class="hm-hero" id="hero-search">
     <?php if ($heroVideo): ?>
       <video class="hm-hero-photo" id="hm-video" autoplay muted loop playsinline preload="metadata" poster="<?= is_file(__DIR__ . '/../assets/videos/hero-poster.jpg') ? '../assets/videos/hero-poster.jpg' : h(image_url('el nido palawan.jpg')) ?>" aria-hidden="true">
         <source src="../assets/videos/<?= h($heroVideo) ?>" type="video/<?= pathinfo($heroVideo, PATHINFO_EXTENSION) === 'webm' ? 'webm' : 'mp4' ?>">
@@ -188,6 +217,7 @@ require __DIR__ . '/../includes/header.php';
   </section>
 
 </div>
+          </div>
 <?php if ($heroVideo): ?>
 <script>
 // Pause button for the hero video; respects the "reduce motion" setting.

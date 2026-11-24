@@ -1,0 +1,188 @@
+/* BUSWAY side index: a sticky table of contents beside the page.
+   Layout: .bw-index-layout > (aside.side-index + page content). */
+
+.bw-index-layout {
+    --si-w: 264px;
+    display: grid;
+    grid-template-columns: var(--si-w) minmax(0, 1fr);
+    align-items: start; /* keeps the sidebar from stretching, so sticky works */
+    transition: grid-template-columns 0.25s ease;
+}
+.index-collapsed .bw-index-layout { --si-w: 0px; }
+
+/* No dead space under the header */
+.bw-index-layout .hm { padding-top: 0; }
+.bw-index-layout [id$='-title'] { scroll-margin-top: 110px; }
+
+/* ---------- panel ---------- */
+.side-index {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bw-surface);
+    border-right: 1px solid var(--bw-line);
+    transition: visibility 0s;
+}
+.index-collapsed .side-index { visibility: hidden; transition: visibility 0s 0.25s; }
+@media (min-width: 992px) {
+    .side-index > * { min-width: 264px; } /* keeps text from re-wrapping while it collapses */
+}
+
+.side-index-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 14px 12px 20px;
+}
+.side-index-collapse {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--bw-line);
+    border-radius: 4px;
+    background: var(--bw-surface);
+    color: var(--bw-muted);
+    cursor: pointer;
+}
+.side-index-collapse:hover { color: var(--bw-amber-dark); border-color: var(--bw-amber); }
+
+.side-index-progress { height: 3px; background: var(--bw-line); }
+.side-index-progress i { display: block; width: 0; height: 100%; background: var(--bw-amber); transition: width 0.1s linear; }
+
+.side-index-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 10px 12px 28px; }
+
+/* ---------- groups ---------- */
+.si-group { margin-bottom: 4px; }
+.si-group-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 8px;
+    border: 0;
+    background: none;
+    color: var(--bw-ink);
+    font: 800 15px var(--bw-display);
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.si-group-toggle svg { color: var(--bw-muted); transition: transform 0.2s; }
+.si-group:not(.is-open) .si-group-toggle svg { transform: rotate(-90deg); }
+
+/* ---------- rail + items ---------- */
+.si-list {
+    display: none;
+    margin: 2px 0 10px 14px;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid var(--bw-line);
+}
+.si-group.is-open .si-list { display: block; }
+
+.si-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px 9px 22px;
+    border-radius: 0 6px 6px 0;
+    color: var(--bw-muted);
+    font-size: 14px;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+.si-label { flex: 1; min-width: 0; }
+.si-link::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 50%;
+    box-sizing: border-box;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--bw-ghost);
+    border-radius: 50%;
+    background: var(--bw-surface);
+    transform: translateY(-50%);
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.si-link:hover { background: var(--bw-bg); color: var(--bw-ink); }
+
+.si-link.is-passed::before { border-color: var(--bw-amber); background: #f3c77a; }
+.si-link.is-active { background: var(--bw-amber-soft); color: var(--bw-ink); font-weight: 600; }
+.si-link.is-active::before { border-color: var(--bw-amber); background: var(--bw-amber); box-shadow: 0 0 0 4px rgb(232 148 10 / 20%); }
+
+/* links to other pages: diamond marker and arrow */
+.si-link.is-page::before { left: -5.5px; width: 9px; height: 9px; border-radius: 2px; transform: translateY(-50%) rotate(45deg); }
+.si-link.is-page::after { content: '›'; margin-left: auto; color: var(--bw-ghost); font-size: 18px; line-height: 1; }
+
+.si-link.is-locked { opacity: 0.6; cursor: not-allowed; }
+.si-link.is-locked:hover { background: none; color: var(--bw-muted); }
+
+@media (pointer: coarse) {
+    .si-link { min-height: 44px; }
+    .side-index-collapse { width: 44px; height: 44px; }
+}
+
+/* ---------- reopen button + backdrop ---------- */
+.side-index-open {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 30;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--bw-dark);
+    color: #fff;
+    font: 700 15px var(--bw-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 25%);
+    cursor: pointer;
+}
+.side-index-open:hover { background: #33240f; }
+.index-collapsed .side-index-open { display: inline-flex; }
+.side-index-backdrop { display: none; }
+
+/* ---------- phones and small tablets: slide-in drawer ---------- */
+@media (max-width: 991.98px) {
+    .bw-index-layout { display: block; }
+    .side-index {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        height: auto;
+        width: min(300px, 86vw);
+        z-index: 40;
+        box-shadow: 6px 0 24px rgb(0 0 0 / 20%);
+        transition: transform 0.25s ease, visibility 0s;
+    }
+    .index-collapsed .side-index { transform: translateX(-100%); transition: transform 0.25s ease, visibility 0s 0.25s; }
+    html:not(.index-collapsed) .side-index-backdrop { display: block; position: fixed; inset: 0; z-index: 39; background: rgb(28 18 8 / 45%); }
+    html:not(.index-collapsed) body { overflow: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bw-index-layout, .side-index, .si-group-toggle svg, .side-index-progress i, .si-link, .si-link::before { transition: none !important; }
+    html { scroll-behavior: auto; }
+}
+
+@media print {
+    .side-index, .side-index-open, .side-index-backdrop { display: none !important; }
+    .bw-index-layout { display: block; }
+}
